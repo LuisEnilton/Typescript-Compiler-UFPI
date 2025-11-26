@@ -9,5 +9,4 @@ let u: User = {
     name: "Ana",
     age: 12
 };
-
-u.name = "Jose";
+u.namo = "Jose";
