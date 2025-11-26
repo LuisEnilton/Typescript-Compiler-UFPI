@@ -393,59 +393,81 @@ class SemanticAnalyzer(ParseTreeVisitor):
          - ID '.' ID '=' assignmentExpr
          - logicalOrExpr
         """
-        # detect assign form
-        text = ctx.getText()
-        if '=' in text and ctx.getChildCount() >= 3:
+        # detect assign form - procura por ASSIGN (símbolo '=')
+        has_assign = False
+        assign_index = -1
+        for i in range(ctx.getChildCount()):
+            child = ctx.getChild(i)
+            if hasattr(child, 'getText'):
+                if child.getText() == '=' and not child.getText().startswith('==') and not child.getText().startswith('!='):
+                    has_assign = True
+                    assign_index = i
+                    break
+        
+        if has_assign and assign_index > 0:
+            # Temos uma atribuição
             left = ctx.getChild(0)
-            # left can be ID or arrayAccess or ID.ID; try to compute left type
             left_type = None
             
-            # Check if left is ID (simple assignment)
-            if left.getPayload().__class__.__name__ == 'TerminalNodeImpl':
-                # ID
-                idname = left.getText()
+            # Verificar se é ID simples (primeira posição é um ID)
+            left_text = left.getText()
+            
+            # Case 1: ID '=' assignmentExpr (simples atribuição)
+            if assign_index == 1 and not any(left_text == child.getText() for child in [ctx.getChild(i) for i in range(1, assign_index)] if hasattr(child, 'getText')):
+                # É um ID simples
+                idname = left_text
                 if idname not in self.sym.vars:
                     self._err(ctx, f"Variável '{idname}' não declarada")
                 else:
                     var_symbol = self.sym.vars[idname]
-                    # verificar se é const
+                    # VERIFICAR SE É CONST - Rejeitar reatribuição
                     if var_symbol.is_const:
                         self._err(ctx, f"Não é possível reatribuir a variável const '{idname}'")
                     left_type = var_symbol.type
             
-            # Check if it's ID '.' ID (property assignment) - special case
-            elif ctx.getChildCount() >= 5 and ctx.getChild(1).getText() == '.':
-                # Pattern: ID '.' ID '=' assignmentExpr
-                obj_id = ctx.getChild(0).getText()
-                prop_name = ctx.getChild(2).getText()
+            # Case 2: ID '.' ID '=' assignmentExpr (property assignment)
+            elif assign_index >= 3:
+                # Verificar padrão: ID . ID =
+                first_child = ctx.getChild(0).getText()
+                dot_child = ctx.getChild(1).getText() if ctx.getChildCount() > 1 else ""
+                third_child = ctx.getChild(2).getText() if ctx.getChildCount() > 2 else ""
                 
-                if obj_id not in self.sym.vars:
-                    self._err(ctx, f"Variável '{obj_id}' não declarada")
-                    left_type = None
-                else:
-                    obj_var = self.sym.vars[obj_id]
-                    if not isinstance(obj_var.type, InterfaceType):
-                        self._err(ctx, f"Variável '{obj_id}' não é uma interface e não tem campos")
+                if dot_child == '.' and assign_index == 3:
+                    # Pattern: ID '.' ID '=' assignmentExpr
+                    obj_id = first_child
+                    prop_name = third_child
+                    
+                    if obj_id not in self.sym.vars:
+                        self._err(ctx, f"Variável '{obj_id}' não declarada")
                         left_type = None
                     else:
-                        # Verificar se a propriedade existe na interface
-                        if prop_name not in obj_var.type.props:
-                            self._err(ctx, f"Campo '{prop_name}' não existe na interface '{obj_var.type.name()}'")
+                        obj_var = self.sym.vars[obj_id]
+                        if not isinstance(obj_var.type, InterfaceType):
+                            self._err(ctx, f"Variável '{obj_id}' não é uma interface e não tem campos")
                             left_type = None
                         else:
-                            left_type = obj_var.type.props[prop_name]
+                            # Verificar se a propriedade existe na interface
+                            if prop_name not in obj_var.type.props:
+                                self._err(ctx, f"Campo '{prop_name}' não existe na interface '{obj_var.type.name()}'")
+                                left_type = None
+                            else:
+                                left_type = obj_var.type.props[prop_name]
+                else:
+                    # Outro padrão (arrayAccess ou similar)
+                    left_type = self.visit(left)
             
-            # Otherwise: arrayAccess or other node -> visit
+            # Case 3: arrayAccess '=' assignmentExpr
             else:
                 left_type = self.visit(left)
             
+            # Validar tipo da atribuição
             right_type = self.visit(ctx.assignmentExpr())
             if left_type and right_type:
                 if not self.is_assignable(left_type, right_type, ctx):
                     self._err(ctx, f"Atribuição de tipos incompatíveis: não é possível atribuir {right_type.name()} a {left_type.name()}")
             return left_type
         else:
-            # fallback: visit children and return last type
+            # fallback: visit children and return last type (não é atribuição)
             return self.visitChildren(ctx)
 
     # fallback generic visitChildren: visita filhos e retorna último tipo conhecido
