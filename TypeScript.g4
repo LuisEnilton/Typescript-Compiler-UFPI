@@ -74,7 +74,9 @@ expressionStmt: expression ';';
 expression: assignmentExpr;
 
 assignmentExpr
-    : ID ASSIGN assignmentExpr     // x = y = z
+    : ID ASSIGN assignmentExpr              // x = y = z
+    | arrayAccess ASSIGN assignmentExpr     // arr[i] = value
+    | ID '.' ID ASSIGN assignmentExpr       // obj.prop = value
     | logicalOrExpr
     ;
 
