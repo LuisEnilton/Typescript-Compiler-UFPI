@@ -383,6 +383,53 @@ class SemanticAnalyzer(ParseTreeVisitor):
             return PrimitiveType("boolean")
         return None
 
+    def visitPrimary(self, ctx):
+        """
+        ctx: primary
+        primary pode ser:
+         - literal (NUMBER_LIT, STRING, BOOLEAN_LIT)
+         - ID (referência a variável)
+         - '(' expression ')'
+         - arrayLiteral
+         - objectLiteral
+         - callExpr
+         - arrayAccess
+        """
+        # Tenta visitar literal
+        if ctx.literal() is not None:
+            return self.visit(ctx.literal())
+        
+        # Tenta ID simples (referência a variável)
+        if ctx.ID() is not None:
+            id_name = ctx.ID().getText()
+            if id_name not in self.sym.vars:
+                self._err(ctx, f"Variável '{id_name}' não declarada")
+                return None
+            return self.sym.vars[id_name].type
+        
+        # Tenta expression dentro de parênteses
+        if ctx.expression() is not None:
+            return self.visit(ctx.expression())
+        
+        # Tenta array literal
+        if ctx.arrayLiteral() is not None:
+            return self.visit(ctx.arrayLiteral())
+        
+        # Tenta object literal
+        if ctx.objectLiteral() is not None:
+            return self.visit(ctx.objectLiteral())
+        
+        # Tenta chamada de função
+        if ctx.callExpr() is not None:
+            return self.visit(ctx.callExpr())
+        
+        # Tenta array access
+        if ctx.arrayAccess() is not None:
+            return self.visit(ctx.arrayAccess())
+        
+        return None
+
+
     # assignmentExpr might be visited as generic node name; adapt to your generated visitor method name
     def visitAssignmentExpr(self, ctx):
         """
