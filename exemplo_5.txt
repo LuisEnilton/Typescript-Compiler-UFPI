@@ -1,0 +1,6 @@
+
+
+let nums: number[] = [1, 2, 3, 4];
+let x: number = nums[2];   // deve ser 3
+
+nums[0] = 100;

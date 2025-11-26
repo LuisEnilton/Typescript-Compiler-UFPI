@@ -1,0 +1,2749 @@
+# Generated from TypeScript.g4 by ANTLR 4.13.2
+# encoding: utf-8
+from antlr4 import *
+from io import StringIO
+import sys
+if sys.version_info[1] > 5:
+	from typing import TextIO
+else:
+	from typing.io import TextIO
+
+def serializedATN():
+    return [
+        4,1,44,314,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,
+        6,2,7,7,7,2,8,7,8,2,9,7,9,2,10,7,10,2,11,7,11,2,12,7,12,2,13,7,13,
+        2,14,7,14,2,15,7,15,2,16,7,16,2,17,7,17,2,18,7,18,2,19,7,19,2,20,
+        7,20,2,21,7,21,2,22,7,22,2,23,7,23,2,24,7,24,2,25,7,25,2,26,7,26,
+        2,27,7,27,2,28,7,28,2,29,7,29,2,30,7,30,2,31,7,31,1,0,5,0,66,8,0,
+        10,0,12,0,69,9,0,1,0,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,3,1,
+        82,8,1,1,2,1,2,5,2,86,8,2,10,2,12,2,89,9,2,1,2,1,2,1,3,1,3,1,3,1,
+        3,1,3,1,3,3,3,99,8,3,1,3,1,3,1,4,1,4,1,4,1,4,3,4,107,8,4,1,4,1,4,
+        1,4,1,4,1,4,1,5,1,5,1,5,5,5,117,8,5,10,5,12,5,120,9,5,1,6,1,6,1,
+        6,1,6,1,7,1,7,3,7,128,8,7,1,7,1,7,1,8,1,8,1,8,1,8,1,8,1,8,1,8,3,
+        8,139,8,8,1,9,1,9,1,9,1,9,1,9,1,9,1,10,1,10,1,10,1,10,1,10,3,10,
+        152,8,10,1,10,3,10,155,8,10,1,10,1,10,3,10,159,8,10,1,10,1,10,1,
+        10,1,11,1,11,1,11,1,12,1,12,1,13,1,13,1,13,1,13,3,13,173,8,13,1,
+        14,1,14,1,14,5,14,178,8,14,10,14,12,14,181,9,14,1,15,1,15,1,15,5,
+        15,186,8,15,10,15,12,15,189,9,15,1,16,1,16,1,16,5,16,194,8,16,10,
+        16,12,16,197,9,16,1,17,1,17,1,17,5,17,202,8,17,10,17,12,17,205,9,
+        17,1,18,1,18,1,18,5,18,210,8,18,10,18,12,18,213,9,18,1,19,1,19,1,
+        19,5,19,218,8,19,10,19,12,19,221,9,19,1,20,1,20,1,20,3,20,226,8,
+        20,1,21,1,21,1,21,1,21,1,21,1,21,1,21,1,21,1,21,1,21,3,21,238,8,
+        21,1,22,1,22,1,22,1,22,1,22,5,22,245,8,22,10,22,12,22,248,9,22,3,
+        22,250,8,22,1,22,1,22,1,23,1,23,1,23,1,23,1,23,1,24,1,24,1,24,1,
+        24,5,24,263,8,24,10,24,12,24,266,9,24,3,24,268,8,24,1,24,1,24,1,
+        25,1,25,1,25,1,25,5,25,276,8,25,10,25,12,25,279,9,25,3,25,281,8,
+        25,1,25,1,25,1,26,1,26,1,26,1,26,1,27,1,27,1,27,3,27,292,8,27,1,
+        28,1,28,1,29,1,29,1,29,1,29,5,29,300,8,29,10,29,12,29,303,9,29,1,
+        29,1,29,1,30,1,30,1,30,1,30,1,30,1,31,1,31,1,31,0,0,32,0,2,4,6,8,
+        10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,
+        54,56,58,60,62,0,8,1,0,1,2,1,0,19,20,1,0,21,24,1,0,14,15,1,0,16,
+        18,2,0,39,39,41,41,2,0,10,12,41,41,1,0,38,40,322,0,67,1,0,0,0,2,
+        81,1,0,0,0,4,83,1,0,0,0,6,92,1,0,0,0,8,102,1,0,0,0,10,113,1,0,0,
+        0,12,121,1,0,0,0,14,125,1,0,0,0,16,131,1,0,0,0,18,140,1,0,0,0,20,
+        146,1,0,0,0,22,163,1,0,0,0,24,166,1,0,0,0,26,172,1,0,0,0,28,174,
+        1,0,0,0,30,182,1,0,0,0,32,190,1,0,0,0,34,198,1,0,0,0,36,206,1,0,
+        0,0,38,214,1,0,0,0,40,225,1,0,0,0,42,237,1,0,0,0,44,239,1,0,0,0,
+        46,253,1,0,0,0,48,258,1,0,0,0,50,271,1,0,0,0,52,284,1,0,0,0,54,288,
+        1,0,0,0,56,293,1,0,0,0,58,295,1,0,0,0,60,306,1,0,0,0,62,311,1,0,
+        0,0,64,66,3,2,1,0,65,64,1,0,0,0,66,69,1,0,0,0,67,65,1,0,0,0,67,68,
+        1,0,0,0,68,70,1,0,0,0,69,67,1,0,0,0,70,71,5,0,0,1,71,1,1,0,0,0,72,
+        82,3,6,3,0,73,82,3,8,4,0,74,82,3,58,29,0,75,82,3,16,8,0,76,82,3,
+        18,9,0,77,82,3,20,10,0,78,82,3,22,11,0,79,82,3,14,7,0,80,82,3,4,
+        2,0,81,72,1,0,0,0,81,73,1,0,0,0,81,74,1,0,0,0,81,75,1,0,0,0,81,76,
+        1,0,0,0,81,77,1,0,0,0,81,78,1,0,0,0,81,79,1,0,0,0,81,80,1,0,0,0,
+        82,3,1,0,0,0,83,87,5,33,0,0,84,86,3,2,1,0,85,84,1,0,0,0,86,89,1,
+        0,0,0,87,85,1,0,0,0,87,88,1,0,0,0,88,90,1,0,0,0,89,87,1,0,0,0,90,
+        91,5,34,0,0,91,5,1,0,0,0,92,93,7,0,0,0,93,94,5,41,0,0,94,95,5,30,
+        0,0,95,98,3,54,27,0,96,97,5,13,0,0,97,99,3,24,12,0,98,96,1,0,0,0,
+        98,99,1,0,0,0,99,100,1,0,0,0,100,101,5,28,0,0,101,7,1,0,0,0,102,
+        103,5,3,0,0,103,104,5,41,0,0,104,106,5,31,0,0,105,107,3,10,5,0,106,
+        105,1,0,0,0,106,107,1,0,0,0,107,108,1,0,0,0,108,109,5,32,0,0,109,
+        110,5,30,0,0,110,111,3,54,27,0,111,112,3,4,2,0,112,9,1,0,0,0,113,
+        118,3,12,6,0,114,115,5,29,0,0,115,117,3,12,6,0,116,114,1,0,0,0,117,
+        120,1,0,0,0,118,116,1,0,0,0,118,119,1,0,0,0,119,11,1,0,0,0,120,118,
+        1,0,0,0,121,122,5,41,0,0,122,123,5,30,0,0,123,124,3,54,27,0,124,
+        13,1,0,0,0,125,127,5,9,0,0,126,128,3,24,12,0,127,126,1,0,0,0,127,
+        128,1,0,0,0,128,129,1,0,0,0,129,130,5,28,0,0,130,15,1,0,0,0,131,
+        132,5,4,0,0,132,133,5,31,0,0,133,134,3,24,12,0,134,135,5,32,0,0,
+        135,138,3,2,1,0,136,137,5,5,0,0,137,139,3,2,1,0,138,136,1,0,0,0,
+        138,139,1,0,0,0,139,17,1,0,0,0,140,141,5,6,0,0,141,142,5,31,0,0,
+        142,143,3,24,12,0,143,144,5,32,0,0,144,145,3,2,1,0,145,19,1,0,0,
+        0,146,147,5,7,0,0,147,151,5,31,0,0,148,152,3,6,3,0,149,152,3,22,
+        11,0,150,152,5,28,0,0,151,148,1,0,0,0,151,149,1,0,0,0,151,150,1,
+        0,0,0,152,154,1,0,0,0,153,155,3,24,12,0,154,153,1,0,0,0,154,155,
+        1,0,0,0,155,156,1,0,0,0,156,158,5,28,0,0,157,159,3,24,12,0,158,157,
+        1,0,0,0,158,159,1,0,0,0,159,160,1,0,0,0,160,161,5,32,0,0,161,162,
+        3,2,1,0,162,21,1,0,0,0,163,164,3,24,12,0,164,165,5,28,0,0,165,23,
+        1,0,0,0,166,167,3,26,13,0,167,25,1,0,0,0,168,169,5,41,0,0,169,170,
+        5,13,0,0,170,173,3,26,13,0,171,173,3,28,14,0,172,168,1,0,0,0,172,
+        171,1,0,0,0,173,27,1,0,0,0,174,179,3,30,15,0,175,176,5,26,0,0,176,
+        178,3,30,15,0,177,175,1,0,0,0,178,181,1,0,0,0,179,177,1,0,0,0,179,
+        180,1,0,0,0,180,29,1,0,0,0,181,179,1,0,0,0,182,187,3,32,16,0,183,
+        184,5,25,0,0,184,186,3,32,16,0,185,183,1,0,0,0,186,189,1,0,0,0,187,
+        185,1,0,0,0,187,188,1,0,0,0,188,31,1,0,0,0,189,187,1,0,0,0,190,195,
+        3,34,17,0,191,192,7,1,0,0,192,194,3,34,17,0,193,191,1,0,0,0,194,
+        197,1,0,0,0,195,193,1,0,0,0,195,196,1,0,0,0,196,33,1,0,0,0,197,195,
+        1,0,0,0,198,203,3,36,18,0,199,200,7,2,0,0,200,202,3,36,18,0,201,
+        199,1,0,0,0,202,205,1,0,0,0,203,201,1,0,0,0,203,204,1,0,0,0,204,
+        35,1,0,0,0,205,203,1,0,0,0,206,211,3,38,19,0,207,208,7,3,0,0,208,
+        210,3,38,19,0,209,207,1,0,0,0,210,213,1,0,0,0,211,209,1,0,0,0,211,
+        212,1,0,0,0,212,37,1,0,0,0,213,211,1,0,0,0,214,219,3,40,20,0,215,
+        216,7,4,0,0,216,218,3,40,20,0,217,215,1,0,0,0,218,221,1,0,0,0,219,
+        217,1,0,0,0,219,220,1,0,0,0,220,39,1,0,0,0,221,219,1,0,0,0,222,223,
+        5,27,0,0,223,226,3,40,20,0,224,226,3,42,21,0,225,222,1,0,0,0,225,
+        224,1,0,0,0,226,41,1,0,0,0,227,238,3,62,31,0,228,238,5,41,0,0,229,
+        230,5,31,0,0,230,231,3,24,12,0,231,232,5,32,0,0,232,238,1,0,0,0,
+        233,238,3,48,24,0,234,238,3,50,25,0,235,238,3,44,22,0,236,238,3,
+        46,23,0,237,227,1,0,0,0,237,228,1,0,0,0,237,229,1,0,0,0,237,233,
+        1,0,0,0,237,234,1,0,0,0,237,235,1,0,0,0,237,236,1,0,0,0,238,43,1,
+        0,0,0,239,240,5,41,0,0,240,249,5,31,0,0,241,246,3,24,12,0,242,243,
+        5,29,0,0,243,245,3,24,12,0,244,242,1,0,0,0,245,248,1,0,0,0,246,244,
+        1,0,0,0,246,247,1,0,0,0,247,250,1,0,0,0,248,246,1,0,0,0,249,241,
+        1,0,0,0,249,250,1,0,0,0,250,251,1,0,0,0,251,252,5,32,0,0,252,45,
+        1,0,0,0,253,254,5,41,0,0,254,255,5,35,0,0,255,256,3,24,12,0,256,
+        257,5,36,0,0,257,47,1,0,0,0,258,267,5,35,0,0,259,264,3,24,12,0,260,
+        261,5,29,0,0,261,263,3,24,12,0,262,260,1,0,0,0,263,266,1,0,0,0,264,
+        262,1,0,0,0,264,265,1,0,0,0,265,268,1,0,0,0,266,264,1,0,0,0,267,
+        259,1,0,0,0,267,268,1,0,0,0,268,269,1,0,0,0,269,270,5,36,0,0,270,
+        49,1,0,0,0,271,280,5,33,0,0,272,277,3,52,26,0,273,274,5,29,0,0,274,
+        276,3,52,26,0,275,273,1,0,0,0,276,279,1,0,0,0,277,275,1,0,0,0,277,
+        278,1,0,0,0,278,281,1,0,0,0,279,277,1,0,0,0,280,272,1,0,0,0,280,
+        281,1,0,0,0,281,282,1,0,0,0,282,283,5,34,0,0,283,51,1,0,0,0,284,
+        285,7,5,0,0,285,286,5,30,0,0,286,287,3,24,12,0,287,53,1,0,0,0,288,
+        291,3,56,28,0,289,290,5,35,0,0,290,292,5,36,0,0,291,289,1,0,0,0,
+        291,292,1,0,0,0,292,55,1,0,0,0,293,294,7,6,0,0,294,57,1,0,0,0,295,
+        296,5,8,0,0,296,297,5,41,0,0,297,301,5,33,0,0,298,300,3,60,30,0,
+        299,298,1,0,0,0,300,303,1,0,0,0,301,299,1,0,0,0,301,302,1,0,0,0,
+        302,304,1,0,0,0,303,301,1,0,0,0,304,305,5,34,0,0,305,59,1,0,0,0,
+        306,307,5,41,0,0,307,308,5,30,0,0,308,309,3,54,27,0,309,310,5,28,
+        0,0,310,61,1,0,0,0,311,312,7,7,0,0,312,63,1,0,0,0,28,67,81,87,98,
+        106,118,127,138,151,154,158,172,179,187,195,203,211,219,225,237,
+        246,249,264,267,277,280,291,301
+    ]
+
+class TypeScriptParser ( Parser ):
+
+    grammarFileName = "TypeScript.g4"
+
+    atn = ATNDeserializer().deserialize(serializedATN())
+
+    decisionsToDFA = [ DFA(ds, i) for i, ds in enumerate(atn.decisionToState) ]
+
+    sharedContextCache = PredictionContextCache()
+
+    literalNames = [ "<INVALID>", "'let'", "'const'", "'function'", "'if'", 
+                     "'else'", "'while'", "'for'", "'interface'", "'return'", 
+                     "'number'", "'string'", "'boolean'", "'='", "'+'", 
+                     "'-'", "'*'", "'/'", "'%'", "'=='", "'!='", "'<'", 
+                     "'<='", "'>'", "'>='", "'&&'", "'||'", "'!'", "';'", 
+                     "','", "':'", "'('", "')'", "'{'", "'}'", "'['", "']'", 
+                     "'.'" ]
+
+    symbolicNames = [ "<INVALID>", "LET", "CONST", "FUNCTION", "IF", "ELSE", 
+                      "WHILE", "FOR", "INTERFACE", "RETURN", "NUMBER_TYPE", 
+                      "STRING_TYPE", "BOOLEAN_TYPE", "ASSIGN", "PLUS", "MINUS", 
+                      "MULT", "DIV", "MOD", "EQ", "NEQ", "LT", "LTE", "GT", 
+                      "GTE", "AND", "OR", "NOT", "SEMI", "COMMA", "COLON", 
+                      "LPAREN", "RPAREN", "LBRACE", "RBRACE", "LBRACK", 
+                      "RBRACK", "DOT", "NUMBER_LIT", "STRING", "BOOLEAN_LIT", 
+                      "ID", "WS", "LINE_COMMENT", "BLOCK_COMMENT" ]
+
+    RULE_program = 0
+    RULE_statement = 1
+    RULE_block = 2
+    RULE_variableDecl = 3
+    RULE_functionDecl = 4
+    RULE_paramList = 5
+    RULE_param = 6
+    RULE_returnStmt = 7
+    RULE_ifStmt = 8
+    RULE_whileStmt = 9
+    RULE_forStmt = 10
+    RULE_expressionStmt = 11
+    RULE_expression = 12
+    RULE_assignmentExpr = 13
+    RULE_logicalOrExpr = 14
+    RULE_logicalAndExpr = 15
+    RULE_equalityExpr = 16
+    RULE_relationalExpr = 17
+    RULE_additiveExpr = 18
+    RULE_multiplicativeExpr = 19
+    RULE_unaryExpr = 20
+    RULE_primary = 21
+    RULE_callExpr = 22
+    RULE_arrayAccess = 23
+    RULE_arrayLiteral = 24
+    RULE_objectLiteral = 25
+    RULE_propAssign = 26
+    RULE_typeExpr = 27
+    RULE_baseType = 28
+    RULE_interfaceDecl = 29
+    RULE_interfaceProp = 30
+    RULE_literal = 31
+
+    ruleNames =  [ "program", "statement", "block", "variableDecl", "functionDecl", 
+                   "paramList", "param", "returnStmt", "ifStmt", "whileStmt", 
+                   "forStmt", "expressionStmt", "expression", "assignmentExpr", 
+                   "logicalOrExpr", "logicalAndExpr", "equalityExpr", "relationalExpr", 
+                   "additiveExpr", "multiplicativeExpr", "unaryExpr", "primary", 
+                   "callExpr", "arrayAccess", "arrayLiteral", "objectLiteral", 
+                   "propAssign", "typeExpr", "baseType", "interfaceDecl", 
+                   "interfaceProp", "literal" ]
+
+    EOF = Token.EOF
+    LET=1
+    CONST=2
+    FUNCTION=3
+    IF=4
+    ELSE=5
+    WHILE=6
+    FOR=7
+    INTERFACE=8
+    RETURN=9
+    NUMBER_TYPE=10
+    STRING_TYPE=11
+    BOOLEAN_TYPE=12
+    ASSIGN=13
+    PLUS=14
+    MINUS=15
+    MULT=16
+    DIV=17
+    MOD=18
+    EQ=19
+    NEQ=20
+    LT=21
+    LTE=22
+    GT=23
+    GTE=24
+    AND=25
+    OR=26
+    NOT=27
+    SEMI=28
+    COMMA=29
+    COLON=30
+    LPAREN=31
+    RPAREN=32
+    LBRACE=33
+    RBRACE=34
+    LBRACK=35
+    RBRACK=36
+    DOT=37
+    NUMBER_LIT=38
+    STRING=39
+    BOOLEAN_LIT=40
+    ID=41
+    WS=42
+    LINE_COMMENT=43
+    BLOCK_COMMENT=44
+
+    def __init__(self, input:TokenStream, output:TextIO = sys.stdout):
+        super().__init__(input, output)
+        self.checkVersion("4.13.2")
+        self._interp = ParserATNSimulator(self, self.atn, self.decisionsToDFA, self.sharedContextCache)
+        self._predicates = None
+
+
+
+
+    class ProgramContext(ParserRuleContext):
+        __slots__ = 'parser'
+
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+            super().__init__(parent, invokingState)
+            self.parser = parser
+
+        def EOF(self):
+            return self.getToken(TypeScriptParser.EOF, 0)
+
+        def statement(self, i:int=None):
+            if i is None:
+                return self.getTypedRuleContexts(TypeScriptParser.StatementContext)
+            else:
+                return self.getTypedRuleContext(TypeScriptParser.StatementContext,i)
+
+
+        def getRuleIndex(self):
+            return TypeScriptParser.RULE_program
+
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterProgram" ):
+                listener.enterProgram(self)
+
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitProgram" ):
+                listener.exitProgram(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitProgram" ):
+                return visitor.visitProgram(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+
+
+    def program(self):
+
+        localctx = TypeScriptParser.ProgramContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 0, self.RULE_program)
+        self._la = 0 # Token type
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 67
+            self._errHandler.sync(self)
+            _la = self._input.LA(1)
+            while (((_la) & ~0x3f) == 0 and ((1 << _la) & 4168399979486) != 0):
+                self.state = 64
+                self.statement()
+                self.state = 69
+                self._errHandler.sync(self)
+                _la = self._input.LA(1)
+
+            self.state = 70
+            self.match(TypeScriptParser.EOF)
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+
+    class StatementContext(ParserRuleContext):
+        __slots__ = 'parser'
+
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+            super().__init__(parent, invokingState)
+            self.parser = parser
+
+        def variableDecl(self):
+            return self.getTypedRuleContext(TypeScriptParser.VariableDeclContext,0)
+
+
+        def functionDecl(self):
+            return self.getTypedRuleContext(TypeScriptParser.FunctionDeclContext,0)
+
+
+        def interfaceDecl(self):
+            return self.getTypedRuleContext(TypeScriptParser.InterfaceDeclContext,0)
+
+
+        def ifStmt(self):
+            return self.getTypedRuleContext(TypeScriptParser.IfStmtContext,0)
+
+
+        def whileStmt(self):
+            return self.getTypedRuleContext(TypeScriptParser.WhileStmtContext,0)
+
+
+        def forStmt(self):
+            return self.getTypedRuleContext(TypeScriptParser.ForStmtContext,0)
+
+
+        def expressionStmt(self):
+            return self.getTypedRuleContext(TypeScriptParser.ExpressionStmtContext,0)
+
+
+        def returnStmt(self):
+            return self.getTypedRuleContext(TypeScriptParser.ReturnStmtContext,0)
+
+
+        def block(self):
+            return self.getTypedRuleContext(TypeScriptParser.BlockContext,0)
+
+
+        def getRuleIndex(self):
+            return TypeScriptParser.RULE_statement
+
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterStatement" ):
+                listener.enterStatement(self)
+
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitStatement" ):
+                listener.exitStatement(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitStatement" ):
+                return visitor.visitStatement(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+
+
+    def statement(self):
+
+        localctx = TypeScriptParser.StatementContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 2, self.RULE_statement)
+        try:
+            self.state = 81
+            self._errHandler.sync(self)
+            la_ = self._interp.adaptivePredict(self._input,1,self._ctx)
+            if la_ == 1:
+                self.enterOuterAlt(localctx, 1)
+                self.state = 72
+                self.variableDecl()
+                pass
+
+            elif la_ == 2:
+                self.enterOuterAlt(localctx, 2)
+                self.state = 73
+                self.functionDecl()
+                pass
+
+            elif la_ == 3:
+                self.enterOuterAlt(localctx, 3)
+                self.state = 74
+                self.interfaceDecl()
+                pass
+
+            elif la_ == 4:
+                self.enterOuterAlt(localctx, 4)
+                self.state = 75
+                self.ifStmt()
+                pass
+
+            elif la_ == 5:
+                self.enterOuterAlt(localctx, 5)
+                self.state = 76
+                self.whileStmt()
+                pass
+
+            elif la_ == 6:
+                self.enterOuterAlt(localctx, 6)
+                self.state = 77
+                self.forStmt()
+                pass
+
+            elif la_ == 7:
+                self.enterOuterAlt(localctx, 7)
+                self.state = 78
+                self.expressionStmt()
+                pass
+
+            elif la_ == 8:
+                self.enterOuterAlt(localctx, 8)
+                self.state = 79
+                self.returnStmt()
+                pass
+
+            elif la_ == 9:
+                self.enterOuterAlt(localctx, 9)
+                self.state = 80
+                self.block()
+                pass
+
+
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+
+    class BlockContext(ParserRuleContext):
+        __slots__ = 'parser'
+
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+            super().__init__(parent, invokingState)
+            self.parser = parser
+
+        def LBRACE(self):
+            return self.getToken(TypeScriptParser.LBRACE, 0)
+
+        def RBRACE(self):
+            return self.getToken(TypeScriptParser.RBRACE, 0)
+
+        def statement(self, i:int=None):
+            if i is None:
+                return self.getTypedRuleContexts(TypeScriptParser.StatementContext)
+            else:
+                return self.getTypedRuleContext(TypeScriptParser.StatementContext,i)
+
+
+        def getRuleIndex(self):
+            return TypeScriptParser.RULE_block
+
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterBlock" ):
+                listener.enterBlock(self)
+
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitBlock" ):
+                listener.exitBlock(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitBlock" ):
+                return visitor.visitBlock(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+
+
+    def block(self):
+
+        localctx = TypeScriptParser.BlockContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 4, self.RULE_block)
+        self._la = 0 # Token type
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 83
+            self.match(TypeScriptParser.LBRACE)
+            self.state = 87
+            self._errHandler.sync(self)
+            _la = self._input.LA(1)
+            while (((_la) & ~0x3f) == 0 and ((1 << _la) & 4168399979486) != 0):
+                self.state = 84
+                self.statement()
+                self.state = 89
+                self._errHandler.sync(self)
+                _la = self._input.LA(1)
+
+            self.state = 90
+            self.match(TypeScriptParser.RBRACE)
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+
+    class VariableDeclContext(ParserRuleContext):
+        __slots__ = 'parser'
+
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+            super().__init__(parent, invokingState)
+            self.parser = parser
+
+        def ID(self):
+            return self.getToken(TypeScriptParser.ID, 0)
+
+        def COLON(self):
+            return self.getToken(TypeScriptParser.COLON, 0)
+
+        def typeExpr(self):
+            return self.getTypedRuleContext(TypeScriptParser.TypeExprContext,0)
+
+
+        def SEMI(self):
+            return self.getToken(TypeScriptParser.SEMI, 0)
+
+        def LET(self):
+            return self.getToken(TypeScriptParser.LET, 0)
+
+        def CONST(self):
+            return self.getToken(TypeScriptParser.CONST, 0)
+
+        def ASSIGN(self):
+            return self.getToken(TypeScriptParser.ASSIGN, 0)
+
+        def expression(self):
+            return self.getTypedRuleContext(TypeScriptParser.ExpressionContext,0)
+
+
+        def getRuleIndex(self):
+            return TypeScriptParser.RULE_variableDecl
+
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterVariableDecl" ):
+                listener.enterVariableDecl(self)
+
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitVariableDecl" ):
+                listener.exitVariableDecl(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitVariableDecl" ):
+                return visitor.visitVariableDecl(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+
+
+    def variableDecl(self):
+
+        localctx = TypeScriptParser.VariableDeclContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 6, self.RULE_variableDecl)
+        self._la = 0 # Token type
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 92
+            _la = self._input.LA(1)
+            if not(_la==1 or _la==2):
+                self._errHandler.recoverInline(self)
+            else:
+                self._errHandler.reportMatch(self)
+                self.consume()
+            self.state = 93
+            self.match(TypeScriptParser.ID)
+            self.state = 94
+            self.match(TypeScriptParser.COLON)
+            self.state = 95
+            self.typeExpr()
+            self.state = 98
+            self._errHandler.sync(self)
+            _la = self._input.LA(1)
+            if _la==13:
+                self.state = 96
+                self.match(TypeScriptParser.ASSIGN)
+                self.state = 97
+                self.expression()
+
+
+            self.state = 100
+            self.match(TypeScriptParser.SEMI)
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+
+    class FunctionDeclContext(ParserRuleContext):
+        __slots__ = 'parser'
+
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+            super().__init__(parent, invokingState)
+            self.parser = parser
+
+        def FUNCTION(self):
+            return self.getToken(TypeScriptParser.FUNCTION, 0)
+
+        def ID(self):
+            return self.getToken(TypeScriptParser.ID, 0)
+
+        def LPAREN(self):
+            return self.getToken(TypeScriptParser.LPAREN, 0)
+
+        def RPAREN(self):
+            return self.getToken(TypeScriptParser.RPAREN, 0)
+
+        def COLON(self):
+            return self.getToken(TypeScriptParser.COLON, 0)
+
+        def typeExpr(self):
+            return self.getTypedRuleContext(TypeScriptParser.TypeExprContext,0)
+
+
+        def block(self):
+            return self.getTypedRuleContext(TypeScriptParser.BlockContext,0)
+
+
+        def paramList(self):
+            return self.getTypedRuleContext(TypeScriptParser.ParamListContext,0)
+
+
+        def getRuleIndex(self):
+            return TypeScriptParser.RULE_functionDecl
+
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterFunctionDecl" ):
+                listener.enterFunctionDecl(self)
+
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitFunctionDecl" ):
+                listener.exitFunctionDecl(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitFunctionDecl" ):
+                return visitor.visitFunctionDecl(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+
+
+    def functionDecl(self):
+
+        localctx = TypeScriptParser.FunctionDeclContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 8, self.RULE_functionDecl)
+        self._la = 0 # Token type
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 102
+            self.match(TypeScriptParser.FUNCTION)
+            self.state = 103
+            self.match(TypeScriptParser.ID)
+            self.state = 104
+            self.match(TypeScriptParser.LPAREN)
+            self.state = 106
+            self._errHandler.sync(self)
+            _la = self._input.LA(1)
+            if _la==41:
+                self.state = 105
+                self.paramList()
+
+
+            self.state = 108
+            self.match(TypeScriptParser.RPAREN)
+            self.state = 109
+            self.match(TypeScriptParser.COLON)
+            self.state = 110
+            self.typeExpr()
+            self.state = 111
+            self.block()
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+
+    class ParamListContext(ParserRuleContext):
+        __slots__ = 'parser'
+
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+            super().__init__(parent, invokingState)
+            self.parser = parser
+
+        def param(self, i:int=None):
+            if i is None:
+                return self.getTypedRuleContexts(TypeScriptParser.ParamContext)
+            else:
+                return self.getTypedRuleContext(TypeScriptParser.ParamContext,i)
+
+
+        def COMMA(self, i:int=None):
+            if i is None:
+                return self.getTokens(TypeScriptParser.COMMA)
+            else:
+                return self.getToken(TypeScriptParser.COMMA, i)
+
+        def getRuleIndex(self):
+            return TypeScriptParser.RULE_paramList
+
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterParamList" ):
+                listener.enterParamList(self)
+
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitParamList" ):
+                listener.exitParamList(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitParamList" ):
+                return visitor.visitParamList(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+
+
+    def paramList(self):
+
+        localctx = TypeScriptParser.ParamListContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 10, self.RULE_paramList)
+        self._la = 0 # Token type
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 113
+            self.param()
+            self.state = 118
+            self._errHandler.sync(self)
+            _la = self._input.LA(1)
+            while _la==29:
+                self.state = 114
+                self.match(TypeScriptParser.COMMA)
+                self.state = 115
+                self.param()
+                self.state = 120
+                self._errHandler.sync(self)
+                _la = self._input.LA(1)
+
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+
+    class ParamContext(ParserRuleContext):
+        __slots__ = 'parser'
+
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+            super().__init__(parent, invokingState)
+            self.parser = parser
+
+        def ID(self):
+            return self.getToken(TypeScriptParser.ID, 0)
+
+        def COLON(self):
+            return self.getToken(TypeScriptParser.COLON, 0)
+
+        def typeExpr(self):
+            return self.getTypedRuleContext(TypeScriptParser.TypeExprContext,0)
+
+
+        def getRuleIndex(self):
+            return TypeScriptParser.RULE_param
+
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterParam" ):
+                listener.enterParam(self)
+
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitParam" ):
+                listener.exitParam(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitParam" ):
+                return visitor.visitParam(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+
+
+    def param(self):
+
+        localctx = TypeScriptParser.ParamContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 12, self.RULE_param)
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 121
+            self.match(TypeScriptParser.ID)
+            self.state = 122
+            self.match(TypeScriptParser.COLON)
+            self.state = 123
+            self.typeExpr()
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+
+    class ReturnStmtContext(ParserRuleContext):
+        __slots__ = 'parser'
+
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+            super().__init__(parent, invokingState)
+            self.parser = parser
+
+        def RETURN(self):
+            return self.getToken(TypeScriptParser.RETURN, 0)
+
+        def SEMI(self):
+            return self.getToken(TypeScriptParser.SEMI, 0)
+
+        def expression(self):
+            return self.getTypedRuleContext(TypeScriptParser.ExpressionContext,0)
+
+
+        def getRuleIndex(self):
+            return TypeScriptParser.RULE_returnStmt
+
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterReturnStmt" ):
+                listener.enterReturnStmt(self)
+
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitReturnStmt" ):
+                listener.exitReturnStmt(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitReturnStmt" ):
+                return visitor.visitReturnStmt(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+
+
+    def returnStmt(self):
+
+        localctx = TypeScriptParser.ReturnStmtContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 14, self.RULE_returnStmt)
+        self._la = 0 # Token type
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 125
+            self.match(TypeScriptParser.RETURN)
+            self.state = 127
+            self._errHandler.sync(self)
+            _la = self._input.LA(1)
+            if (((_la) & ~0x3f) == 0 and ((1 << _la) & 4168399978496) != 0):
+                self.state = 126
+                self.expression()
+
+
+            self.state = 129
+            self.match(TypeScriptParser.SEMI)
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+
+    class IfStmtContext(ParserRuleContext):
+        __slots__ = 'parser'
+
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+            super().__init__(parent, invokingState)
+            self.parser = parser
+
+        def IF(self):
+            return self.getToken(TypeScriptParser.IF, 0)
+
+        def LPAREN(self):
+            return self.getToken(TypeScriptParser.LPAREN, 0)
+
+        def expression(self):
+            return self.getTypedRuleContext(TypeScriptParser.ExpressionContext,0)
+
+
+        def RPAREN(self):
+            return self.getToken(TypeScriptParser.RPAREN, 0)
+
+        def statement(self, i:int=None):
+            if i is None:
+                return self.getTypedRuleContexts(TypeScriptParser.StatementContext)
+            else:
+                return self.getTypedRuleContext(TypeScriptParser.StatementContext,i)
+
+
+        def ELSE(self):
+            return self.getToken(TypeScriptParser.ELSE, 0)
+
+        def getRuleIndex(self):
+            return TypeScriptParser.RULE_ifStmt
+
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterIfStmt" ):
+                listener.enterIfStmt(self)
+
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitIfStmt" ):
+                listener.exitIfStmt(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitIfStmt" ):
+                return visitor.visitIfStmt(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+
+
+    def ifStmt(self):
+
+        localctx = TypeScriptParser.IfStmtContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 16, self.RULE_ifStmt)
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 131
+            self.match(TypeScriptParser.IF)
+            self.state = 132
+            self.match(TypeScriptParser.LPAREN)
+            self.state = 133
+            self.expression()
+            self.state = 134
+            self.match(TypeScriptParser.RPAREN)
+            self.state = 135
+            self.statement()
+            self.state = 138
+            self._errHandler.sync(self)
+            la_ = self._interp.adaptivePredict(self._input,7,self._ctx)
+            if la_ == 1:
+                self.state = 136
+                self.match(TypeScriptParser.ELSE)
+                self.state = 137
+                self.statement()
+
+
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+
+    class WhileStmtContext(ParserRuleContext):
+        __slots__ = 'parser'
+
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+            super().__init__(parent, invokingState)
+            self.parser = parser
+
+        def WHILE(self):
+            return self.getToken(TypeScriptParser.WHILE, 0)
+
+        def LPAREN(self):
+            return self.getToken(TypeScriptParser.LPAREN, 0)
+
+        def expression(self):
+            return self.getTypedRuleContext(TypeScriptParser.ExpressionContext,0)
+
+
+        def RPAREN(self):
+            return self.getToken(TypeScriptParser.RPAREN, 0)
+
+        def statement(self):
+            return self.getTypedRuleContext(TypeScriptParser.StatementContext,0)
+
+
+        def getRuleIndex(self):
+            return TypeScriptParser.RULE_whileStmt
+
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterWhileStmt" ):
+                listener.enterWhileStmt(self)
+
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitWhileStmt" ):
+                listener.exitWhileStmt(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitWhileStmt" ):
+                return visitor.visitWhileStmt(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+
+
+    def whileStmt(self):
+
+        localctx = TypeScriptParser.WhileStmtContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 18, self.RULE_whileStmt)
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 140
+            self.match(TypeScriptParser.WHILE)
+            self.state = 141
+            self.match(TypeScriptParser.LPAREN)
+            self.state = 142
+            self.expression()
+            self.state = 143
+            self.match(TypeScriptParser.RPAREN)
+            self.state = 144
+            self.statement()
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+
+    class ForStmtContext(ParserRuleContext):
+        __slots__ = 'parser'
+
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+            super().__init__(parent, invokingState)
+            self.parser = parser
+
+        def FOR(self):
+            return self.getToken(TypeScriptParser.FOR, 0)
+
+        def LPAREN(self):
+            return self.getToken(TypeScriptParser.LPAREN, 0)
+
+        def SEMI(self, i:int=None):
+            if i is None:
+                return self.getTokens(TypeScriptParser.SEMI)
+            else:
+                return self.getToken(TypeScriptParser.SEMI, i)
+
+        def RPAREN(self):
+            return self.getToken(TypeScriptParser.RPAREN, 0)
+
+        def statement(self):
+            return self.getTypedRuleContext(TypeScriptParser.StatementContext,0)
+
+
+        def variableDecl(self):
+            return self.getTypedRuleContext(TypeScriptParser.VariableDeclContext,0)
+
+
+        def expressionStmt(self):
+            return self.getTypedRuleContext(TypeScriptParser.ExpressionStmtContext,0)
+
+
+        def expression(self, i:int=None):
+            if i is None:
+                return self.getTypedRuleContexts(TypeScriptParser.ExpressionContext)
+            else:
+                return self.getTypedRuleContext(TypeScriptParser.ExpressionContext,i)
+
+
+        def getRuleIndex(self):
+            return TypeScriptParser.RULE_forStmt
+
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterForStmt" ):
+                listener.enterForStmt(self)
+
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitForStmt" ):
+                listener.exitForStmt(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitForStmt" ):
+                return visitor.visitForStmt(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+
+
+    def forStmt(self):
+
+        localctx = TypeScriptParser.ForStmtContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 20, self.RULE_forStmt)
+        self._la = 0 # Token type
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 146
+            self.match(TypeScriptParser.FOR)
+            self.state = 147
+            self.match(TypeScriptParser.LPAREN)
+            self.state = 151
+            self._errHandler.sync(self)
+            token = self._input.LA(1)
+            if token in [1, 2]:
+                self.state = 148
+                self.variableDecl()
+                pass
+            elif token in [27, 31, 33, 35, 38, 39, 40, 41]:
+                self.state = 149
+                self.expressionStmt()
+                pass
+            elif token in [28]:
+                self.state = 150
+                self.match(TypeScriptParser.SEMI)
+                pass
+            else:
+                raise NoViableAltException(self)
+
+            self.state = 154
+            self._errHandler.sync(self)
+            _la = self._input.LA(1)
+            if (((_la) & ~0x3f) == 0 and ((1 << _la) & 4168399978496) != 0):
+                self.state = 153
+                self.expression()
+
+
+            self.state = 156
+            self.match(TypeScriptParser.SEMI)
+            self.state = 158
+            self._errHandler.sync(self)
+            _la = self._input.LA(1)
+            if (((_la) & ~0x3f) == 0 and ((1 << _la) & 4168399978496) != 0):
+                self.state = 157
+                self.expression()
+
+
+            self.state = 160
+            self.match(TypeScriptParser.RPAREN)
+            self.state = 161
+            self.statement()
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+
+    class ExpressionStmtContext(ParserRuleContext):
+        __slots__ = 'parser'
+
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+            super().__init__(parent, invokingState)
+            self.parser = parser
+
+        def expression(self):
+            return self.getTypedRuleContext(TypeScriptParser.ExpressionContext,0)
+
+
+        def SEMI(self):
+            return self.getToken(TypeScriptParser.SEMI, 0)
+
+        def getRuleIndex(self):
+            return TypeScriptParser.RULE_expressionStmt
+
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterExpressionStmt" ):
+                listener.enterExpressionStmt(self)
+
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitExpressionStmt" ):
+                listener.exitExpressionStmt(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitExpressionStmt" ):
+                return visitor.visitExpressionStmt(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+
+
+    def expressionStmt(self):
+
+        localctx = TypeScriptParser.ExpressionStmtContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 22, self.RULE_expressionStmt)
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 163
+            self.expression()
+            self.state = 164
+            self.match(TypeScriptParser.SEMI)
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+
+    class ExpressionContext(ParserRuleContext):
+        __slots__ = 'parser'
+
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+            super().__init__(parent, invokingState)
+            self.parser = parser
+
+        def assignmentExpr(self):
+            return self.getTypedRuleContext(TypeScriptParser.AssignmentExprContext,0)
+
+
+        def getRuleIndex(self):
+            return TypeScriptParser.RULE_expression
+
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterExpression" ):
+                listener.enterExpression(self)
+
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitExpression" ):
+                listener.exitExpression(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitExpression" ):
+                return visitor.visitExpression(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+
+
+    def expression(self):
+
+        localctx = TypeScriptParser.ExpressionContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 24, self.RULE_expression)
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 166
+            self.assignmentExpr()
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+
+    class AssignmentExprContext(ParserRuleContext):
+        __slots__ = 'parser'
+
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+            super().__init__(parent, invokingState)
+            self.parser = parser
+
+        def ID(self):
+            return self.getToken(TypeScriptParser.ID, 0)
+
+        def ASSIGN(self):
+            return self.getToken(TypeScriptParser.ASSIGN, 0)
+
+        def assignmentExpr(self):
+            return self.getTypedRuleContext(TypeScriptParser.AssignmentExprContext,0)
+
+
+        def logicalOrExpr(self):
+            return self.getTypedRuleContext(TypeScriptParser.LogicalOrExprContext,0)
+
+
+        def getRuleIndex(self):
+            return TypeScriptParser.RULE_assignmentExpr
+
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterAssignmentExpr" ):
+                listener.enterAssignmentExpr(self)
+
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitAssignmentExpr" ):
+                listener.exitAssignmentExpr(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitAssignmentExpr" ):
+                return visitor.visitAssignmentExpr(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+
+
+    def assignmentExpr(self):
+
+        localctx = TypeScriptParser.AssignmentExprContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 26, self.RULE_assignmentExpr)
+        try:
+            self.state = 172
+            self._errHandler.sync(self)
+            la_ = self._interp.adaptivePredict(self._input,11,self._ctx)
+            if la_ == 1:
+                self.enterOuterAlt(localctx, 1)
+                self.state = 168
+                self.match(TypeScriptParser.ID)
+                self.state = 169
+                self.match(TypeScriptParser.ASSIGN)
+                self.state = 170
+                self.assignmentExpr()
+                pass
+
+            elif la_ == 2:
+                self.enterOuterAlt(localctx, 2)
+                self.state = 171
+                self.logicalOrExpr()
+                pass
+
+
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+
+    class LogicalOrExprContext(ParserRuleContext):
+        __slots__ = 'parser'
+
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+            super().__init__(parent, invokingState)
+            self.parser = parser
+
+        def logicalAndExpr(self, i:int=None):
+            if i is None:
+                return self.getTypedRuleContexts(TypeScriptParser.LogicalAndExprContext)
+            else:
+                return self.getTypedRuleContext(TypeScriptParser.LogicalAndExprContext,i)
+
+
+        def OR(self, i:int=None):
+            if i is None:
+                return self.getTokens(TypeScriptParser.OR)
+            else:
+                return self.getToken(TypeScriptParser.OR, i)
+
+        def getRuleIndex(self):
+            return TypeScriptParser.RULE_logicalOrExpr
+
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterLogicalOrExpr" ):
+                listener.enterLogicalOrExpr(self)
+
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitLogicalOrExpr" ):
+                listener.exitLogicalOrExpr(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitLogicalOrExpr" ):
+                return visitor.visitLogicalOrExpr(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+
+
+    def logicalOrExpr(self):
+
+        localctx = TypeScriptParser.LogicalOrExprContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 28, self.RULE_logicalOrExpr)
+        self._la = 0 # Token type
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 174
+            self.logicalAndExpr()
+            self.state = 179
+            self._errHandler.sync(self)
+            _la = self._input.LA(1)
+            while _la==26:
+                self.state = 175
+                self.match(TypeScriptParser.OR)
+                self.state = 176
+                self.logicalAndExpr()
+                self.state = 181
+                self._errHandler.sync(self)
+                _la = self._input.LA(1)
+
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+
+    class LogicalAndExprContext(ParserRuleContext):
+        __slots__ = 'parser'
+
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+            super().__init__(parent, invokingState)
+            self.parser = parser
+
+        def equalityExpr(self, i:int=None):
+            if i is None:
+                return self.getTypedRuleContexts(TypeScriptParser.EqualityExprContext)
+            else:
+                return self.getTypedRuleContext(TypeScriptParser.EqualityExprContext,i)
+
+
+        def AND(self, i:int=None):
+            if i is None:
+                return self.getTokens(TypeScriptParser.AND)
+            else:
+                return self.getToken(TypeScriptParser.AND, i)
+
+        def getRuleIndex(self):
+            return TypeScriptParser.RULE_logicalAndExpr
+
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterLogicalAndExpr" ):
+                listener.enterLogicalAndExpr(self)
+
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitLogicalAndExpr" ):
+                listener.exitLogicalAndExpr(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitLogicalAndExpr" ):
+                return visitor.visitLogicalAndExpr(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+
+
+    def logicalAndExpr(self):
+
+        localctx = TypeScriptParser.LogicalAndExprContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 30, self.RULE_logicalAndExpr)
+        self._la = 0 # Token type
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 182
+            self.equalityExpr()
+            self.state = 187
+            self._errHandler.sync(self)
+            _la = self._input.LA(1)
+            while _la==25:
+                self.state = 183
+                self.match(TypeScriptParser.AND)
+                self.state = 184
+                self.equalityExpr()
+                self.state = 189
+                self._errHandler.sync(self)
+                _la = self._input.LA(1)
+
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+
+    class EqualityExprContext(ParserRuleContext):
+        __slots__ = 'parser'
+
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+            super().__init__(parent, invokingState)
+            self.parser = parser
+
+        def relationalExpr(self, i:int=None):
+            if i is None:
+                return self.getTypedRuleContexts(TypeScriptParser.RelationalExprContext)
+            else:
+                return self.getTypedRuleContext(TypeScriptParser.RelationalExprContext,i)
+
+
+        def EQ(self, i:int=None):
+            if i is None:
+                return self.getTokens(TypeScriptParser.EQ)
+            else:
+                return self.getToken(TypeScriptParser.EQ, i)
+
+        def NEQ(self, i:int=None):
+            if i is None:
+                return self.getTokens(TypeScriptParser.NEQ)
+            else:
+                return self.getToken(TypeScriptParser.NEQ, i)
+
+        def getRuleIndex(self):
+            return TypeScriptParser.RULE_equalityExpr
+
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterEqualityExpr" ):
+                listener.enterEqualityExpr(self)
+
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitEqualityExpr" ):
+                listener.exitEqualityExpr(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitEqualityExpr" ):
+                return visitor.visitEqualityExpr(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+
+
+    def equalityExpr(self):
+
+        localctx = TypeScriptParser.EqualityExprContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 32, self.RULE_equalityExpr)
+        self._la = 0 # Token type
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 190
+            self.relationalExpr()
+            self.state = 195
+            self._errHandler.sync(self)
+            _la = self._input.LA(1)
+            while _la==19 or _la==20:
+                self.state = 191
+                _la = self._input.LA(1)
+                if not(_la==19 or _la==20):
+                    self._errHandler.recoverInline(self)
+                else:
+                    self._errHandler.reportMatch(self)
+                    self.consume()
+                self.state = 192
+                self.relationalExpr()
+                self.state = 197
+                self._errHandler.sync(self)
+                _la = self._input.LA(1)
+
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+
+    class RelationalExprContext(ParserRuleContext):
+        __slots__ = 'parser'
+
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+            super().__init__(parent, invokingState)
+            self.parser = parser
+
+        def additiveExpr(self, i:int=None):
+            if i is None:
+                return self.getTypedRuleContexts(TypeScriptParser.AdditiveExprContext)
+            else:
+                return self.getTypedRuleContext(TypeScriptParser.AdditiveExprContext,i)
+
+
+        def LT(self, i:int=None):
+            if i is None:
+                return self.getTokens(TypeScriptParser.LT)
+            else:
+                return self.getToken(TypeScriptParser.LT, i)
+
+        def LTE(self, i:int=None):
+            if i is None:
+                return self.getTokens(TypeScriptParser.LTE)
+            else:
+                return self.getToken(TypeScriptParser.LTE, i)
+
+        def GT(self, i:int=None):
+            if i is None:
+                return self.getTokens(TypeScriptParser.GT)
+            else:
+                return self.getToken(TypeScriptParser.GT, i)
+
+        def GTE(self, i:int=None):
+            if i is None:
+                return self.getTokens(TypeScriptParser.GTE)
+            else:
+                return self.getToken(TypeScriptParser.GTE, i)
+
+        def getRuleIndex(self):
+            return TypeScriptParser.RULE_relationalExpr
+
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterRelationalExpr" ):
+                listener.enterRelationalExpr(self)
+
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitRelationalExpr" ):
+                listener.exitRelationalExpr(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitRelationalExpr" ):
+                return visitor.visitRelationalExpr(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+
+
+    def relationalExpr(self):
+
+        localctx = TypeScriptParser.RelationalExprContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 34, self.RULE_relationalExpr)
+        self._la = 0 # Token type
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 198
+            self.additiveExpr()
+            self.state = 203
+            self._errHandler.sync(self)
+            _la = self._input.LA(1)
+            while (((_la) & ~0x3f) == 0 and ((1 << _la) & 31457280) != 0):
+                self.state = 199
+                _la = self._input.LA(1)
+                if not((((_la) & ~0x3f) == 0 and ((1 << _la) & 31457280) != 0)):
+                    self._errHandler.recoverInline(self)
+                else:
+                    self._errHandler.reportMatch(self)
+                    self.consume()
+                self.state = 200
+                self.additiveExpr()
+                self.state = 205
+                self._errHandler.sync(self)
+                _la = self._input.LA(1)
+
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+
+    class AdditiveExprContext(ParserRuleContext):
+        __slots__ = 'parser'
+
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+            super().__init__(parent, invokingState)
+            self.parser = parser
+
+        def multiplicativeExpr(self, i:int=None):
+            if i is None:
+                return self.getTypedRuleContexts(TypeScriptParser.MultiplicativeExprContext)
+            else:
+                return self.getTypedRuleContext(TypeScriptParser.MultiplicativeExprContext,i)
+
+
+        def PLUS(self, i:int=None):
+            if i is None:
+                return self.getTokens(TypeScriptParser.PLUS)
+            else:
+                return self.getToken(TypeScriptParser.PLUS, i)
+
+        def MINUS(self, i:int=None):
+            if i is None:
+                return self.getTokens(TypeScriptParser.MINUS)
+            else:
+                return self.getToken(TypeScriptParser.MINUS, i)
+
+        def getRuleIndex(self):
+            return TypeScriptParser.RULE_additiveExpr
+
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterAdditiveExpr" ):
+                listener.enterAdditiveExpr(self)
+
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitAdditiveExpr" ):
+                listener.exitAdditiveExpr(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitAdditiveExpr" ):
+                return visitor.visitAdditiveExpr(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+
+
+    def additiveExpr(self):
+
+        localctx = TypeScriptParser.AdditiveExprContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 36, self.RULE_additiveExpr)
+        self._la = 0 # Token type
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 206
+            self.multiplicativeExpr()
+            self.state = 211
+            self._errHandler.sync(self)
+            _la = self._input.LA(1)
+            while _la==14 or _la==15:
+                self.state = 207
+                _la = self._input.LA(1)
+                if not(_la==14 or _la==15):
+                    self._errHandler.recoverInline(self)
+                else:
+                    self._errHandler.reportMatch(self)
+                    self.consume()
+                self.state = 208
+                self.multiplicativeExpr()
+                self.state = 213
+                self._errHandler.sync(self)
+                _la = self._input.LA(1)
+
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+
+    class MultiplicativeExprContext(ParserRuleContext):
+        __slots__ = 'parser'
+
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+            super().__init__(parent, invokingState)
+            self.parser = parser
+
+        def unaryExpr(self, i:int=None):
+            if i is None:
+                return self.getTypedRuleContexts(TypeScriptParser.UnaryExprContext)
+            else:
+                return self.getTypedRuleContext(TypeScriptParser.UnaryExprContext,i)
+
+
+        def MULT(self, i:int=None):
+            if i is None:
+                return self.getTokens(TypeScriptParser.MULT)
+            else:
+                return self.getToken(TypeScriptParser.MULT, i)
+
+        def DIV(self, i:int=None):
+            if i is None:
+                return self.getTokens(TypeScriptParser.DIV)
+            else:
+                return self.getToken(TypeScriptParser.DIV, i)
+
+        def MOD(self, i:int=None):
+            if i is None:
+                return self.getTokens(TypeScriptParser.MOD)
+            else:
+                return self.getToken(TypeScriptParser.MOD, i)
+
+        def getRuleIndex(self):
+            return TypeScriptParser.RULE_multiplicativeExpr
+
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterMultiplicativeExpr" ):
+                listener.enterMultiplicativeExpr(self)
+
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitMultiplicativeExpr" ):
+                listener.exitMultiplicativeExpr(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitMultiplicativeExpr" ):
+                return visitor.visitMultiplicativeExpr(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+
+
+    def multiplicativeExpr(self):
+
+        localctx = TypeScriptParser.MultiplicativeExprContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 38, self.RULE_multiplicativeExpr)
+        self._la = 0 # Token type
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 214
+            self.unaryExpr()
+            self.state = 219
+            self._errHandler.sync(self)
+            _la = self._input.LA(1)
+            while (((_la) & ~0x3f) == 0 and ((1 << _la) & 458752) != 0):
+                self.state = 215
+                _la = self._input.LA(1)
+                if not((((_la) & ~0x3f) == 0 and ((1 << _la) & 458752) != 0)):
+                    self._errHandler.recoverInline(self)
+                else:
+                    self._errHandler.reportMatch(self)
+                    self.consume()
+                self.state = 216
+                self.unaryExpr()
+                self.state = 221
+                self._errHandler.sync(self)
+                _la = self._input.LA(1)
+
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+
+    class UnaryExprContext(ParserRuleContext):
+        __slots__ = 'parser'
+
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+            super().__init__(parent, invokingState)
+            self.parser = parser
+
+        def NOT(self):
+            return self.getToken(TypeScriptParser.NOT, 0)
+
+        def unaryExpr(self):
+            return self.getTypedRuleContext(TypeScriptParser.UnaryExprContext,0)
+
+
+        def primary(self):
+            return self.getTypedRuleContext(TypeScriptParser.PrimaryContext,0)
+
+
+        def getRuleIndex(self):
+            return TypeScriptParser.RULE_unaryExpr
+
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterUnaryExpr" ):
+                listener.enterUnaryExpr(self)
+
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitUnaryExpr" ):
+                listener.exitUnaryExpr(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitUnaryExpr" ):
+                return visitor.visitUnaryExpr(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+
+
+    def unaryExpr(self):
+
+        localctx = TypeScriptParser.UnaryExprContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 40, self.RULE_unaryExpr)
+        try:
+            self.state = 225
+            self._errHandler.sync(self)
+            token = self._input.LA(1)
+            if token in [27]:
+                self.enterOuterAlt(localctx, 1)
+                self.state = 222
+                self.match(TypeScriptParser.NOT)
+                self.state = 223
+                self.unaryExpr()
+                pass
+            elif token in [31, 33, 35, 38, 39, 40, 41]:
+                self.enterOuterAlt(localctx, 2)
+                self.state = 224
+                self.primary()
+                pass
+            else:
+                raise NoViableAltException(self)
+
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+
+    class PrimaryContext(ParserRuleContext):
+        __slots__ = 'parser'
+
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+            super().__init__(parent, invokingState)
+            self.parser = parser
+
+        def literal(self):
+            return self.getTypedRuleContext(TypeScriptParser.LiteralContext,0)
+
+
+        def ID(self):
+            return self.getToken(TypeScriptParser.ID, 0)
+
+        def LPAREN(self):
+            return self.getToken(TypeScriptParser.LPAREN, 0)
+
+        def expression(self):
+            return self.getTypedRuleContext(TypeScriptParser.ExpressionContext,0)
+
+
+        def RPAREN(self):
+            return self.getToken(TypeScriptParser.RPAREN, 0)
+
+        def arrayLiteral(self):
+            return self.getTypedRuleContext(TypeScriptParser.ArrayLiteralContext,0)
+
+
+        def objectLiteral(self):
+            return self.getTypedRuleContext(TypeScriptParser.ObjectLiteralContext,0)
+
+
+        def callExpr(self):
+            return self.getTypedRuleContext(TypeScriptParser.CallExprContext,0)
+
+
+        def arrayAccess(self):
+            return self.getTypedRuleContext(TypeScriptParser.ArrayAccessContext,0)
+
+
+        def getRuleIndex(self):
+            return TypeScriptParser.RULE_primary
+
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterPrimary" ):
+                listener.enterPrimary(self)
+
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitPrimary" ):
+                listener.exitPrimary(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitPrimary" ):
+                return visitor.visitPrimary(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+
+
+    def primary(self):
+
+        localctx = TypeScriptParser.PrimaryContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 42, self.RULE_primary)
+        try:
+            self.state = 237
+            self._errHandler.sync(self)
+            la_ = self._interp.adaptivePredict(self._input,19,self._ctx)
+            if la_ == 1:
+                self.enterOuterAlt(localctx, 1)
+                self.state = 227
+                self.literal()
+                pass
+
+            elif la_ == 2:
+                self.enterOuterAlt(localctx, 2)
+                self.state = 228
+                self.match(TypeScriptParser.ID)
+                pass
+
+            elif la_ == 3:
+                self.enterOuterAlt(localctx, 3)
+                self.state = 229
+                self.match(TypeScriptParser.LPAREN)
+                self.state = 230
+                self.expression()
+                self.state = 231
+                self.match(TypeScriptParser.RPAREN)
+                pass
+
+            elif la_ == 4:
+                self.enterOuterAlt(localctx, 4)
+                self.state = 233
+                self.arrayLiteral()
+                pass
+
+            elif la_ == 5:
+                self.enterOuterAlt(localctx, 5)
+                self.state = 234
+                self.objectLiteral()
+                pass
+
+            elif la_ == 6:
+                self.enterOuterAlt(localctx, 6)
+                self.state = 235
+                self.callExpr()
+                pass
+
+            elif la_ == 7:
+                self.enterOuterAlt(localctx, 7)
+                self.state = 236
+                self.arrayAccess()
+                pass
+
+
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+
+    class CallExprContext(ParserRuleContext):
+        __slots__ = 'parser'
+
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+            super().__init__(parent, invokingState)
+            self.parser = parser
+
+        def ID(self):
+            return self.getToken(TypeScriptParser.ID, 0)
+
+        def LPAREN(self):
+            return self.getToken(TypeScriptParser.LPAREN, 0)
+
+        def RPAREN(self):
+            return self.getToken(TypeScriptParser.RPAREN, 0)
+
+        def expression(self, i:int=None):
+            if i is None:
+                return self.getTypedRuleContexts(TypeScriptParser.ExpressionContext)
+            else:
+                return self.getTypedRuleContext(TypeScriptParser.ExpressionContext,i)
+
+
+        def COMMA(self, i:int=None):
+            if i is None:
+                return self.getTokens(TypeScriptParser.COMMA)
+            else:
+                return self.getToken(TypeScriptParser.COMMA, i)
+
+        def getRuleIndex(self):
+            return TypeScriptParser.RULE_callExpr
+
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterCallExpr" ):
+                listener.enterCallExpr(self)
+
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitCallExpr" ):
+                listener.exitCallExpr(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitCallExpr" ):
+                return visitor.visitCallExpr(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+
+
+    def callExpr(self):
+
+        localctx = TypeScriptParser.CallExprContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 44, self.RULE_callExpr)
+        self._la = 0 # Token type
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 239
+            self.match(TypeScriptParser.ID)
+            self.state = 240
+            self.match(TypeScriptParser.LPAREN)
+            self.state = 249
+            self._errHandler.sync(self)
+            _la = self._input.LA(1)
+            if (((_la) & ~0x3f) == 0 and ((1 << _la) & 4168399978496) != 0):
+                self.state = 241
+                self.expression()
+                self.state = 246
+                self._errHandler.sync(self)
+                _la = self._input.LA(1)
+                while _la==29:
+                    self.state = 242
+                    self.match(TypeScriptParser.COMMA)
+                    self.state = 243
+                    self.expression()
+                    self.state = 248
+                    self._errHandler.sync(self)
+                    _la = self._input.LA(1)
+
+
+
+            self.state = 251
+            self.match(TypeScriptParser.RPAREN)
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+
+    class ArrayAccessContext(ParserRuleContext):
+        __slots__ = 'parser'
+
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+            super().__init__(parent, invokingState)
+            self.parser = parser
+
+        def ID(self):
+            return self.getToken(TypeScriptParser.ID, 0)
+
+        def LBRACK(self):
+            return self.getToken(TypeScriptParser.LBRACK, 0)
+
+        def expression(self):
+            return self.getTypedRuleContext(TypeScriptParser.ExpressionContext,0)
+
+
+        def RBRACK(self):
+            return self.getToken(TypeScriptParser.RBRACK, 0)
+
+        def getRuleIndex(self):
+            return TypeScriptParser.RULE_arrayAccess
+
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterArrayAccess" ):
+                listener.enterArrayAccess(self)
+
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitArrayAccess" ):
+                listener.exitArrayAccess(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitArrayAccess" ):
+                return visitor.visitArrayAccess(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+
+
+    def arrayAccess(self):
+
+        localctx = TypeScriptParser.ArrayAccessContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 46, self.RULE_arrayAccess)
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 253
+            self.match(TypeScriptParser.ID)
+            self.state = 254
+            self.match(TypeScriptParser.LBRACK)
+            self.state = 255
+            self.expression()
+            self.state = 256
+            self.match(TypeScriptParser.RBRACK)
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+
+    class ArrayLiteralContext(ParserRuleContext):
+        __slots__ = 'parser'
+
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+            super().__init__(parent, invokingState)
+            self.parser = parser
+
+        def LBRACK(self):
+            return self.getToken(TypeScriptParser.LBRACK, 0)
+
+        def RBRACK(self):
+            return self.getToken(TypeScriptParser.RBRACK, 0)
+
+        def expression(self, i:int=None):
+            if i is None:
+                return self.getTypedRuleContexts(TypeScriptParser.ExpressionContext)
+            else:
+                return self.getTypedRuleContext(TypeScriptParser.ExpressionContext,i)
+
+
+        def COMMA(self, i:int=None):
+            if i is None:
+                return self.getTokens(TypeScriptParser.COMMA)
+            else:
+                return self.getToken(TypeScriptParser.COMMA, i)
+
+        def getRuleIndex(self):
+            return TypeScriptParser.RULE_arrayLiteral
+
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterArrayLiteral" ):
+                listener.enterArrayLiteral(self)
+
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitArrayLiteral" ):
+                listener.exitArrayLiteral(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitArrayLiteral" ):
+                return visitor.visitArrayLiteral(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+
+
+    def arrayLiteral(self):
+
+        localctx = TypeScriptParser.ArrayLiteralContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 48, self.RULE_arrayLiteral)
+        self._la = 0 # Token type
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 258
+            self.match(TypeScriptParser.LBRACK)
+            self.state = 267
+            self._errHandler.sync(self)
+            _la = self._input.LA(1)
+            if (((_la) & ~0x3f) == 0 and ((1 << _la) & 4168399978496) != 0):
+                self.state = 259
+                self.expression()
+                self.state = 264
+                self._errHandler.sync(self)
+                _la = self._input.LA(1)
+                while _la==29:
+                    self.state = 260
+                    self.match(TypeScriptParser.COMMA)
+                    self.state = 261
+                    self.expression()
+                    self.state = 266
+                    self._errHandler.sync(self)
+                    _la = self._input.LA(1)
+
+
+
+            self.state = 269
+            self.match(TypeScriptParser.RBRACK)
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+
+    class ObjectLiteralContext(ParserRuleContext):
+        __slots__ = 'parser'
+
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+            super().__init__(parent, invokingState)
+            self.parser = parser
+
+        def LBRACE(self):
+            return self.getToken(TypeScriptParser.LBRACE, 0)
+
+        def RBRACE(self):
+            return self.getToken(TypeScriptParser.RBRACE, 0)
+
+        def propAssign(self, i:int=None):
+            if i is None:
+                return self.getTypedRuleContexts(TypeScriptParser.PropAssignContext)
+            else:
+                return self.getTypedRuleContext(TypeScriptParser.PropAssignContext,i)
+
+
+        def COMMA(self, i:int=None):
+            if i is None:
+                return self.getTokens(TypeScriptParser.COMMA)
+            else:
+                return self.getToken(TypeScriptParser.COMMA, i)
+
+        def getRuleIndex(self):
+            return TypeScriptParser.RULE_objectLiteral
+
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterObjectLiteral" ):
+                listener.enterObjectLiteral(self)
+
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitObjectLiteral" ):
+                listener.exitObjectLiteral(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitObjectLiteral" ):
+                return visitor.visitObjectLiteral(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+
+
+    def objectLiteral(self):
+
+        localctx = TypeScriptParser.ObjectLiteralContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 50, self.RULE_objectLiteral)
+        self._la = 0 # Token type
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 271
+            self.match(TypeScriptParser.LBRACE)
+            self.state = 280
+            self._errHandler.sync(self)
+            _la = self._input.LA(1)
+            if _la==39 or _la==41:
+                self.state = 272
+                self.propAssign()
+                self.state = 277
+                self._errHandler.sync(self)
+                _la = self._input.LA(1)
+                while _la==29:
+                    self.state = 273
+                    self.match(TypeScriptParser.COMMA)
+                    self.state = 274
+                    self.propAssign()
+                    self.state = 279
+                    self._errHandler.sync(self)
+                    _la = self._input.LA(1)
+
+
+
+            self.state = 282
+            self.match(TypeScriptParser.RBRACE)
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+
+    class PropAssignContext(ParserRuleContext):
+        __slots__ = 'parser'
+
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+            super().__init__(parent, invokingState)
+            self.parser = parser
+
+        def COLON(self):
+            return self.getToken(TypeScriptParser.COLON, 0)
+
+        def expression(self):
+            return self.getTypedRuleContext(TypeScriptParser.ExpressionContext,0)
+
+
+        def STRING(self):
+            return self.getToken(TypeScriptParser.STRING, 0)
+
+        def ID(self):
+            return self.getToken(TypeScriptParser.ID, 0)
+
+        def getRuleIndex(self):
+            return TypeScriptParser.RULE_propAssign
+
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterPropAssign" ):
+                listener.enterPropAssign(self)
+
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitPropAssign" ):
+                listener.exitPropAssign(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitPropAssign" ):
+                return visitor.visitPropAssign(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+
+
+    def propAssign(self):
+
+        localctx = TypeScriptParser.PropAssignContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 52, self.RULE_propAssign)
+        self._la = 0 # Token type
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 284
+            _la = self._input.LA(1)
+            if not(_la==39 or _la==41):
+                self._errHandler.recoverInline(self)
+            else:
+                self._errHandler.reportMatch(self)
+                self.consume()
+            self.state = 285
+            self.match(TypeScriptParser.COLON)
+            self.state = 286
+            self.expression()
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+
+    class TypeExprContext(ParserRuleContext):
+        __slots__ = 'parser'
+
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+            super().__init__(parent, invokingState)
+            self.parser = parser
+
+        def baseType(self):
+            return self.getTypedRuleContext(TypeScriptParser.BaseTypeContext,0)
+
+
+        def LBRACK(self):
+            return self.getToken(TypeScriptParser.LBRACK, 0)
+
+        def RBRACK(self):
+            return self.getToken(TypeScriptParser.RBRACK, 0)
+
+        def getRuleIndex(self):
+            return TypeScriptParser.RULE_typeExpr
+
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterTypeExpr" ):
+                listener.enterTypeExpr(self)
+
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitTypeExpr" ):
+                listener.exitTypeExpr(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitTypeExpr" ):
+                return visitor.visitTypeExpr(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+
+
+    def typeExpr(self):
+
+        localctx = TypeScriptParser.TypeExprContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 54, self.RULE_typeExpr)
+        self._la = 0 # Token type
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 288
+            self.baseType()
+            self.state = 291
+            self._errHandler.sync(self)
+            _la = self._input.LA(1)
+            if _la==35:
+                self.state = 289
+                self.match(TypeScriptParser.LBRACK)
+                self.state = 290
+                self.match(TypeScriptParser.RBRACK)
+
+
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+
+    class BaseTypeContext(ParserRuleContext):
+        __slots__ = 'parser'
+
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+            super().__init__(parent, invokingState)
+            self.parser = parser
+
+        def NUMBER_TYPE(self):
+            return self.getToken(TypeScriptParser.NUMBER_TYPE, 0)
+
+        def STRING_TYPE(self):
+            return self.getToken(TypeScriptParser.STRING_TYPE, 0)
+
+        def BOOLEAN_TYPE(self):
+            return self.getToken(TypeScriptParser.BOOLEAN_TYPE, 0)
+
+        def ID(self):
+            return self.getToken(TypeScriptParser.ID, 0)
+
+        def getRuleIndex(self):
+            return TypeScriptParser.RULE_baseType
+
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterBaseType" ):
+                listener.enterBaseType(self)
+
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitBaseType" ):
+                listener.exitBaseType(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitBaseType" ):
+                return visitor.visitBaseType(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+
+
+    def baseType(self):
+
+        localctx = TypeScriptParser.BaseTypeContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 56, self.RULE_baseType)
+        self._la = 0 # Token type
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 293
+            _la = self._input.LA(1)
+            if not((((_la) & ~0x3f) == 0 and ((1 << _la) & 2199023262720) != 0)):
+                self._errHandler.recoverInline(self)
+            else:
+                self._errHandler.reportMatch(self)
+                self.consume()
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+
+    class InterfaceDeclContext(ParserRuleContext):
+        __slots__ = 'parser'
+
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+            super().__init__(parent, invokingState)
+            self.parser = parser
+
+        def INTERFACE(self):
+            return self.getToken(TypeScriptParser.INTERFACE, 0)
+
+        def ID(self):
+            return self.getToken(TypeScriptParser.ID, 0)
+
+        def LBRACE(self):
+            return self.getToken(TypeScriptParser.LBRACE, 0)
+
+        def RBRACE(self):
+            return self.getToken(TypeScriptParser.RBRACE, 0)
+
+        def interfaceProp(self, i:int=None):
+            if i is None:
+                return self.getTypedRuleContexts(TypeScriptParser.InterfacePropContext)
+            else:
+                return self.getTypedRuleContext(TypeScriptParser.InterfacePropContext,i)
+
+
+        def getRuleIndex(self):
+            return TypeScriptParser.RULE_interfaceDecl
+
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterInterfaceDecl" ):
+                listener.enterInterfaceDecl(self)
+
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitInterfaceDecl" ):
+                listener.exitInterfaceDecl(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitInterfaceDecl" ):
+                return visitor.visitInterfaceDecl(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+
+
+    def interfaceDecl(self):
+
+        localctx = TypeScriptParser.InterfaceDeclContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 58, self.RULE_interfaceDecl)
+        self._la = 0 # Token type
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 295
+            self.match(TypeScriptParser.INTERFACE)
+            self.state = 296
+            self.match(TypeScriptParser.ID)
+            self.state = 297
+            self.match(TypeScriptParser.LBRACE)
+            self.state = 301
+            self._errHandler.sync(self)
+            _la = self._input.LA(1)
+            while _la==41:
+                self.state = 298
+                self.interfaceProp()
+                self.state = 303
+                self._errHandler.sync(self)
+                _la = self._input.LA(1)
+
+            self.state = 304
+            self.match(TypeScriptParser.RBRACE)
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+
+    class InterfacePropContext(ParserRuleContext):
+        __slots__ = 'parser'
+
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+            super().__init__(parent, invokingState)
+            self.parser = parser
+
+        def ID(self):
+            return self.getToken(TypeScriptParser.ID, 0)
+
+        def COLON(self):
+            return self.getToken(TypeScriptParser.COLON, 0)
+
+        def typeExpr(self):
+            return self.getTypedRuleContext(TypeScriptParser.TypeExprContext,0)
+
+
+        def SEMI(self):
+            return self.getToken(TypeScriptParser.SEMI, 0)
+
+        def getRuleIndex(self):
+            return TypeScriptParser.RULE_interfaceProp
+
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterInterfaceProp" ):
+                listener.enterInterfaceProp(self)
+
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitInterfaceProp" ):
+                listener.exitInterfaceProp(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitInterfaceProp" ):
+                return visitor.visitInterfaceProp(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+
+
+    def interfaceProp(self):
+
+        localctx = TypeScriptParser.InterfacePropContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 60, self.RULE_interfaceProp)
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 306
+            self.match(TypeScriptParser.ID)
+            self.state = 307
+            self.match(TypeScriptParser.COLON)
+            self.state = 308
+            self.typeExpr()
+            self.state = 309
+            self.match(TypeScriptParser.SEMI)
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+
+    class LiteralContext(ParserRuleContext):
+        __slots__ = 'parser'
+
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+            super().__init__(parent, invokingState)
+            self.parser = parser
+
+        def NUMBER_LIT(self):
+            return self.getToken(TypeScriptParser.NUMBER_LIT, 0)
+
+        def STRING(self):
+            return self.getToken(TypeScriptParser.STRING, 0)
+
+        def BOOLEAN_LIT(self):
+            return self.getToken(TypeScriptParser.BOOLEAN_LIT, 0)
+
+        def getRuleIndex(self):
+            return TypeScriptParser.RULE_literal
+
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterLiteral" ):
+                listener.enterLiteral(self)
+
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitLiteral" ):
+                listener.exitLiteral(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitLiteral" ):
+                return visitor.visitLiteral(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+
+
+    def literal(self):
+
+        localctx = TypeScriptParser.LiteralContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 62, self.RULE_literal)
+        self._la = 0 # Token type
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 311
+            _la = self._input.LA(1)
+            if not((((_la) & ~0x3f) == 0 and ((1 << _la) & 1924145348608) != 0)):
+                self._errHandler.recoverInline(self)
+            else:
+                self._errHandler.reportMatch(self)
+                self.consume()
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+
+
+
+

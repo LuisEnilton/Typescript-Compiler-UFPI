@@ -1,0 +1,11 @@
+
+
+interface User {
+    name: string;
+    age: number;
+}
+
+let u: User = { name: "Ana", age: 20 };
+
+let x: number = 10;
+x = 30;

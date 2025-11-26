@@ -1,0 +1,6 @@
+let i: number = 0;
+let total: number = 0;
+
+for (let j: number = 0; j < 5; j = j + 1) {
+    total = total + j;
+}
