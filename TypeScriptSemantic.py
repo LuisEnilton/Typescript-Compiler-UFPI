@@ -85,6 +85,7 @@ class SemanticAnalyzer(ParseTreeVisitor):
         # grafo de chamadas: func -> set(funcs que chama)
         self.call_graph: Dict[str, Set[str]] = {}
         self.current_function: Optional[str] = None
+        self.expected_return_type: Optional[Type] = None
 
     # -------------------
     # utilitários
@@ -277,10 +278,26 @@ class SemanticAnalyzer(ParseTreeVisitor):
         self.call_graph.setdefault(name, set())
         # analisar corpo: marcar current_function
         prev = self.current_function
+        prev_expected_return = self.expected_return_type if hasattr(self, 'expected_return_type') else None
         self.current_function = name
+        self.expected_return_type = return_type
         self.visit(ctx.block())
         self.current_function = prev
+        self.expected_return_type = prev_expected_return
         return return_type
+
+    def visitReturnStmt(self, ctx):
+        """ ctx: returnStmt """
+        # se tem expression, verifica tipo
+        if ctx.expression() is not None:
+            expr_type = self.visit(ctx.expression())
+            if hasattr(self, 'expected_return_type') and self.expected_return_type is not None:
+                if not self.is_assignable(self.expected_return_type, expr_type, ctx):
+                    self._err(ctx, f"Tipo de retorno incompatível. Esperado {self.expected_return_type.name()} mas foi retornado {expr_type.name() if expr_type else 'null'}")
+            return expr_type
+        else:
+            # return sem expressão => tipo void
+            return PrimitiveType("void")
 
     def visitCallExpr(self, ctx):
         """ ctx: callExpr """
