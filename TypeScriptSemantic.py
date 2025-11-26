@@ -271,20 +271,40 @@ class SemanticAnalyzer(ParseTreeVisitor):
         """ ctx: functionDecl """
         name = ctx.ID().getText()
         param_types = []
+        param_names = []
+        
+        # Extrair tipos e nomes dos parâmetros
         if ctx.paramList() is not None:
             for p in ctx.paramList().param():
-                param_types.append(self.type_from_ctx(p.typeExpr()))
+                param_name = p.ID().getText()
+                param_type = self.type_from_ctx(p.typeExpr())
+                param_types.append(param_type)
+                param_names.append((param_name, param_type))
+        
         return_type = self.type_from_ctx(ctx.typeExpr())
         if name in self.sym.funcs:
             self._err(ctx, f"Função '{name}' já declarada")
+        
         self.sym.funcs[name] = FuncSymbol(name, param_types, return_type)
         self.call_graph.setdefault(name, set())
+        
         # analisar corpo: marcar current_function
         prev = self.current_function
         prev_expected_return = self.expected_return_type if hasattr(self, 'expected_return_type') else None
         self.current_function = name
         self.expected_return_type = return_type
+        
+        # IMPORTANTE: Registrar parâmetros como variáveis locais ANTES de processar o corpo
+        prev_vars = self.sym.vars.copy()  # Backup de variáveis globais
+        for param_name, param_type in param_names:
+            self.sym.vars[param_name] = VarSymbol(param_name, param_type, is_const=False)
+        
+        # Processar corpo da função
         self.visit(ctx.block())
+        
+        # Restaurar tabela de variáveis (escopo local da função)
+        self.sym.vars = prev_vars
+        
         self.current_function = prev
         self.expected_return_type = prev_expected_return
         return return_type
@@ -429,8 +449,171 @@ class SemanticAnalyzer(ParseTreeVisitor):
         
         return None
 
+    def visitAdditiveExpr(self, ctx):
+        """
+        Processa expressões aditivas: a + b, a - b
+        Ambos operandos devem ser number, resultado é number
+        """
+        if ctx.getChildCount() == 1:
+            # Sem operação binária, apenas pasa adiante
+            return self.visit(ctx.getChild(0))
+        
+        # Com operação binária
+        left_type = self.visit(ctx.getChild(0))
+        
+        for i in range(1, ctx.getChildCount(), 2):
+            op = ctx.getChild(i).getText()  # '+' ou '-'
+            right = ctx.getChild(i + 1)
+            right_type = self.visit(right)
+            
+            # Validar tipos
+            if left_type and right_type:
+                if not (isinstance(left_type, PrimitiveType) and left_type.name() == "number" and
+                        isinstance(right_type, PrimitiveType) and right_type.name() == "number"):
+                    self._err(ctx, f"Operador '{op}' requer operandos do tipo number")
+                    return None
+            
+            left_type = PrimitiveType("number")
+        
+        return left_type
 
-    # assignmentExpr might be visited as generic node name; adapt to your generated visitor method name
+    def visitMultiplicativeExpr(self, ctx):
+        """
+        Processa expressões multiplicativas: a * b, a / b, a % b
+        Ambos operandos devem ser number, resultado é number
+        """
+        if ctx.getChildCount() == 1:
+            # Sem operação binária, apenas passa adiante
+            return self.visit(ctx.getChild(0))
+        
+        # Com operação binária
+        left_type = self.visit(ctx.getChild(0))
+        
+        for i in range(1, ctx.getChildCount(), 2):
+            op = ctx.getChild(i).getText()  # '*', '/', '%'
+            right = ctx.getChild(i + 1)
+            right_type = self.visit(right)
+            
+            # Validar tipos
+            if left_type and right_type:
+                if not (isinstance(left_type, PrimitiveType) and left_type.name() == "number" and
+                        isinstance(right_type, PrimitiveType) and right_type.name() == "number"):
+                    self._err(ctx, f"Operador '{op}' requer operandos do tipo number")
+                    return None
+            
+            left_type = PrimitiveType("number")
+        
+        return left_type
+
+    def visitRelationalExpr(self, ctx):
+        """
+        Processa expressões relacionais: a < b, a <= b, a > b, a >= b
+        Ambos operandos devem ser number, resultado é boolean
+        """
+        if ctx.getChildCount() == 1:
+            # Sem operação binária
+            return self.visit(ctx.getChild(0))
+        
+        # Com operação binária
+        left_type = self.visit(ctx.getChild(0))
+        
+        for i in range(1, ctx.getChildCount(), 2):
+            op = ctx.getChild(i).getText()  # '<', '<=', '>', '>='
+            right = ctx.getChild(i + 1)
+            right_type = self.visit(right)
+            
+            # Validar tipos
+            if left_type and right_type:
+                if not (isinstance(left_type, PrimitiveType) and left_type.name() == "number" and
+                        isinstance(right_type, PrimitiveType) and right_type.name() == "number"):
+                    self._err(ctx, f"Operador '{op}' requer operandos do tipo number")
+                    return None
+            
+            left_type = PrimitiveType("boolean")
+        
+        return left_type
+
+    def visitEqualityExpr(self, ctx):
+        """
+        Processa expressões de igualdade: a == b, a != b
+        Ambos operandos devem ser do mesmo tipo, resultado é boolean
+        """
+        if ctx.getChildCount() == 1:
+            # Sem operação binária
+            return self.visit(ctx.getChild(0))
+        
+        # Com operação binária
+        left_type = self.visit(ctx.getChild(0))
+        
+        for i in range(1, ctx.getChildCount(), 2):
+            op = ctx.getChild(i).getText()  # '==', '!='
+            right = ctx.getChild(i + 1)
+            right_type = self.visit(right)
+            
+            # Validar tipos são iguais
+            if left_type and right_type:
+                if not self.types_equal(left_type, right_type):
+                    self._err(ctx, f"Operador '{op}' requer operandos do mesmo tipo")
+                    return None
+            
+            left_type = PrimitiveType("boolean")
+        
+        return left_type
+
+    def visitLogicalAndExpr(self, ctx):
+        """
+        Processa expressões lógicas AND: a && b
+        Ambos operandos devem ser boolean, resultado é boolean
+        """
+        if ctx.getChildCount() == 1:
+            # Sem operação binária
+            return self.visit(ctx.getChild(0))
+        
+        # Com operação binária
+        left_type = self.visit(ctx.getChild(0))
+        
+        for i in range(1, ctx.getChildCount(), 2):
+            right = ctx.getChild(i + 1)
+            right_type = self.visit(right)
+            
+            # Validar tipos
+            if left_type and right_type:
+                if not (isinstance(left_type, PrimitiveType) and left_type.name() == "boolean" and
+                        isinstance(right_type, PrimitiveType) and right_type.name() == "boolean"):
+                    self._err(ctx, f"Operador '&&' requer operandos do tipo boolean")
+                    return None
+            
+            left_type = PrimitiveType("boolean")
+        
+        return left_type
+
+    def visitLogicalOrExpr(self, ctx):
+        """
+        Processa expressões lógicas OR: a || b
+        Ambos operandos devem ser boolean, resultado é boolean
+        """
+        if ctx.getChildCount() == 1:
+            # Sem operação binária
+            return self.visit(ctx.getChild(0))
+        
+        # Com operação binária
+        left_type = self.visit(ctx.getChild(0))
+        
+        for i in range(1, ctx.getChildCount(), 2):
+            right = ctx.getChild(i + 1)
+            right_type = self.visit(right)
+            
+            # Validar tipos
+            if left_type and right_type:
+                if not (isinstance(left_type, PrimitiveType) and left_type.name() == "boolean" and
+                        isinstance(right_type, PrimitiveType) and right_type.name() == "boolean"):
+                    self._err(ctx, f"Operador '||' requer operandos do tipo boolean")
+                    return None
+            
+            left_type = PrimitiveType("boolean")
+        
+        return left_type
+
     def visitAssignmentExpr(self, ctx):
         """
         ctx: assignmentExpr
