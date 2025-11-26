@@ -262,6 +262,9 @@ class SemanticAnalyzer(ParseTreeVisitor):
             init_type = self.visit(ctx.expression())
             if not self.is_assignable(declared, init_type, ctx):
                 self._err(ctx, f"Tipo de inicializador incompatível. Esperado {declared.name()} mas foi {init_type.name() if init_type else 'null'}")
+        elif is_const:
+            # const deve ser inicializada na declaração
+            self._err(ctx, f"Variável const '{name}' deve ser inicializada na declaração")
         return declared
 
     def visitFunctionDecl(self, ctx):
@@ -400,7 +403,11 @@ class SemanticAnalyzer(ParseTreeVisitor):
                 if idname not in self.sym.vars:
                     self._err(ctx, f"Variável '{idname}' não declarada")
                 else:
-                    left_type = self.sym.vars[idname].type
+                    var_symbol = self.sym.vars[idname]
+                    # verificar se é const
+                    if var_symbol.is_const:
+                        self._err(ctx, f"Não é possível reatribuir a variável const '{idname}'")
+                    left_type = var_symbol.type
             else:
                 # other node -> visit
                 left_type = self.visit(left)
