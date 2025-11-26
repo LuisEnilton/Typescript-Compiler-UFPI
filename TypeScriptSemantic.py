@@ -389,14 +389,18 @@ class SemanticAnalyzer(ParseTreeVisitor):
         ctx: assignmentExpr
         Cases:
          - ID '=' assignmentExpr
+         - arrayAccess '=' assignmentExpr
+         - ID '.' ID '=' assignmentExpr
          - logicalOrExpr
         """
         # detect assign form
         text = ctx.getText()
         if '=' in text and ctx.getChildCount() >= 3:
             left = ctx.getChild(0)
-            # left can be ID or arrayAccess or objectAccess; try to compute left type
+            # left can be ID or arrayAccess or ID.ID; try to compute left type
             left_type = None
+            
+            # Check if left is ID (simple assignment)
             if left.getPayload().__class__.__name__ == 'TerminalNodeImpl':
                 # ID
                 idname = left.getText()
@@ -408,9 +412,33 @@ class SemanticAnalyzer(ParseTreeVisitor):
                     if var_symbol.is_const:
                         self._err(ctx, f"Não é possível reatribuir a variável const '{idname}'")
                     left_type = var_symbol.type
+            
+            # Check if it's ID '.' ID (property assignment) - special case
+            elif ctx.getChildCount() >= 5 and ctx.getChild(1).getText() == '.':
+                # Pattern: ID '.' ID '=' assignmentExpr
+                obj_id = ctx.getChild(0).getText()
+                prop_name = ctx.getChild(2).getText()
+                
+                if obj_id not in self.sym.vars:
+                    self._err(ctx, f"Variável '{obj_id}' não declarada")
+                    left_type = None
+                else:
+                    obj_var = self.sym.vars[obj_id]
+                    if not isinstance(obj_var.type, InterfaceType):
+                        self._err(ctx, f"Variável '{obj_id}' não é uma interface e não tem campos")
+                        left_type = None
+                    else:
+                        # Verificar se a propriedade existe na interface
+                        if prop_name not in obj_var.type.props:
+                            self._err(ctx, f"Campo '{prop_name}' não existe na interface '{obj_var.type.name()}'")
+                            left_type = None
+                        else:
+                            left_type = obj_var.type.props[prop_name]
+            
+            # Otherwise: arrayAccess or other node -> visit
             else:
-                # other node -> visit
                 left_type = self.visit(left)
+            
             right_type = self.visit(ctx.assignmentExpr())
             if left_type and right_type:
                 if not self.is_assignable(left_type, right_type, ctx):
