@@ -1,56 +1,76 @@
+"""
+Utilitários de teste do compilador - funções auxiliares para executar o compilador TypeScript.
+"""
+
 import subprocess
 import sys
 from pathlib import Path
-import re
+
 
 def compile_code(code: str) -> tuple:
     """
-    Compila código TypeScript usando main.py
-    Retorna (success: bool, errors: list)
+    Compila um trecho de código TypeScript.
+    
+    Args:
+        code: código fonte TypeScript em string
+    
+    Returns:
+        tupla (success: bool, errors: list)
+        - success: True se a compilação foi bem-sucedida (sem erros)
+        - errors: lista de mensagens de erro, se houver
     """
-    # Criar arquivo temporário
+    # Write code to temporary file
     test_file = Path("/tmp/test_code.ts")
     test_file.write_text(code)
     
-    # Executar compilador
-    project_root = Path(__file__).parent.parent
-    result = subprocess.run(
-        [sys.executable, str(project_root / "main.py"), str(test_file)],
-        capture_output=True,
-        text=True,
-        cwd=str(project_root)
-    )
-    
-    # Limpar
-    test_file.unlink()
-    
-    # Parse de erros - podem estar em stdout ou stderr
+    try:
+        # Execute compiler
+        project_root = Path(__file__).parent.parent
+        result = subprocess.run(
+            [sys.executable, str(project_root / "main.py"), str(test_file)],
+            capture_output=True,
+            text=True,
+            cwd=str(project_root)
+        )
+        
+        # Parse errors from output
+        errors = _extract_errors(result.stdout, result.stderr)
+        
+        # Success = exit code 0 and no "ERRORS FOUND" marker
+        success = result.returncode == 0 and "❌ ERRORS FOUND:" not in result.stdout
+        
+        return (success, errors)
+        
+    finally:
+        # Cleanup
+        test_file.unlink(missing_ok=True)
+
+
+def _extract_errors(stdout: str, stderr: str) -> list:
+    """Extrai mensagens de erro da saída do compilador"""
     errors = []
     
-    # Procura por "❌ ERROS ENCONTRADOS:" no stdout
-    if "❌ ERROS ENCONTRADOS:" in result.stdout:
-        # Extrai linhas de erro (começam com " -")
-        lines = result.stdout.split('\n')
+    # Verifica a seção de erros no stdout (Português: ERROS ENCONTRADOS)
+    if "❌ ERROS ENCONTRADOS:" in stdout:
+        lines = stdout.split('\n')
         in_errors = False
+        
         for line in lines:
+            # Início da seção de erros
             if "❌ ERROS ENCONTRADOS:" in line:
                 in_errors = True
                 continue
+            
+            # Linha de erro (começa com hífen)
             if in_errors and line.strip().startswith("-"):
-                # Remove o " - " do início
-                error_msg = line.strip()[2:]
-                errors.append(error_msg)
-            elif in_errors and ("⚠" in line or "✔" in line):
+                errors.append(line.strip()[1:].strip())
+            
+            # Fim da seção de erros
+            if in_errors and ("⚠" in line or "✔" in line):
                 break
     
-    # Se houver stderr também, adiciona
-    if result.stderr:
-        stderr_errors = result.stderr.strip().split('\n')
-        errors.extend(stderr_errors)
+    # Adiciona stderr se presente
+    if stderr.strip():
+        errors.extend([e.strip() for e in stderr.strip().split('\n')])
     
-    # Sucesso se:
-    # 1. Exit code é 0 E não há "❌ ERROS"
-    # 2. Ou "✔ Semântica concluída sem erros" em stdout
-    success = result.returncode == 0 and "❌ ERROS ENCONTRADOS:" not in result.stdout
-    
-    return (success, errors)
+    return errors
