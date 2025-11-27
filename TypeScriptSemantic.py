@@ -246,22 +246,48 @@ class SemanticAnalyzer(ParseTreeVisitor):
         return None
 
     def visitVariableDecl(self, ctx):
-        """Processa declaração de variável com checagem de tipos"""
-        is_const = ctx.LET() is None
+        """Processa declaração de variável via letDecl ou constDecl"""
+        # Delega para letDecl ou constDecl
+        if ctx.letDecl():
+            return self.visit(ctx.letDecl())
+        elif ctx.constDecl():
+            return self.visit(ctx.constDecl())
+        return None
+
+    def visitLetDecl(self, ctx):
+        """Processa declaração de variável let"""
         name = ctx.ID().getText()
         declared_type = self.type_from_ctx(ctx.typeExpr())
         
         if name in self.sym.vars:
             self._err(ctx, f"Variável '{name}' já declarada")
         
-        self.sym.vars[name] = VarSymbol(name, declared_type, is_const)
+        self.sym.vars[name] = VarSymbol(name, declared_type, is_const=False)
         
         # Check initializer if present
         if ctx.ASSIGN():
             init_type = self.visit(ctx.expression())
             if not self.is_assignable(declared_type, init_type, ctx):
                 self._err(ctx, f"Tipo do inicializador incompatível: esperado {declared_type.name()} mas foi {init_type.name() if init_type else 'null'}")
-        elif is_const:
+        
+        return declared_type
+
+    def visitConstDecl(self, ctx):
+        """Processa declaração de variável const (obrigatoriamente inicializada)"""
+        name = ctx.ID().getText()
+        declared_type = self.type_from_ctx(ctx.typeExpr())
+        
+        if name in self.sym.vars:
+            self._err(ctx, f"Variável '{name}' já declarada")
+        
+        self.sym.vars[name] = VarSymbol(name, declared_type, is_const=True)
+        
+        # const obriga ASSIGN (gramática já exige, mas validamos por segurança)
+        if ctx.ASSIGN():
+            init_type = self.visit(ctx.expression())
+            if not self.is_assignable(declared_type, init_type, ctx):
+                self._err(ctx, f"Tipo do inicializador incompatível: esperado {declared_type.name()} mas foi {init_type.name() if init_type else 'null'}")
+        else:
             self._err(ctx, f"Variável const '{name}' deve ser inicializada na declaração")
         
         return declared_type

@@ -29,6 +29,16 @@ class TypeScriptVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by TypeScriptParser#letDecl.
+    def visitLetDecl(self, ctx:TypeScriptParser.LetDeclContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by TypeScriptParser#constDecl.
+    def visitConstDecl(self, ctx:TypeScriptParser.ConstDeclContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by TypeScriptParser#functionDecl.
     def visitFunctionDecl(self, ctx:TypeScriptParser.FunctionDeclContext):
         return self.visitChildren(ctx)

@@ -23,7 +23,9 @@ block: '{' statement* '}';
 // DECLARAÇÕES
 // ============================================================================
 
-variableDecl: (LET | CONST) ID ':' typeExpr (ASSIGN expression)? ';';
+variableDecl: letDecl | constDecl;
+letDecl: LET ID ':' typeExpr (ASSIGN expression)? ';';
+constDecl: CONST ID ':' typeExpr ASSIGN expression ';';
 functionDecl: FUNCTION ID '(' paramList? ')' ':' typeExpr block;
 paramList: param (',' param)*;
 param: ID ':' typeExpr;
@@ -75,7 +77,7 @@ propAssign: (STRING | ID) ':' expression;
 // ============================================================================
 
 typeExpr: baseType ('[' ']')?;
-baseType: NUMBER_TYPE | STRING_TYPE | BOOLEAN_TYPE | ID;
+baseType: NUMBER_TYPE | STRING_TYPE | BOOLEAN_TYPE | VOID_TYPE | ID;
 
 // ============================================================================
 // INTERFACES
@@ -109,6 +111,7 @@ RETURN: 'return';
 NUMBER_TYPE: 'number';
 STRING_TYPE: 'string';
 BOOLEAN_TYPE: 'boolean';
+VOID_TYPE: 'void';
 
 // Operators
 ASSIGN: '=';
