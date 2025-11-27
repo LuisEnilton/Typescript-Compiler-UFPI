@@ -113,7 +113,7 @@ class SemanticAnalyzer(ParseTreeVisitor):
             inner_type = self._parse_type(inner)
             return ArrayType(inner_type)
         
-        if text in ("number", "string", "boolean"):
+        if text in ("number", "string", "boolean", "void"):
             return PrimitiveType(text)
         
         if text in self.sym.interfaces:
@@ -142,6 +142,8 @@ class SemanticAnalyzer(ParseTreeVisitor):
                 base = PrimitiveType("string")
             elif hasattr(bt, 'BOOLEAN_TYPE') and bt.BOOLEAN_TYPE():
                 base = PrimitiveType("boolean")
+            elif hasattr(bt, 'ID') and bt.ID() and bt.ID().getText() == "void":
+                base = PrimitiveType("void")
             elif hasattr(bt, 'ID') and bt.ID():
                 name = bt.ID().getText()
                 if name in self.sym.interfaces:
@@ -269,9 +271,11 @@ class SemanticAnalyzer(ParseTreeVisitor):
         prev_func = self.current_function
         prev_return = self.expected_return_type
         prev_vars = self.sym.vars.copy()
+        prev_return_seen = getattr(self, "_return_seen", False)
         
         self.current_function = name
         self.expected_return_type = return_type
+        self._return_seen = False
         
         # Register parameters
         for param_name, param_type in params:
@@ -284,17 +288,36 @@ class SemanticAnalyzer(ParseTreeVisitor):
         self.sym.vars = prev_vars
         self.current_function = prev_func
         self.expected_return_type = prev_return
+        # Check missing return for non-void functions
+        if isinstance(return_type, PrimitiveType) and return_type.name() != "void":
+            if not getattr(self, "_return_seen", False):
+                self._err(ctx, f"Função '{name}' deve retornar um valor do tipo {return_type.name()}")
+        self._return_seen = prev_return_seen
         
         return return_type
 
     def visitReturnStmt(self, ctx):
         """Processa return com checagem de tipo"""
-        if ctx.expression():
-            expr_type = self.visit(ctx.expression())
-            if self.expected_return_type:
-                if not self.is_assignable(self.expected_return_type, expr_type, ctx):
-                    self._err(ctx, f"Tipo de retorno incompatível. Esperado {self.expected_return_type.name()} mas foi {expr_type.name() if expr_type else 'null'}")
-            return expr_type
+        # Marca que houve um return neste corpo de função
+        self._return_seen = True
+        # Se função é void, permitir 'return;' vazio ou ausência de return
+        if self.expected_return_type and isinstance(self.expected_return_type, PrimitiveType) and self.expected_return_type.name() == "void":
+            if ctx.expression():
+                self._err(ctx, "Função do tipo void não deve retornar expressão")
+            return PrimitiveType("void")
+
+        # Função não-void: exige retorno com expressão compatível
+        if ctx.expression() is None:
+            func_name = self.current_function or "<função>"
+            expected = self.expected_return_type.name() if self.expected_return_type else 'desconhecido'
+            self._err(ctx, f"Função '{func_name}' deve retornar um valor do tipo {expected}")
+            return PrimitiveType("void")
+
+        expr_type = self.visit(ctx.expression())
+        if self.expected_return_type:
+            if not self.is_assignable(self.expected_return_type, expr_type, ctx):
+                self._err(ctx, f"Tipo de retorno incompatível. Esperado {self.expected_return_type.name()} mas foi {expr_type.name() if expr_type else 'null'}")
+        return expr_type
         return PrimitiveType("void")
 
     # ========================================================================

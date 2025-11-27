@@ -128,6 +128,62 @@ function test(): number {
         # Este teste apenas verifica se há parsing/análise
         success, errors = compile_code(code)
         # Comportamento pode variar dependendo da implementação
+
+    def test_non_void_function_missing_return_error(self):
+        """Função com tipo não-void sem retorno deve gerar erro"""
+        code = """
+function f(): number {
+    let x: number = 1;
+}
+"""
+        success, errors = compile_code(code)
+        assert not success, "Esperado erro para função não-void sem return explícito"
+        assert any("retorn" in str(e).lower() or "void" in str(e).lower() or "tipo" in str(e).lower() for e in errors), \
+            f"Erro deve mencionar retorno/void/tipo; obteve: {errors}"
+
+    def test_non_void_function_empty_return_error(self):
+        """Função não-void com return vazio deve gerar erro"""
+        code = """
+function f(): number {
+    return;
+}
+"""
+        success, errors = compile_code(code)
+        assert not success, "Esperado erro para função não-void com return vazio"
+        assert any("retorn" in str(e).lower() or "tipo" in str(e).lower() for e in errors), \
+            f"Erro deve mencionar retorno/tipo; obteve: {errors}"
+
+    def test_void_function_without_return(self):
+        """Função void sem qualquer return deve compilar"""
+        code = """
+function log(): void {
+    let x: number = 1;
+}
+"""
+        success, errors = compile_code(code)
+        assert success, f"Esperado sucesso para função void sem return; erros: {errors}"
+
+    def test_void_function_empty_return(self):
+        """Função void com return vazio deve compilar"""
+        code = """
+function log(): void {
+    return;
+}
+"""
+        success, errors = compile_code(code)
+        assert success, f"Esperado sucesso para função void com return vazio; erros: {errors}"
+
+    def test_void_function_return_with_expression_error(self):
+        """Função void não deve retornar expressão"""
+        code = """
+function log(): void {
+    return 1;
+}
+"""
+        success, errors = compile_code(code)
+        assert not success, "Esperado erro ao retornar expressão em função void"
+        assert any("void" in str(e).lower() or "retorn" in str(e).lower() for e in errors), \
+            f"Erro deve mencionar retorno inválido para void; obteve: {errors}"
     
     def test_function_param_type_checking(self):
         """Verificação de tipo de parâmetro em chamada de função"""
