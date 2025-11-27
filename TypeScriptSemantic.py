@@ -466,13 +466,60 @@ class SemanticAnalyzer(ParseTreeVisitor):
                     return None
             
             elif op_text.startswith('.'):
-                # Property access
-                prop_name = op_text[1:]
-                if isinstance(result_type, InterfaceType):
-                    if prop_name in result_type.props:
-                        result_type = result_type.props[prop_name]
+                # Property access or array method call
+                # Extract the identifier after the dot
+                method_or_prop = op_text[1:]
+                # Check if it's followed by () for method call
+                is_method_call = False
+                method_name = method_or_prop
+                arg_exprs = []
+                
+                # Try to detect if next op is a function call (parentheses)
+                if op_idx + 1 < len(postfix_ops) and postfix_ops[op_idx + 1].getText().startswith('('):
+                    is_method_call = True
+                    method_op = postfix_ops[op_idx + 1]
+                    try:
+                        arg_exprs = list(method_op.expression()) if hasattr(method_op, 'expression') and method_op.expression() else []
+                    except Exception:
+                        arg_exprs = []
+                
+                # Handle array methods
+                if isinstance(result_type, ArrayType):
+                    if is_method_call:
+                        if method_name == "push":
+                            # push(x): x deve ter o tipo do elemento do array
+                            if len(arg_exprs) != 1:
+                                self._err(ctx, "Método 'push' do array requer exatamente 1 argumento")
+                            else:
+                                arg_type = self.visit(arg_exprs[0])
+                                if not self.types_equal(result_type.elem, arg_type):
+                                    self._err(ctx, f"Argumento de 'push' deve ter tipo {result_type.elem.name()}, mas tem {arg_type.name() if arg_type else 'null'}")
+                            result_type = PrimitiveType("void")
+                        elif method_name == "pop":
+                            # pop(): retorna o elemento do array
+                            if len(arg_exprs) != 0:
+                                self._err(ctx, "Método 'pop' do array não aceita argumentos")
+                            result_type = result_type.elem
+                        elif method_name == "size":
+                            # size(): retorna number
+                            if len(arg_exprs) != 0:
+                                self._err(ctx, "Método 'size' do array não aceita argumentos")
+                            result_type = PrimitiveType("number")
+                        else:
+                            self._err(ctx, f"Array não possui método '{method_name}'")
+                            return None
+                        # Skip the next postfix op (the function call) since we processed it
+                        # Mark for skipping by incrementing op_idx in a way the loop handles
                     else:
-                        self._err(ctx, f"Campo '{prop_name}' não existe na interface '{result_type.name()}'")
+                        # Not a method call on array; would be property access
+                        self._err(ctx, "Array não possui propriedades acessíveis")
+                        return None
+                elif isinstance(result_type, InterfaceType):
+                    # Regular property access for interfaces
+                    if method_or_prop in result_type.props:
+                        result_type = result_type.props[method_or_prop]
+                    else:
+                        self._err(ctx, f"Campo '{method_or_prop}' não existe na interface '{result_type.name()}'")
                         return None
                 else:
                     self._err(ctx, "Acesso de propriedade em tipo não-interface")

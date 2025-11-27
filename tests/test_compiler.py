@@ -93,6 +93,98 @@ arr[0] = 5;
         success, errors = compile_code(code)
         assert success, f"Esperado sucesso, mas obteve erros: {errors}"
 
+    def test_array_push_valid(self):
+        """Método push com tipo correto deve compilar"""
+        code = """
+let nums: number[] = [1, 2];
+nums.push(3);
+"""
+        success, errors = compile_code(code)
+        assert success, f"Esperado sucesso para push válido; erros: {errors}"
+
+    def test_array_push_type_mismatch(self):
+        """Método push com tipo incompatível deve gerar erro"""
+        code = """
+let nums: number[] = [1, 2];
+nums.push("abc");
+"""
+        success, errors = compile_code(code)
+        assert not success, "Esperado erro para push com tipo incompatível"
+        assert any("push" in str(e).lower() or "tipo" in str(e).lower() for e in errors), \
+            f"Erro deve mencionar push ou tipo; obteve: {errors}"
+
+    def test_array_pop_valid(self):
+        """Método pop deve compilar e retornar elemento do array"""
+        code = """
+let nums: number[] = [1, 2, 3];
+let x: number = nums.pop();
+"""
+        success, errors = compile_code(code)
+        assert success, f"Esperado sucesso para pop; erros: {errors}"
+
+    def test_array_size_valid(self):
+        """Método size deve compilar e retornar number"""
+        code = """
+let nums: number[] = [1, 2, 3];
+let s: number = nums.size();
+"""
+        success, errors = compile_code(code)
+        assert success, f"Esperado sucesso para size; erros: {errors}"
+
+    def test_array_push_non_array_error(self):
+        """Chamar push em tipo não-array deve gerar erro"""
+        code = """
+let x: number = 5;
+x.push(1);
+"""
+        success, errors = compile_code(code)
+        assert not success, "Esperado erro para push em tipo não-array"
+
+    def test_array_push_missing_argument(self):
+        """push sem argumentos deve gerar erro"""
+        code = """
+let nums: number[] = [1, 2];
+nums.push();
+"""
+        success, errors = compile_code(code)
+        assert not success, "Esperado erro para push sem argumentos"
+
+    def test_array_push_extra_arguments(self):
+        """push com argumentos a mais deve gerar erro"""
+        code = """
+let nums: number[] = [1, 2];
+nums.push(1, 2);
+"""
+        success, errors = compile_code(code)
+        assert not success, "Esperado erro para push com argumentos extras"
+
+    def test_array_pop_with_argument_error(self):
+        """pop com argumentos deve gerar erro"""
+        code = """
+let nums: number[] = [1, 2, 3];
+let x: number = nums.pop(1);
+"""
+        success, errors = compile_code(code)
+        assert not success, "Esperado erro para pop com argumentos"
+
+    def test_array_size_with_argument_error(self):
+        """size com argumentos deve gerar erro"""
+        code = """
+let nums: number[] = [1, 2, 3];
+let s: number = nums.size(1);
+"""
+        success, errors = compile_code(code)
+        assert not success, "Esperado erro para size com argumentos"
+
+    def test_string_size_method_error(self):
+        """Chamar size em string deve gerar erro"""
+        code = """
+let s: string = "hello";
+let len: number = s.size();
+"""
+        success, errors = compile_code(code)
+        assert not success, "Esperado erro para size em string (não-array)"
+
 
 class TestFunctions:
     """Testes para declaração e chamada de funções"""
