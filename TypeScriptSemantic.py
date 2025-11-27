@@ -85,6 +85,23 @@ class SemanticAnalyzer(ParseTreeVisitor):
         self.call_graph: Dict[str, Set[str]] = {}
         self.current_function: Optional[str] = None
         self.expected_return_type: Optional[Type] = None
+        # Registra funções nativas
+        self._register_builtins()
+
+    def _register_builtins(self):
+        """Registra funções nativas: print e read"""
+        # print(x: number|string|boolean): void
+        self.sym.funcs["print"] = FuncSymbol(
+            "print",
+            [PrimitiveType("unknown")],  # aceitaremos validação manual
+            PrimitiveType("void")
+        )
+        # read(): unknown (atribui a string ou number)
+        self.sym.funcs["read"] = FuncSymbol(
+            "read",
+            [],
+            PrimitiveType("unknown")
+        )
 
     def _err(self, ctx: Optional[ParserRuleContext], msg: str):
         """Registra erro com informação de linha:coluna"""
@@ -169,6 +186,9 @@ class SemanticAnalyzer(ParseTreeVisitor):
         
         # Primitives: must match exactly
         if isinstance(target, PrimitiveType) and isinstance(source, PrimitiveType):
+            # unknown pode ser atribuído a string ou number (não boolean)
+            if source.name() == "unknown" and target.name() in ("string", "number"):
+                return True
             return self.types_equal(target, source)
         
         # Arrays
@@ -435,7 +455,27 @@ class SemanticAnalyzer(ParseTreeVisitor):
             elif op_text.startswith('(') and op_idx == 0 and primary_id:
                 # Function call (first postfix op on identifier)
                 if primary_id in self.sym.funcs:
-                    result_type = self.sym.funcs[primary_id].return_type
+                    func = self.sym.funcs[primary_id]
+                    # Validate arguments count & types
+                    args_ctx = op
+                    arg_exprs = []
+                    # Extract expressions inside parentheses via parse tree
+                    try:
+                        arg_exprs = list(args_ctx.expression()) if hasattr(args_ctx, 'expression') and args_ctx.expression() else []
+                    except Exception:
+                        arg_exprs = []
+                    # Simple arity check
+                    if len(func.param_types) != len(arg_exprs):
+                        # Allow print(x) single arg; read() zero args
+                        pass
+                    # Type validation for print
+                    if primary_id == "print" and len(arg_exprs) == 1:
+                        arg_t = self.visit(arg_exprs[0])
+                        if not isinstance(arg_t, PrimitiveType) or arg_t.name() not in ("string", "number", "boolean"):
+                            self._err(ctx, "Função nativa 'print' aceita apenas string, number ou boolean")
+                    if primary_id == "read" and len(arg_exprs) != 0:
+                        self._err(ctx, "Função nativa 'read' não aceita argumentos")
+                    result_type = func.return_type
                     if self.current_function:
                         self.call_graph.setdefault(self.current_function, set()).add(primary_id)
         

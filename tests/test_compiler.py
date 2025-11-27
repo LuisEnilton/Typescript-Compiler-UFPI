@@ -203,6 +203,41 @@ let result: number = soma(5, 10);
         # Pode gerar erro ou não, dependendo se nativa ou não
         # Função nativa read/print devem funcionar
 
+    def test_print_accepts_primitives(self):
+        """Função nativa print aceita string, number e boolean"""
+        code = """
+print("ola");
+print(123);
+print(true);
+"""
+        success, errors = compile_code(code)
+        assert success, f"print deve aceitar primitivos; erros: {errors}"
+
+    def test_print_rejects_interface(self):
+        """print com objeto/interface deve falhar"""
+        code = """
+interface U { name: string; }
+let u: U = { name: "Ana" };
+print(u);
+"""
+        success, errors = compile_code(code)
+        assert not success, "Esperado erro para print com interface"
+
+    def test_read_assign_string_and_number(self):
+        """read pode ser atribuído a string e number"""
+        code = """
+let s: string = read();
+let n: number = read();
+"""
+        success, errors = compile_code(code)
+        assert success, f"read deve permitir atribuição a string/number; erros: {errors}"
+
+    def test_read_assign_boolean_error(self):
+        """read não deve ser atribuído a boolean"""
+        code = "let b: boolean = read();"
+        success, errors = compile_code(code)
+        assert not success, "Esperado erro para read atribuído a boolean"
+
 
 class TestInterfaces:
     """Testes para interfaces"""
