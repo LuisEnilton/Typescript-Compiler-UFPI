@@ -90,9 +90,9 @@ class SemanticAnalyzer(ParseTreeVisitor):
         """Registra erro com informação de linha:coluna"""
         if ctx and hasattr(ctx, 'start'):
             token: Token = ctx.start
-            self.errors.append(f"Line {token.line}:{token.column} - {msg}")
+            self.errors.append(f"Linha {token.line}:{token.column} - {msg}")
         else:
-            self.errors.append(f"ERROR: {msg}")
+            self.errors.append(f"ERRO: {msg}")
 
     def types_equal(self, a: Type, b: Type) -> bool:
         """Verifica se dois tipos são equivalentes"""
@@ -119,7 +119,7 @@ class SemanticAnalyzer(ParseTreeVisitor):
         if text in self.sym.interfaces:
             return self.sym.interfaces[text]
         
-        self._err(None, f"Type '{text}' not found")
+        self._err(None, f"Tipo '{text}' não encontrado")
         return InterfaceType(f"<unknown:{text}>")
 
     def type_from_ctx(self, ctx) -> Optional[Type]:
@@ -147,7 +147,7 @@ class SemanticAnalyzer(ParseTreeVisitor):
                 if name in self.sym.interfaces:
                     base = self.sym.interfaces[name]
                 else:
-                    self._err(ctx, f"Interface '{name}' not declared")
+                    self._err(ctx, f"Interface '{name}' não declarada")
                     base = InterfaceType(f"<unknown:{name}>")
             else:
                 return self._parse_type(ctx.getText())
@@ -211,7 +211,7 @@ class SemanticAnalyzer(ParseTreeVisitor):
         """Processa declaração de interface"""
         name = ctx.ID().getText()
         if name in self.sym.interfaces:
-            self._err(ctx, f"Interface '{name}' already declared")
+            self._err(ctx, f"Interface '{name}' já declarada")
             return None
         
         iface = InterfaceType(name)
@@ -230,7 +230,7 @@ class SemanticAnalyzer(ParseTreeVisitor):
         declared_type = self.type_from_ctx(ctx.typeExpr())
         
         if name in self.sym.vars:
-            self._err(ctx, f"Variable '{name}' already declared")
+            self._err(ctx, f"Variável '{name}' já declarada")
         
         self.sym.vars[name] = VarSymbol(name, declared_type, is_const)
         
@@ -238,7 +238,7 @@ class SemanticAnalyzer(ParseTreeVisitor):
         if ctx.ASSIGN():
             init_type = self.visit(ctx.expression())
             if not self.is_assignable(declared_type, init_type, ctx):
-                self._err(ctx, f"Initializer type mismatch: expected {declared_type.name()} but got {init_type.name() if init_type else 'null'}")
+                self._err(ctx, f"Tipo do inicializador incompatível: esperado {declared_type.name()} mas foi {init_type.name() if init_type else 'null'}")
         elif is_const:
             self._err(ctx, f"Variável const '{name}' deve ser inicializada na declaração")
         
@@ -260,7 +260,7 @@ class SemanticAnalyzer(ParseTreeVisitor):
         return_type = self.type_from_ctx(ctx.typeExpr())
         
         if name in self.sym.funcs:
-            self._err(ctx, f"Function '{name}' already declared")
+            self._err(ctx, f"Função '{name}' já declarada")
         
         self.sym.funcs[name] = FuncSymbol(name, param_types, return_type)
         self.call_graph.setdefault(name, set())
@@ -324,7 +324,7 @@ class SemanticAnalyzer(ParseTreeVisitor):
                 return self.sym.vars[name].type
             if name in self.sym.funcs:
                 return self.sym.funcs[name].return_type
-            self._err(ctx, f"Variable '{name}' not declared")
+            self._err(ctx, f"Variável '{name}' não declarada")
             return None
         
         # Parenthesized expression
@@ -352,7 +352,7 @@ class SemanticAnalyzer(ParseTreeVisitor):
         for expr in exprs[1:]:
             elem_type = self.visit(expr)
             if not self.types_equal(first, elem_type):
-                self._err(ctx, f"Heterogeneous array: elements have different types ({first.name()} vs {elem_type.name() if elem_type else 'null'})")
+                self._err(ctx, f"Array heterogêneo: elementos têm tipos diferentes ({first.name()} vs {elem_type.name() if elem_type else 'null'})")
         
         return ArrayType(first)
 
@@ -393,7 +393,7 @@ class SemanticAnalyzer(ParseTreeVisitor):
                 if isinstance(result_type, ArrayType):
                     result_type = result_type.elem
                 else:
-                    self._err(ctx, "Array access on non-array type")
+                    self._err(ctx, "Acesso de array em tipo não-array")
                     return None
             
             elif op_text.startswith('.'):
@@ -403,10 +403,10 @@ class SemanticAnalyzer(ParseTreeVisitor):
                     if prop_name in result_type.props:
                         result_type = result_type.props[prop_name]
                     else:
-                        self._err(ctx, f"Field '{prop_name}' not in interface '{result_type.name()}'")
+                        self._err(ctx, f"Campo '{prop_name}' não existe na interface '{result_type.name()}'")
                         return None
                 else:
-                    self._err(ctx, "Property access on non-interface type")
+                    self._err(ctx, "Acesso de propriedade em tipo não-interface")
                     return None
             
             elif op_text.startswith('(') and op_idx == 0 and primary_id:
@@ -441,7 +441,7 @@ class SemanticAnalyzer(ParseTreeVisitor):
         def validate(l, r, op, c):
             if not (isinstance(l, PrimitiveType) and l.name() == "number" and
                     isinstance(r, PrimitiveType) and r.name() == "number"):
-                self._err(c, f"Operator '{op}' requires number operands")
+                self._err(c, f"Operador '{op}' requer operandos do tipo number")
         
         def result_type(l, r):
             return PrimitiveType("number")
@@ -453,7 +453,7 @@ class SemanticAnalyzer(ParseTreeVisitor):
         def validate(l, r, op, c):
             if not (isinstance(l, PrimitiveType) and l.name() == "number" and
                     isinstance(r, PrimitiveType) and r.name() == "number"):
-                self._err(c, f"Operator '{op}' requires number operands")
+                self._err(c, f"Operador '{op}' requer operandos do tipo number")
         
         def result_type(l, r):
             return PrimitiveType("number")
@@ -465,7 +465,7 @@ class SemanticAnalyzer(ParseTreeVisitor):
         def validate(l, r, op, c):
             if not (isinstance(l, PrimitiveType) and l.name() == "number" and
                     isinstance(r, PrimitiveType) and r.name() == "number"):
-                self._err(c, f"Operator '{op}' requires number operands")
+                self._err(c, f"Operador '{op}' requer operandos do tipo number")
         
         def result_type(l, r):
             return PrimitiveType("boolean")
@@ -476,7 +476,7 @@ class SemanticAnalyzer(ParseTreeVisitor):
         """Processa operadores == e != (mesmo tipo em ambos os lados; resultado boolean)"""
         def validate(l, r, op, c):
             if not self.types_equal(l, r):
-                self._err(c, f"Operator '{op}' requires operands of same type")
+                self._err(c, f"Operador '{op}' requer operandos do mesmo tipo")
         
         def result_type(l, r):
             return PrimitiveType("boolean")
@@ -488,7 +488,7 @@ class SemanticAnalyzer(ParseTreeVisitor):
         def validate(l, r, op, c):
             if not (isinstance(l, PrimitiveType) and l.name() == "boolean" and
                     isinstance(r, PrimitiveType) and r.name() == "boolean"):
-                self._err(c, f"Operator '&&' requires boolean operands")
+                self._err(c, f"Operador '&&' requer operandos do tipo boolean")
         
         def result_type(l, r):
             return PrimitiveType("boolean")
@@ -500,7 +500,7 @@ class SemanticAnalyzer(ParseTreeVisitor):
         def validate(l, r, op, c):
             if not (isinstance(l, PrimitiveType) and l.name() == "boolean" and
                     isinstance(r, PrimitiveType) and r.name() == "boolean"):
-                self._err(c, f"Operator '||' requires boolean operands")
+                self._err(c, f"Operador '||' requer operandos do tipo boolean")
         
         def result_type(l, r):
             return PrimitiveType("boolean")
@@ -526,13 +526,13 @@ class SemanticAnalyzer(ParseTreeVisitor):
             if hasattr(left, 'getText') and assign_idx == 1:
                 left_text = left.getText()
                 if left_text in self.sym.vars and self.sym.vars[left_text].is_const:
-                    self._err(ctx, f"Cannot reassign const variable '{left_text}'")
+                    self._err(ctx, f"Não é possível reatribuir variável const '{left_text}'")
             
             # Check type compatibility
             right_type = self.visit(ctx.assignmentExpr())
             if left_type and right_type:
                 if not self.is_assignable(left_type, right_type, ctx):
-                    self._err(ctx, f"Type mismatch in assignment: cannot assign {right_type.name()} to {left_type.name()}")
+                    self._err(ctx, f"Tipos incompatíveis na atribuição: não é possível atribuir {right_type.name()} a {left_type.name()}")
             
             return left_type
         else:
