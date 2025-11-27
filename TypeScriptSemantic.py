@@ -184,19 +184,19 @@ class SemanticAnalyzer(ParseTreeVisitor):
         if isinstance(target, InterfaceType) and isinstance(source, InterfaceType):
             tgt, src = target, source
             
-            # Check all target fields present in source
+            # Verifica todos os campos do alvo presentes na origem
             for fname, ftype in tgt.props.items():
                 if fname not in src.props:
-                    self._err(ctx, f"Field '{fname}' missing in object literal for interface {tgt.name()}")
+                    self._err(ctx, f"Campo '{fname}' ausente no objeto literal para a interface {tgt.name()}")
                     return False
                 if not self.is_assignable(ftype, src.props[fname], ctx):
-                    self._err(ctx, f"Field '{fname}' type mismatch: expected {ftype.name()} but got {src.props[fname].name()}")
+                    self._err(ctx, f"Tipo do campo '{fname}' incompatível: esperado {ftype.name()} mas foi {src.props[fname].name()}")
                     return False
             
-            # Check no extra fields in source
+            # Verifica se não há campos extras na origem
             for k in src.props:
                 if k not in tgt.props:
-                    self._err(ctx, f"Extra field '{k}' in object literal not declared in interface {tgt.name()}")
+                    self._err(ctx, f"Campo extra '{k}' no objeto literal não declarado na interface {tgt.name()}")
                     return False
             
             return True
