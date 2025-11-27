@@ -1,8 +1,1 @@
-let x: number = 10;
-let y: number = 20;
-
-if (x < y && y > 5) {
-    x = x + 1;
-} else {
-    x = x - 1;
-}
+const x: number;

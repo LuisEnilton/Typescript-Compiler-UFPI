@@ -1,12 +1,2 @@
-
-
-interface User {
-    name: string;
-    age: number;
-}
-
-let u: User = { 
-    name: "Ana",
-    age: 12
-};
-u.namo = "Jose";
+let a: number = 10;
+let b: boolean = a > 5;

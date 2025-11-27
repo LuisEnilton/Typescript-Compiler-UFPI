@@ -1,11 +1,6 @@
-
-
 interface User {
     name: string;
     age: number;
 }
-
-let u: User = { 
-    name: "Ana"
-    // falta "age"
-};
+let u: User = { name: "Ana", age: 30 };
+let n: string = u.name;
