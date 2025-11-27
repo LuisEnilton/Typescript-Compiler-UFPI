@@ -1,104 +1,102 @@
-# semantic_analyzer.py
-# Requer: arquivos gerados pelo ANTLR (TypeScriptLikeLexer.py, TypeScriptLikeParser.py, TypeScriptLikeVisitor.py)
-# Para gerar: antlr4 -Dlanguage=Python3 TypeScriptLike.g4
+"""
+Analisador Semântico TypeScript - Versão Refatorada e Simples
+Realiza checagem de tipos e validação semântica para uma linguagem similar ao TypeScript.
+"""
 
 from antlr4 import ParseTreeVisitor, ParserRuleContext, Token
-from typing import Dict, List, Set, Optional, Any
+from typing import Dict, List, Set, Optional
 
-# IMPORTS gerados pelo ANTLR - ajuste se seu gerador usar nomes diferentes
-# from TypeScriptLikeParser import TypeScriptLikeParser
-# from TypeScriptLikeVisitor import TypeScriptLikeVisitor
+# ============================================================================
+# SISTEMA DE TIPOS
+# ============================================================================
 
-# (comentário) se o ANTLR gerou TypeScriptLikeVisitor com outro nome, ajuste os imports acima.
-# Aqui vamos usar ParseTreeVisitor como fallback para manter o exemplo claro.
-# Quando você rodar, substitua ParseTreeVisitor pelo visitor gerado (TypeScriptLikeVisitor).
-
-# ----------------------------
-# REPRESENTAÇÃO SIMPLES DE TIPOS
-# ----------------------------
 class Type:
+    """Classe base para todos os tipos"""
     def name(self) -> str:
         raise NotImplementedError()
     def __str__(self):
         return self.name()
 
 class PrimitiveType(Type):
+    """Tipos primitivos: number, string, boolean"""
     def __init__(self, n: str):
         self.n = n
     def name(self) -> str:
         return self.n
 
 class ArrayType(Type):
+    """Array de elementos: T[]"""
     def __init__(self, elem: Type):
         self.elem = elem
     def name(self) -> str:
         return f"{self.elem.name()}[]"
 
 class InterfaceType(Type):
+    """Interface definida pelo usuário"""
     def __init__(self, id_: str):
         self.id = id_
-        self.props: Dict[str, Type] = {}  # field -> Type
+        self.props: Dict[str, Type] = {}
     def name(self) -> str:
         return self.id
 
-# ----------------------------
+# ============================================================================
 # SÍMBOLOS
-# ----------------------------
+# ============================================================================
+
 class VarSymbol:
-    def __init__(self, name: str, type_: Type, is_const: bool=False):
+    """Símbolo de variável ou parâmetro"""
+    def __init__(self, name: str, type_: Type, is_const: bool = False):
         self.name = name
         self.type = type_
         self.is_const = is_const
 
 class FuncSymbol:
+    """Símbolo de função com tipos de parâmetros e retorno"""
     def __init__(self, name: str, param_types: List[Type], return_type: Type):
         self.name = name
         self.param_types = param_types
         self.return_type = return_type
 
-# ----------------------------
-# TABELA GLOBAL (simples)
-# ----------------------------
 class SymbolTable:
+    """Tabela de símbolos global para variáveis, funções e interfaces"""
     def __init__(self):
         self.vars: Dict[str, VarSymbol] = {}
         self.funcs: Dict[str, FuncSymbol] = {}
         self.interfaces: Dict[str, InterfaceType] = {}
 
-# ----------------------------
-# ANALISADOR SEMÂNTICO (VISITOR)
-# ----------------------------
+# ============================================================================
+# ANALISADOR SEMÂNTICO
+# ============================================================================
+
 class SemanticAnalyzer(ParseTreeVisitor):
     """
-    Visitor que realiza checagem semântica.
-    - checa interfaces
-    - permite objeto literal apenas para variáveis com tipo interface
-    - arrays homogêneos
-    - atribuições de tipos
-    - detecção de recursão indireta (apenas auto-chamada permitida)
+    Visitor responsável pela análise semântica:
+    - Checagem e validação de tipos
+    - Rastreamento de escopo de variáveis/funções
+    - Garantia de imutabilidade para const
+    - Validação de homogeneidade em arrays
+    - Validação de acesso a propriedades
     """
 
     def __init__(self):
         super().__init__()
         self.sym = SymbolTable()
         self.errors: List[str] = []
-        # grafo de chamadas: func -> set(funcs que chama)
         self.call_graph: Dict[str, Set[str]] = {}
         self.current_function: Optional[str] = None
         self.expected_return_type: Optional[Type] = None
 
-    # -------------------
-    # utilitários
-    # -------------------
     def _err(self, ctx: Optional[ParserRuleContext], msg: str):
-        if ctx is None:
-            self.errors.append(f"ERROR: {msg}")
-        else:
+        """Registra erro com informação de linha:coluna"""
+        if ctx and hasattr(ctx, 'start'):
             token: Token = ctx.start
             self.errors.append(f"Line {token.line}:{token.column} - {msg}")
+        else:
+            self.errors.append(f"ERROR: {msg}")
 
     def types_equal(self, a: Type, b: Type) -> bool:
-        if a is None or b is None:
+        """Verifica se dois tipos são equivalentes"""
+        if not (a and b):
             return False
         if isinstance(a, PrimitiveType) and isinstance(b, PrimitiveType):
             return a.name() == b.name()
@@ -108,668 +106,457 @@ class SemanticAnalyzer(ParseTreeVisitor):
             return a.name() == b.name()
         return False
 
-    def is_assignable(self, target: Type, source: Type, ctx: Optional[ParserRuleContext]) -> bool:
-        # primitives
-        if isinstance(target, PrimitiveType) and isinstance(source, PrimitiveType):
-            return self.types_equal(target, source)
-        # arrays
-        if isinstance(target, ArrayType) and isinstance(source, ArrayType):
-            # Allow unknown[] (empty array) to be assigned to any array type
-            if isinstance(source.elem, PrimitiveType) and source.elem.name() == "unknown":
-                return True
-            # Allow array of object-literals to interface arrays if fields match
-            if isinstance(target.elem, InterfaceType) and isinstance(source.elem, InterfaceType):
-                if source.elem.name() == "<obj-literal>":
-                    # Check if the object-literal matches the target interface
-                    return self.is_assignable(target.elem, source.elem, ctx)
-            return self.types_equal(target, source)
-        # interface assignment from object literal or same interface
-        if isinstance(target, InterfaceType):
-            if isinstance(source, InterfaceType):
-                # source can be object-literal anon or named interface
-                # check fields if source is anon (we use name "<obj-literal>")
-                # require: all target props present in source and types compatible; no extras
-                tgt: InterfaceType = target
-                src: InterfaceType = source
-                # check presence and types
-                for fname, ftype in tgt.props.items():
-                    if fname not in src.props:
-                        self._err(ctx, f"Campo '{fname}' ausente no object literal para interface {tgt.name()}")
-                        return False
-                    if not self.is_assignable(ftype, src.props[fname], ctx):
-                        self._err(ctx, f"Tipo do campo '{fname}' difere (esperado {ftype.name()} mas foi {src.props[fname].name()})")
-                        return False
-                # check extras
-                for k in src.props.keys():
-                    if k not in tgt.props:
-                        self._err(ctx, f"Campo extra '{k}' presente no object literal não declarado na interface {tgt.name()}")
-                        return False
-                return True
-            else:
-                # source not interface (cannot assign)
-                self._err(ctx, f"Atribuição para interface '{target.name()}' requer object literal compatível ou variável do mesmo tipo")
-                return False
-        return False
+    def _parse_type(self, text: str) -> Type:
+        """Auxiliar: interpreta tipo a partir do texto (ex.: 'number[]', 'User')"""
+        if text.endswith("[]"):
+            inner = text[:-2]
+            inner_type = self._parse_type(inner)
+            return ArrayType(inner_type)
+        
+        if text in ("number", "string", "boolean"):
+            return PrimitiveType(text)
+        
+        if text in self.sym.interfaces:
+            return self.sym.interfaces[text]
+        
+        self._err(None, f"Type '{text}' not found")
+        return InterfaceType(f"<unknown:{text}>")
 
-    # -------------------
-    # helpers para tipos
-    # -------------------
     def type_from_ctx(self, ctx) -> Optional[Type]:
-        """
-        Constrói um Type a partir de typeExpr (ctx). Depende da sua gramática.
-        Espera: ctx.baseType() etc. Ajuste se necessário.
-        """
-        if ctx is None:
+        """Extrai tipo a partir do contexto da gramática"""
+        if not ctx:
             return None
-        # baseType could have tokens: NUMBER_TYPE, STRING_TYPE, BOOLEAN_TYPE, or ID (interface)
-        # Implementação assume parser gerou methods baseType() e getText() que refletem [] no final.
-        base = None
-        # tenta detectar pelas propriedades (adaptar se ANTLR gerou nomes diferentes)
+        
         try:
-            bt = ctx.baseType()
-            if bt is None:
-                # fallback: texto
-                text = ctx.getText()
-                if text.endswith("[]"):
-                    # try to parse element
-                    inner_text = text[:-2]
-                    if inner_text == "number": base = PrimitiveType("number")
-                    elif inner_text == "string": base = PrimitiveType("string")
-                    elif inner_text == "boolean": base = PrimitiveType("boolean")
-                    else:
-                        # interface name
-                        it = self.sym.interfaces.get(inner_text)
-                        if it is None:
-                            self._err(ctx, f"Interface/tipo '{inner_text}' não declarada")
-                            base = InterfaceType(f"<unknown:{inner_text}>")
-                        else:
-                            base = it
-                    return ArrayType(base)
-                else:
-                    if text == "number": return PrimitiveType("number")
-                    if text == "string": return PrimitiveType("string")
-                    if text == "boolean": return PrimitiveType("boolean")
-                    it = self.sym.interfaces.get(text)
-                    if it is None:
-                        self._err(ctx, f"Interface/tipo '{text}' não declarada")
-                        return InterfaceType(f"<unknown:{text}>")
-                    return it
-            # bt exists
-            if hasattr(bt, 'NUMBER_TYPE') and bt.NUMBER_TYPE() is not None:
+            # Try to get baseType
+            bt = ctx.baseType() if hasattr(ctx, 'baseType') else None
+            
+            if not bt:
+                # Fallback to text parsing
+                return self._parse_type(ctx.getText())
+            
+            # Parse base type
+            if hasattr(bt, 'NUMBER_TYPE') and bt.NUMBER_TYPE():
                 base = PrimitiveType("number")
-            elif hasattr(bt, 'STRING_TYPE') and bt.STRING_TYPE() is not None:
+            elif hasattr(bt, 'STRING_TYPE') and bt.STRING_TYPE():
                 base = PrimitiveType("string")
-            elif hasattr(bt, 'BOOLEAN_TYPE') and bt.BOOLEAN_TYPE() is not None:
+            elif hasattr(bt, 'BOOLEAN_TYPE') and bt.BOOLEAN_TYPE():
                 base = PrimitiveType("boolean")
-            else:
-                # ID case
-                id_name = bt.ID().getText()
-                it = self.sym.interfaces.get(id_name)
-                if it is None:
-                    self._err(ctx, f"Interface/tipo '{id_name}' não declarada")
-                    base = InterfaceType(f"<unknown:{id_name}>")
+            elif hasattr(bt, 'ID') and bt.ID():
+                name = bt.ID().getText()
+                if name in self.sym.interfaces:
+                    base = self.sym.interfaces[name]
                 else:
-                    base = it
-            # array?
+                    self._err(ctx, f"Interface '{name}' not declared")
+                    base = InterfaceType(f"<unknown:{name}>")
+            else:
+                return self._parse_type(ctx.getText())
+            
+            # Check if array
             if ctx.getText().endswith("[]"):
                 return ArrayType(base)
             return base
+            
         except Exception:
-            # fallback: try parse by text
-            txt = ctx.getText()
-            if txt.endswith("[]"):
-                inner = txt[:-2]
-                if inner == "number": return ArrayType(PrimitiveType("number"))
-                if inner == "string": return ArrayType(PrimitiveType("string"))
-                if inner == "boolean": return ArrayType(PrimitiveType("boolean"))
-                it = self.sym.interfaces.get(inner)
-                if it is None:
-                    self._err(ctx, f"Interface/tipo '{inner}' não declarada")
-                    return ArrayType(InterfaceType(f"<unknown:{inner}>"))
-                return ArrayType(it)
-            else:
-                if txt == "number": return PrimitiveType("number")
-                if txt == "string": return PrimitiveType("string")
-                if txt == "boolean": return PrimitiveType("boolean")
-                it = self.sym.interfaces.get(txt)
-                if it is None:
-                    self._err(ctx, f"Interface/tipo '{txt}' não declarada")
-                    return InterfaceType(f"<unknown:{txt}>")
-                return it
+            return self._parse_type(ctx.getText())
 
-    # -------------------
-    # VISITORS (principais nós)
-    # -------------------
+    def is_assignable(self, target: Type, source: Type, ctx) -> bool:
+        """Verifica se o tipo origem pode ser atribuído ao tipo destino"""
+        if not (target and source):
+            return False
+        
+        # Primitives: must match exactly
+        if isinstance(target, PrimitiveType) and isinstance(source, PrimitiveType):
+            return self.types_equal(target, source)
+        
+        # Arrays
+        if isinstance(target, ArrayType) and isinstance(source, ArrayType):
+            # Empty array (unknown[]) can assign to any array
+            if isinstance(source.elem, PrimitiveType) and source.elem.name() == "unknown":
+                return True
+            # Object literal arrays to interface arrays
+            if isinstance(target.elem, InterfaceType) and isinstance(source.elem, InterfaceType):
+                if source.elem.name() == "<obj-literal>":
+                    return self.is_assignable(target.elem, source.elem, ctx)
+            return self.types_equal(target, source)
+        
+        # Interfaces: check field compatibility
+        if isinstance(target, InterfaceType) and isinstance(source, InterfaceType):
+            tgt, src = target, source
+            
+            # Check all target fields present in source
+            for fname, ftype in tgt.props.items():
+                if fname not in src.props:
+                    self._err(ctx, f"Field '{fname}' missing in object literal for interface {tgt.name()}")
+                    return False
+                if not self.is_assignable(ftype, src.props[fname], ctx):
+                    self._err(ctx, f"Field '{fname}' type mismatch: expected {ftype.name()} but got {src.props[fname].name()}")
+                    return False
+            
+            # Check no extra fields in source
+            for k in src.props:
+                if k not in tgt.props:
+                    self._err(ctx, f"Extra field '{k}' in object literal not declared in interface {tgt.name()}")
+                    return False
+            
+            return True
+        
+        return False
+
+    # ========================================================================
+    # STATEMENT VISITORS
+    # ========================================================================
+
     def visitInterfaceDecl(self, ctx):
-        """ ctx: interfaceDecl """
+        """Processa declaração de interface"""
         name = ctx.ID().getText()
         if name in self.sym.interfaces:
-            self._err(ctx, f"Interface '{name}' já declarada")
+            self._err(ctx, f"Interface '{name}' already declared")
             return None
-        it = InterfaceType(name)
-        # coleta campos
-        for p in ctx.interfaceProp():
-            fname = p.ID().getText()
-            ftype = self.type_from_ctx(p.typeExpr())
-            it.props[fname] = ftype
-        self.sym.interfaces[name] = it
-        return it
+        
+        iface = InterfaceType(name)
+        for prop in ctx.interfaceProp():
+            prop_name = prop.ID().getText()
+            prop_type = self.type_from_ctx(prop.typeExpr())
+            iface.props[prop_name] = prop_type
+        
+        self.sym.interfaces[name] = iface
+        return None
 
     def visitVariableDecl(self, ctx):
-        """ ctx: variableDecl """
-        # grammar: (LET|CONST) ID ':' typeExpr (ASSIGN expression)? ';'
-        is_const = (ctx.LET() is None and ctx.CONST() is not None)
+        """Processa declaração de variável com checagem de tipos"""
+        is_const = ctx.LET() is None
         name = ctx.ID().getText()
-        declared = self.type_from_ctx(ctx.typeExpr())
+        declared_type = self.type_from_ctx(ctx.typeExpr())
+        
         if name in self.sym.vars:
-            self._err(ctx, f"Variável '{name}' já declarada")
-            # ainda registra para evitar NPE
-        self.sym.vars[name] = VarSymbol(name, declared, is_const)
-        # initializer
-        if ctx.ASSIGN() is not None:
+            self._err(ctx, f"Variable '{name}' already declared")
+        
+        self.sym.vars[name] = VarSymbol(name, declared_type, is_const)
+        
+        # Check initializer if present
+        if ctx.ASSIGN():
             init_type = self.visit(ctx.expression())
-            if not self.is_assignable(declared, init_type, ctx):
-                self._err(ctx, f"Tipo de inicializador incompatível. Esperado {declared.name()} mas foi {init_type.name() if init_type else 'null'}")
+            if not self.is_assignable(declared_type, init_type, ctx):
+                self._err(ctx, f"Initializer type mismatch: expected {declared_type.name()} but got {init_type.name() if init_type else 'null'}")
         elif is_const:
-            # const deve ser inicializada na declaração
             self._err(ctx, f"Variável const '{name}' deve ser inicializada na declaração")
-        return declared
+        
+        return declared_type
 
     def visitFunctionDecl(self, ctx):
-        """ ctx: functionDecl """
+        """Processa declaração de função com checagem de parâmetros e retorno"""
         name = ctx.ID().getText()
+        params = []
         param_types = []
-        param_names = []
         
-        # Extrair tipos e nomes dos parâmetros
-        if ctx.paramList() is not None:
-            for p in ctx.paramList().param():
-                param_name = p.ID().getText()
-                param_type = self.type_from_ctx(p.typeExpr())
+        if ctx.paramList():
+            for param in ctx.paramList().param():
+                param_name = param.ID().getText()
+                param_type = self.type_from_ctx(param.typeExpr())
+                params.append((param_name, param_type))
                 param_types.append(param_type)
-                param_names.append((param_name, param_type))
         
         return_type = self.type_from_ctx(ctx.typeExpr())
+        
         if name in self.sym.funcs:
-            self._err(ctx, f"Função '{name}' já declarada")
+            self._err(ctx, f"Function '{name}' already declared")
         
         self.sym.funcs[name] = FuncSymbol(name, param_types, return_type)
         self.call_graph.setdefault(name, set())
         
-        # analisar corpo: marcar current_function
-        prev = self.current_function
-        prev_expected_return = self.expected_return_type if hasattr(self, 'expected_return_type') else None
+        # Enter function scope
+        prev_func = self.current_function
+        prev_return = self.expected_return_type
+        prev_vars = self.sym.vars.copy()
+        
         self.current_function = name
         self.expected_return_type = return_type
         
-        # IMPORTANTE: Registrar parâmetros como variáveis locais ANTES de processar o corpo
-        prev_vars = self.sym.vars.copy()  # Backup de variáveis globais
-        for param_name, param_type in param_names:
-            self.sym.vars[param_name] = VarSymbol(param_name, param_type, is_const=False)
+        # Register parameters
+        for param_name, param_type in params:
+            self.sym.vars[param_name] = VarSymbol(param_name, param_type)
         
-        # Processar corpo da função
+        # Analyze body
         self.visit(ctx.block())
         
-        # Restaurar tabela de variáveis (escopo local da função)
+        # Restore scope
         self.sym.vars = prev_vars
+        self.current_function = prev_func
+        self.expected_return_type = prev_return
         
-        self.current_function = prev
-        self.expected_return_type = prev_expected_return
         return return_type
 
     def visitReturnStmt(self, ctx):
-        """ ctx: returnStmt """
-        # se tem expression, verifica tipo
-        if ctx.expression() is not None:
+        """Processa return com checagem de tipo"""
+        if ctx.expression():
             expr_type = self.visit(ctx.expression())
-            if hasattr(self, 'expected_return_type') and self.expected_return_type is not None:
+            if self.expected_return_type:
                 if not self.is_assignable(self.expected_return_type, expr_type, ctx):
-                    self._err(ctx, f"Tipo de retorno incompatível. Esperado {self.expected_return_type.name()} mas foi retornado {expr_type.name() if expr_type else 'null'}")
+                    self._err(ctx, f"Tipo de retorno incompatível. Esperado {self.expected_return_type.name()} mas foi {expr_type.name() if expr_type else 'null'}")
             return expr_type
-        else:
-            # return sem expressão => tipo void
-            return PrimitiveType("void")
+        return PrimitiveType("void")
 
-    def visitCallExpr(self, ctx):
-        """ ctx: callExpr """
-        called = ctx.ID().getText()
-        # nativas
-        if called == "read":
-            if len(ctx.expression()) != 1:
-                self._err(ctx, "read espera 1 argumento")
-            return PrimitiveType("void")
-        if called == "print":
-            return PrimitiveType("void")
-        # user function
-        if called not in self.sym.funcs:
-            self._err(ctx, f"Função '{called}' não declarada")
-            return PrimitiveType("<unknown-func>")
-        
-        # Registra na call graph se estamos dentro de uma função
-        if self.current_function is not None:
-            self.call_graph.setdefault(self.current_function, set()).add(called)
-        
-        return self.sym.funcs[called].return_type
-
-    def visitArrayLiteral(self, ctx):
-        """ ctx: arrayLiteral """
-        exprs = list(ctx.expression())
-        if not exprs:
-            return ArrayType(PrimitiveType("unknown"))
-        first = self.visit(exprs[0])
-        for e in exprs[1:]:
-            t = self.visit(e)
-            if not self.types_equal(first, t):
-                self._err(ctx, f"Array literal heterogêneo: elementos têm tipos diferentes ({first.name()} vs {t.name() if t else 'null'})")
-        return ArrayType(first)
-
-    def visitObjectLiteral(self, ctx):
-        """ ctx: objectLiteral -> representamos como InterfaceType anon """
-        anon = InterfaceType("<obj-literal>")
-        for p in ctx.propAssign():
-            key = p.ID().getText()
-            val_t = self.visit(p.expression())
-            anon.props[key] = val_t
-        return anon
-
-    def visitArrayAccess(self, ctx):
-        """ ctx: arrayAccess """
-        id_ = ctx.ID().getText()
-        if id_ not in self.sym.vars:
-            self._err(ctx, f"Array '{id_}' não declarado")
-            return None
-        vs = self.sym.vars[id_]
-        if not isinstance(vs.type, ArrayType):
-            self._err(ctx, f"Variável '{id_}' não é um array")
-            return vs.type
-        idx_type = self.visit(ctx.expression())
-        if not (isinstance(idx_type, PrimitiveType) and idx_type.name() == "number"):
-            self._err(ctx, "Índice de array deve ser number")
-        return vs.type.elem
-
-    def visitObjectAccess(self, ctx):
-        """ ctx: objectAccess (ID '.' ID) """
-        id_ = ctx.ID(0).getText()
-        field = ctx.ID(1).getText()
-        if id_ not in self.sym.vars:
-            self._err(ctx, f"Variável '{id_}' não declarada")
-            return None
-        vs = self.sym.vars[id_]
-        if not isinstance(vs.type, InterfaceType):
-            self._err(ctx, f"Variável '{id_}' não é uma interface e não tem campos")
-            return None
-        if field not in vs.type.props:
-            self._err(ctx, f"Campo '{field}' não existe em '{vs.type.name()}'")
-            return None
-        return vs.type.props[field]
+    # ========================================================================
+    # EXPRESSION VISITORS
+    # ========================================================================
 
     def visitLiteral(self, ctx):
-        if ctx.NUMBER_LIT() is not None:
+        """Processa literal (number, string, boolean)"""
+        if ctx.NUMBER_LIT():
             return PrimitiveType("number")
-        if ctx.STRING() is not None:
+        if ctx.STRING():
             return PrimitiveType("string")
-        if ctx.BOOLEAN_LIT() is not None:
+        if ctx.BOOLEAN_LIT():
             return PrimitiveType("boolean")
         return None
 
     def visitPrimary(self, ctx):
-        """
-        ctx: primary
-        primary pode ser:
-         - literal (NUMBER_LIT, STRING, BOOLEAN_LIT)
-         - ID (referência a variável)
-         - '(' expression ')'
-         - arrayLiteral
-         - objectLiteral
-         - callExpr
-         - arrayAccess
-        """
-        # Tenta visitar literal
-        if ctx.literal() is not None:
+        """Processa expressões primárias (literais, identificadores, parênteses, arrays, objetos)"""
+        # Literal
+        if ctx.literal():
             return self.visit(ctx.literal())
         
-        # Tenta ID simples (referência a variável ou função)
-        if ctx.ID() is not None:
-            id_name = ctx.ID().getText()
-            if id_name in self.sym.vars:
-                return self.sym.vars[id_name].type
-            if id_name in self.sym.funcs:
-                # Referência a função como valor (retorna tipo de retorno)
-                return self.sym.funcs[id_name].return_type
-            # Se não é var nem função
-            self._err(ctx, f"Variável '{id_name}' não declarada")
+        # Identifier (variable or function reference)
+        if ctx.ID():
+            name = ctx.ID().getText()
+            if name in self.sym.vars:
+                return self.sym.vars[name].type
+            if name in self.sym.funcs:
+                return self.sym.funcs[name].return_type
+            self._err(ctx, f"Variable '{name}' not declared")
             return None
         
-        # Tenta expression dentro de parênteses
-        if ctx.expression() is not None:
+        # Parenthesized expression
+        if ctx.expression():
             return self.visit(ctx.expression())
         
-        # Tenta array literal
-        if ctx.arrayLiteral() is not None:
+        # Array literal
+        if ctx.arrayLiteral():
             return self.visit(ctx.arrayLiteral())
         
-        # Tenta object literal
-        if ctx.objectLiteral() is not None:
+        # Object literal
+        if ctx.objectLiteral():
             return self.visit(ctx.objectLiteral())
         
         return None
 
-    def visitPostfixExpr(self, ctx):
-        """
-        Processa expressões postfix (com operações de acesso)
-        postfixExpr: primary (postfixOp)*
-        """
-        # Pega o nome do primary se for um ID (para resolver funções)
-        primary_id_name = None
-        if ctx.primary().ID() is not None:
-            primary_id_name = ctx.primary().ID().getText()
+    def visitArrayLiteral(self, ctx):
+        """Processa array literal com verificação de homogeneidade"""
+        exprs = list(ctx.expression()) if ctx.expression() else []
         
-        # Começa com primary
+        if not exprs:
+            return ArrayType(PrimitiveType("unknown"))
+        
+        first = self.visit(exprs[0])
+        for expr in exprs[1:]:
+            elem_type = self.visit(expr)
+            if not self.types_equal(first, elem_type):
+                self._err(ctx, f"Heterogeneous array: elements have different types ({first.name()} vs {elem_type.name() if elem_type else 'null'})")
+        
+        return ArrayType(first)
+
+    def visitObjectLiteral(self, ctx):
+        """Processa object literal como interface anônima"""
+        obj = InterfaceType("<obj-literal>")
+        for prop in ctx.propAssign():
+            # Handle both ID and STRING as property names
+            if prop.ID():
+                key = prop.ID().getText()
+            else:
+                key = prop.STRING().getText()[1:-1]  # Remove quotes
+            
+            value_type = self.visit(prop.expression())
+            obj.props[key] = value_type
+        
+        return obj
+
+    def visitPostfixExpr(self, ctx):
+        """Processa expressões pós-fixadas: acesso a array, acesso a propriedade, chamadas de função"""
+        # Get primary ID name for function call resolution
+        primary_id = None
+        if ctx.primary().ID():
+            primary_id = ctx.primary().ID().getText()
+        
         result_type = self.visit(ctx.primary())
         
-        # Processa cada operação postfix
-        if hasattr(ctx, 'postfixOp') and ctx.postfixOp():
-            postfix_ops = ctx.postfixOp()
-            if not isinstance(postfix_ops, list):
-                postfix_ops = [postfix_ops]
+        # Process postfix operators
+        postfix_ops = ctx.postfixOp() if hasattr(ctx, 'postfixOp') and ctx.postfixOp() else []
+        if not isinstance(postfix_ops, list):
+            postfix_ops = [postfix_ops] if postfix_ops else []
+        
+        for op_idx, op in enumerate(postfix_ops):
+            op_text = op.getText()
             
-            for op_idx, op in enumerate(postfix_ops):
-                op_text = op.getText()
-                
-                # Array access: [expr]
-                if op_text.startswith('['):
-                    if isinstance(result_type, ArrayType):
-                        # Extrair índice e validar é number
-                        result_type = result_type.elem
+            if op_text.startswith('['):
+                # Array access
+                if isinstance(result_type, ArrayType):
+                    result_type = result_type.elem
+                else:
+                    self._err(ctx, "Array access on non-array type")
+                    return None
+            
+            elif op_text.startswith('.'):
+                # Property access
+                prop_name = op_text[1:]
+                if isinstance(result_type, InterfaceType):
+                    if prop_name in result_type.props:
+                        result_type = result_type.props[prop_name]
                     else:
-                        self._err(ctx, f"Acesso a índice em tipo não-array")
+                        self._err(ctx, f"Field '{prop_name}' not in interface '{result_type.name()}'")
                         return None
-                
-                # Property access: .ID
-                elif op_text.startswith('.'):
-                    prop_name = op_text[1:]  # Remove o ponto
-                    if isinstance(result_type, InterfaceType):
-                        if prop_name in result_type.props:
-                            result_type = result_type.props[prop_name]
-                        else:
-                            self._err(ctx, f"Campo '{prop_name}' não existe na interface '{result_type.name()}'")
-                            return None
-                    else:
-                        self._err(ctx, f"Acesso a propriedade em tipo não-interface")
-                        return None
-                
-                # Function call: (args)
-                elif op_text.startswith('('):
-                    # Se é o primeiro postfixOp e temos um primary ID, é uma função call
-                    if op_idx == 0 and primary_id_name:
-                        func_name = primary_id_name
-                        if func_name in self.sym.funcs:
-                            result_type = self.sym.funcs[func_name].return_type
-                        # Se não achou a função, o erro já foi gerado no visitPrimary
-                    # Chamadas em chain (como obj.method()) não são suportadas por enquanto
+                else:
+                    self._err(ctx, "Property access on non-interface type")
+                    return None
+            
+            elif op_text.startswith('(') and op_idx == 0 and primary_id:
+                # Function call (first postfix op on identifier)
+                if primary_id in self.sym.funcs:
+                    result_type = self.sym.funcs[primary_id].return_type
+                    if self.current_function:
+                        self.call_graph.setdefault(self.current_function, set()).add(primary_id)
         
         return result_type
 
-    def visitAdditiveExpr(self, ctx):
-        """
-        Processa expressões aditivas: a + b, a - b
-        Ambos operandos devem ser number, resultado é number
-        """
+    def _binary_expr(self, ctx, op_validator, result_type_fn):
+        """Tratador genérico para expressões binárias"""
         if ctx.getChildCount() == 1:
-            # Sem operação binária, apenas pasa adiante
             return self.visit(ctx.getChild(0))
         
-        # Com operação binária
-        left_type = self.visit(ctx.getChild(0))
+        left = self.visit(ctx.getChild(0))
         
         for i in range(1, ctx.getChildCount(), 2):
-            op = ctx.getChild(i).getText()  # '+' ou '-'
-            right = ctx.getChild(i + 1)
-            right_type = self.visit(right)
+            op = ctx.getChild(i).getText()
+            right = self.visit(ctx.getChild(i + 1))
             
-            # Validar tipos
-            if left_type and right_type:
-                if not (isinstance(left_type, PrimitiveType) and left_type.name() == "number" and
-                        isinstance(right_type, PrimitiveType) and right_type.name() == "number"):
-                    self._err(ctx, f"Operador '{op}' requer operandos do tipo number")
-                    return None
+            if left and right:
+                op_validator(left, right, op, ctx)
             
-            left_type = PrimitiveType("number")
+            left = result_type_fn(left, right)
         
-        return left_type
+        return left
+
+    def visitAdditiveExpr(self, ctx):
+        """Processa operadores + e - (apenas number)"""
+        def validate(l, r, op, c):
+            if not (isinstance(l, PrimitiveType) and l.name() == "number" and
+                    isinstance(r, PrimitiveType) and r.name() == "number"):
+                self._err(c, f"Operator '{op}' requires number operands")
+        
+        def result_type(l, r):
+            return PrimitiveType("number")
+        
+        return self._binary_expr(ctx, validate, result_type)
 
     def visitMultiplicativeExpr(self, ctx):
-        """
-        Processa expressões multiplicativas: a * b, a / b, a % b
-        Ambos operandos devem ser number, resultado é number
-        """
-        if ctx.getChildCount() == 1:
-            # Sem operação binária, apenas passa adiante
-            return self.visit(ctx.getChild(0))
+        """Processa operadores *, /, % (apenas number)"""
+        def validate(l, r, op, c):
+            if not (isinstance(l, PrimitiveType) and l.name() == "number" and
+                    isinstance(r, PrimitiveType) and r.name() == "number"):
+                self._err(c, f"Operator '{op}' requires number operands")
         
-        # Com operação binária
-        left_type = self.visit(ctx.getChild(0))
+        def result_type(l, r):
+            return PrimitiveType("number")
         
-        for i in range(1, ctx.getChildCount(), 2):
-            op = ctx.getChild(i).getText()  # '*', '/', '%'
-            right = ctx.getChild(i + 1)
-            right_type = self.visit(right)
-            
-            # Validar tipos
-            if left_type and right_type:
-                if not (isinstance(left_type, PrimitiveType) and left_type.name() == "number" and
-                        isinstance(right_type, PrimitiveType) and right_type.name() == "number"):
-                    self._err(ctx, f"Operador '{op}' requer operandos do tipo number")
-                    return None
-            
-            left_type = PrimitiveType("number")
-        
-        return left_type
+        return self._binary_expr(ctx, validate, result_type)
 
     def visitRelationalExpr(self, ctx):
-        """
-        Processa expressões relacionais: a < b, a <= b, a > b, a >= b
-        Ambos operandos devem ser number, resultado é boolean
-        """
-        if ctx.getChildCount() == 1:
-            # Sem operação binária
-            return self.visit(ctx.getChild(0))
+        """Processa operadores <, <=, >, >= (operandos number; resultado boolean)"""
+        def validate(l, r, op, c):
+            if not (isinstance(l, PrimitiveType) and l.name() == "number" and
+                    isinstance(r, PrimitiveType) and r.name() == "number"):
+                self._err(c, f"Operator '{op}' requires number operands")
         
-        # Com operação binária
-        left_type = self.visit(ctx.getChild(0))
+        def result_type(l, r):
+            return PrimitiveType("boolean")
         
-        for i in range(1, ctx.getChildCount(), 2):
-            op = ctx.getChild(i).getText()  # '<', '<=', '>', '>='
-            right = ctx.getChild(i + 1)
-            right_type = self.visit(right)
-            
-            # Validar tipos
-            if left_type and right_type:
-                if not (isinstance(left_type, PrimitiveType) and left_type.name() == "number" and
-                        isinstance(right_type, PrimitiveType) and right_type.name() == "number"):
-                    self._err(ctx, f"Operador '{op}' requer operandos do tipo number")
-                    return None
-            
-            left_type = PrimitiveType("boolean")
-        
-        return left_type
+        return self._binary_expr(ctx, validate, result_type)
 
     def visitEqualityExpr(self, ctx):
-        """
-        Processa expressões de igualdade: a == b, a != b
-        Ambos operandos devem ser do mesmo tipo, resultado é boolean
-        """
-        if ctx.getChildCount() == 1:
-            # Sem operação binária
-            return self.visit(ctx.getChild(0))
+        """Processa operadores == e != (mesmo tipo em ambos os lados; resultado boolean)"""
+        def validate(l, r, op, c):
+            if not self.types_equal(l, r):
+                self._err(c, f"Operator '{op}' requires operands of same type")
         
-        # Com operação binária
-        left_type = self.visit(ctx.getChild(0))
+        def result_type(l, r):
+            return PrimitiveType("boolean")
         
-        for i in range(1, ctx.getChildCount(), 2):
-            op = ctx.getChild(i).getText()  # '==', '!='
-            right = ctx.getChild(i + 1)
-            right_type = self.visit(right)
-            
-            # Validar tipos são iguais
-            if left_type and right_type:
-                if not self.types_equal(left_type, right_type):
-                    self._err(ctx, f"Operador '{op}' requer operandos do mesmo tipo")
-                    return None
-            
-            left_type = PrimitiveType("boolean")
-        
-        return left_type
+        return self._binary_expr(ctx, validate, result_type)
 
     def visitLogicalAndExpr(self, ctx):
-        """
-        Processa expressões lógicas AND: a && b
-        Ambos operandos devem ser boolean, resultado é boolean
-        """
-        if ctx.getChildCount() == 1:
-            # Sem operação binária
-            return self.visit(ctx.getChild(0))
+        """Processa operador && (apenas boolean)"""
+        def validate(l, r, op, c):
+            if not (isinstance(l, PrimitiveType) and l.name() == "boolean" and
+                    isinstance(r, PrimitiveType) and r.name() == "boolean"):
+                self._err(c, f"Operator '&&' requires boolean operands")
         
-        # Com operação binária
-        left_type = self.visit(ctx.getChild(0))
+        def result_type(l, r):
+            return PrimitiveType("boolean")
         
-        for i in range(1, ctx.getChildCount(), 2):
-            right = ctx.getChild(i + 1)
-            right_type = self.visit(right)
-            
-            # Validar tipos
-            if left_type and right_type:
-                if not (isinstance(left_type, PrimitiveType) and left_type.name() == "boolean" and
-                        isinstance(right_type, PrimitiveType) and right_type.name() == "boolean"):
-                    self._err(ctx, f"Operador '&&' requer operandos do tipo boolean")
-                    return None
-            
-            left_type = PrimitiveType("boolean")
-        
-        return left_type
+        return self._binary_expr(ctx, validate, result_type)
 
     def visitLogicalOrExpr(self, ctx):
-        """
-        Processa expressões lógicas OR: a || b
-        Ambos operandos devem ser boolean, resultado é boolean
-        """
-        if ctx.getChildCount() == 1:
-            # Sem operação binária
-            return self.visit(ctx.getChild(0))
+        """Processa operador || (apenas boolean)"""
+        def validate(l, r, op, c):
+            if not (isinstance(l, PrimitiveType) and l.name() == "boolean" and
+                    isinstance(r, PrimitiveType) and r.name() == "boolean"):
+                self._err(c, f"Operator '||' requires boolean operands")
         
-        # Com operação binária
-        left_type = self.visit(ctx.getChild(0))
+        def result_type(l, r):
+            return PrimitiveType("boolean")
         
-        for i in range(1, ctx.getChildCount(), 2):
-            right = ctx.getChild(i + 1)
-            right_type = self.visit(right)
-            
-            # Validar tipos
-            if left_type and right_type:
-                if not (isinstance(left_type, PrimitiveType) and left_type.name() == "boolean" and
-                        isinstance(right_type, PrimitiveType) and right_type.name() == "boolean"):
-                    self._err(ctx, f"Operador '||' requer operandos do tipo boolean")
-                    return None
-            
-            left_type = PrimitiveType("boolean")
-        
-        return left_type
+        return self._binary_expr(ctx, validate, result_type)
 
     def visitAssignmentExpr(self, ctx):
-        """
-        ctx: assignmentExpr
-        Cases:
-         - postfixExpr '=' assignmentExpr
-         - logicalOrExpr
-        """
-        # Procura por ASSIGN (símbolo '=')
-        has_assign = False
-        assign_index = -1
+        """Processa expressões de atribuição (postfixExpr = assignmentExpr)"""
+        # Find assignment operator
+        assign_idx = -1
         for i in range(ctx.getChildCount()):
-            child = ctx.getChild(i)
-            if hasattr(child, 'getText'):
-                text = child.getText()
-                if text == '=' and not text.startswith('==') and not text.startswith('!='):
-                    has_assign = True
-                    assign_index = i
-                    break
+            text = ctx.getChild(i).getText()
+            if text == '=' and '==' not in text:
+                assign_idx = i
+                break
         
-        if has_assign and assign_index > 0:
-            # Temos uma atribuição: postfixExpr = assignmentExpr
+        if assign_idx > 0:
+            # Assignment found
             left = ctx.getChild(0)
-            left_type = self.visit(left)  # Visita o postfixExpr
+            left_type = self.visit(left)
             
-            # Validar se pode ser reatribuído (se é ID simples e const)
-            if hasattr(left, 'getText'):
+            # Check const reassignment
+            if hasattr(left, 'getText') and assign_idx == 1:
                 left_text = left.getText()
-                # Se é apenas um ID simples
-                if assign_index == 1 and left_text in self.sym.vars:
-                    var_symbol = self.sym.vars[left_text]
-                    if var_symbol.is_const:
-                        self._err(ctx, f"Não é possível reatribuir a variável const '{left_text}'")
+                if left_text in self.sym.vars and self.sym.vars[left_text].is_const:
+                    self._err(ctx, f"Cannot reassign const variable '{left_text}'")
             
-            # Validar tipo da atribuição
+            # Check type compatibility
             right_type = self.visit(ctx.assignmentExpr())
             if left_type and right_type:
                 if not self.is_assignable(left_type, right_type, ctx):
-                    self._err(ctx, f"Atribuição de tipos incompatíveis: não é possível atribuir {right_type.name()} a {left_type.name()}")
+                    self._err(ctx, f"Type mismatch in assignment: cannot assign {right_type.name()} to {left_type.name()}")
+            
             return left_type
         else:
-            # Não é atribuição, é apenas uma expressão
-            # Visita logicalOrExpr
-            if ctx.logicalOrExpr() is not None:
+            # No assignment, just expression
+            if ctx.logicalOrExpr():
                 return self.visit(ctx.logicalOrExpr())
-            else:
-                return self.visitChildren(ctx)
+            return self.visitChildren(ctx)
 
-    # fallback generic visitChildren: visita filhos e retorna último tipo conhecido
     def visitChildren(self, node):
-        last = None
+        """Fallback: visita todos os filhos e retorna o último tipo"""
+        result = None
         for i in range(node.getChildCount()):
-            c = node.getChild(i)
-            if hasattr(c, 'accept'):
-                t = c.accept(self)
-                if t is not None:
-                    last = t
-        return last
+            child = node.getChild(i)
+            if hasattr(child, 'accept'):
+                t = child.accept(self)
+                if t:
+                    result = t
+        return result
 
-    # -------------------
-    # pós-análise: detectar recursão indireta
-    # -------------------
-    def detect_indirect_recursion(self):
-        visited: Set[str] = set()
-        stack: Set[str] = set()
+    # ========================================================================
+    # ANALYSIS ENTRY POINT
+    # ========================================================================
 
-        def dfs(u: str, path: List[str]):
-            visited.add(u)
-            stack.add(u)
-            path.append(u)
-            for v in self.call_graph.get(u, set()):
-                if v not in visited:
-                    dfs(v, path)
-                elif v in stack:
-                    # achou ciclo
-                    idx = path.index(v)
-                    cycle = path[idx:] + [v]
-                    # se ciclo contém mais de 1 função -> recursão indireta
-                    nodes = list(dict.fromkeys(cycle))  # unique in order
-                    if len(nodes) > 1:
-                        self._err(None, f"Recursão indireta detectada: ciclo de chamadas {nodes}. Apenas recursão direta (autochamada) é permitida.")
-            stack.remove(u)
-            path.pop()
-
-        for f in list(self.call_graph.keys()):
-            if f not in visited:
-                dfs(f, [])
-
-    # -------------------
-    # entry point
-    # -------------------
     def analyze(self, tree) -> List[str]:
-        # percorre a árvore
+        """Ponto de entrada: analisa a árvore e retorna lista de erros"""
         tree.accept(self)
-        # detecta recursão indireta
-        self.detect_indirect_recursion()
         return self.errors
-
-# End of semantic_analyzer.py

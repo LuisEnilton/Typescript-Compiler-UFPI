@@ -1,111 +1,62 @@
+/**
+ * Gramática estilo TypeScript (Simplificada)
+ * Análise Lexical -> Parsing -> Análise Semântica
+ */
+
 grammar TypeScript;
 
-/* ============================================================
-   PROGRAMA
-   ============================================================ */
+// ============================================================================
+// ESTRUTURA DO PROGRAMA
+// ============================================================================
 
 program: statement* EOF;
 
-
-/* ============================================================
-   STATEMENTS
-   ============================================================ */
-
 statement
-    : variableDecl
-    | functionDecl
-    | interfaceDecl
-    | ifStmt
-    | whileStmt
-    | forStmt
-    | expressionStmt
-    | returnStmt
-    | block
+    : variableDecl | functionDecl | interfaceDecl
+    | ifStmt | whileStmt | forStmt
+    | expressionStmt | returnStmt | block
     ;
 
 block: '{' statement* '}';
 
+// ============================================================================
+// DECLARAÇÕES
+// ============================================================================
 
-/* ============================================================
-   DECLARAÇÕES DE VARIÁVEIS E FUNÇÕES
-   ============================================================ */
-
-// let x: number = 10;
-variableDecl:
-      (LET | CONST) ID ':' typeExpr (ASSIGN expression)? ';'
-    ;
-
-// function soma(a: number): number { ... }
-functionDecl:
-      FUNCTION ID '(' paramList? ')' ':' typeExpr block
-    ;
-
-paramList: param (',' param)* ;
+variableDecl: (LET | CONST) ID ':' typeExpr (ASSIGN expression)? ';';
+functionDecl: FUNCTION ID '(' paramList? ')' ':' typeExpr block;
+paramList: param (',' param)*;
 param: ID ':' typeExpr;
-
 returnStmt: RETURN expression? ';';
 
+// ============================================================================
+// CONTROLE DE FLUXO
+// ============================================================================
 
-/* ============================================================
-   CONTROLE DE FLUXO
-   ============================================================ */
-
-ifStmt: IF '(' expression ')' statement (ELSE statement)? ;
-
-whileStmt: WHILE '(' expression ')' statement ;
-
-forStmt:
-      FOR '('
-        (variableDecl | expressionStmt | ';')
-        expression?
-        ';'
-        expression?
-      ')'
-      statement
-    ;
-
+ifStmt: IF '(' expression ')' statement (ELSE statement)?;
+whileStmt: WHILE '(' expression ')' statement;
+forStmt: FOR '(' (variableDecl | expressionStmt | ';') expression? ';' expression? ')' statement;
 expressionStmt: expression ';';
 
-
-/* ============================================================
-   EXPRESSÕES COM PRECEDÊNCIA
-   ============================================================ */
+// ============================================================================
+// EXPRESSÕES (Ordem de Precedência)
+// ============================================================================
 
 expression: assignmentExpr;
+assignmentExpr: postfixExpr ASSIGN assignmentExpr | logicalOrExpr;
+logicalOrExpr: logicalAndExpr (OR logicalAndExpr)*;
+logicalAndExpr: equalityExpr (AND equalityExpr)*;
+equalityExpr: relationalExpr ((EQ | NEQ) relationalExpr)*;
+relationalExpr: additiveExpr ((LT | LTE | GT | GTE) additiveExpr)*;
+additiveExpr: multiplicativeExpr ((PLUS | MINUS) multiplicativeExpr)*;
+multiplicativeExpr: unaryExpr ((MULT | DIV | MOD) unaryExpr)*;
+unaryExpr: NOT unaryExpr | postfixExpr;
+postfixExpr: primary (postfixOp)*;
+postfixOp: '[' expression ']' | '.' ID | '(' (expression (',' expression)*)? ')';
 
-assignmentExpr
-    : postfixExpr ASSIGN assignmentExpr     // postfix '=' value
-    | logicalOrExpr
-    ;
-
-logicalOrExpr:  logicalAndExpr  ( OR  logicalAndExpr )* ;
-logicalAndExpr: equalityExpr    ( AND equalityExpr )* ;
-equalityExpr:   relationalExpr  ( (EQ | NEQ) relationalExpr )* ;
-relationalExpr: additiveExpr    ( (LT | LTE | GT | GTE) additiveExpr )* ;
-additiveExpr:   multiplicativeExpr ( (PLUS | MINUS) multiplicativeExpr )* ;
-multiplicativeExpr:
-      unaryExpr ( (MULT | DIV | MOD) unaryExpr )*
-    ;
-
-unaryExpr
-    : NOT unaryExpr
-    | postfixExpr
-    ;
-
-postfixExpr
-    : primary (postfixOp)*
-    ;
-
-postfixOp
-    : '[' expression ']'      // array access
-    | '.' ID                   // property access
-    | '(' (expression (',' expression)*)? ')'  // function call
-    ;
-
-
-/* ============================================================
-   FORMAS PRIMÁRIAS
-   ============================================================ */
+// ============================================================================
+// EXPRESSÕES PRIMÁRIAS
+// ============================================================================
 
 primary
     : literal
@@ -115,59 +66,35 @@ primary
     | objectLiteral
     ;
 
-// [1,2,3]
-arrayLiteral: '[' (expression (',' expression)*)? ']' ;
+arrayLiteral: '[' (expression (',' expression)*)? ']';
+objectLiteral: '{' (propAssign (',' propAssign)*)? '}';
+propAssign: (STRING | ID) ':' expression;
 
-// { name: "Ana", age: 20 }
-objectLiteral: '{' (propAssign (',' propAssign)*)? '}' ;
-propAssign: (STRING | ID) ':' expression ;
+// ============================================================================
+// TIPOS
+// ============================================================================
 
+typeExpr: baseType ('[' ']')?;
+baseType: NUMBER_TYPE | STRING_TYPE | BOOLEAN_TYPE | ID;
 
-/* ============================================================
-   TIPOS
-   ============================================================ */
+// ============================================================================
+// INTERFACES
+// ============================================================================
 
-// T[]
-// number
-// User
-typeExpr: baseType ( '[' ']' )? ;
-
-baseType:
-      NUMBER_TYPE
-    | STRING_TYPE
-    | BOOLEAN_TYPE
-    | ID               // nome de interface
-    ;
-
-
-/* ============================================================
-   INTERFACES
-   ============================================================ */
-
-// interface User { name: string; age: number; }
-interfaceDecl:
-      INTERFACE ID '{' interfaceProp* '}'
-    ;
-
+interfaceDecl: INTERFACE ID '{' interfaceProp* '}';
 interfaceProp: ID ':' typeExpr ';';
 
+// ============================================================================
+// LITERAIS
+// ============================================================================
 
-/* ============================================================
-   LITERAIS
-   ============================================================ */
+literal: NUMBER_LIT | STRING | BOOLEAN_LIT;
 
-literal:
-      NUMBER_LIT
-    | STRING
-    | BOOLEAN_LIT
-    ;
+// ============================================================================
+// TOKENS
+// ============================================================================
 
-
-/* ============================================================
-   LÉXICO (TOKENS)
-   ============================================================ */
-
-// palavras-chave
+// Keywords
 LET: 'let';
 CONST: 'const';
 FUNCTION: 'function';
@@ -178,51 +105,35 @@ FOR: 'for';
 INTERFACE: 'interface';
 RETURN: 'return';
 
-// tipos primitivos
+// Primitive Types
 NUMBER_TYPE: 'number';
 STRING_TYPE: 'string';
 BOOLEAN_TYPE: 'boolean';
 
-// operadores
+// Operators
 ASSIGN: '=';
 PLUS: '+';
 MINUS: '-';
 MULT: '*';
 DIV: '/';
 MOD: '%';
-
 EQ: '==';
 NEQ: '!=';
 LT: '<';
 LTE: '<=';
 GT: '>';
 GTE: '>=';
-
 AND: '&&';
 OR: '||';
 NOT: '!';
 
-// símbolos
-SEMI: ';';
-COMMA: ',';
-COLON: ':';
-LPAREN: '(';
-RPAREN: ')';
-LBRACE: '{';
-RBRACE: '}';
-LBRACK: '[';
-RBRACK: ']';
-DOT: '.';
+// Literals and Identifiers
+NUMBER_LIT: [0-9]+ ('.' [0-9]+)?;
+STRING: '"' (~["\\] | '\\' .)* '"' | '\'' (~['\\] | '\\' .)* '\'';
+BOOLEAN_LIT: 'true' | 'false';
+ID: [a-zA-Z_] [a-zA-Z0-9_]*;
 
-// literais
-NUMBER_LIT: [0-9]+ ('.' [0-9]+)? ;
-STRING: '"' (~["\\] | '\\' .)* '"' | '\'' (~['\\] | '\\' .)* '\'' ;
-BOOLEAN_LIT: 'true' | 'false' ;
-
-// identificadores
-ID: [a-zA-Z_] [a-zA-Z0-9_]* ;
-
-// comentários e espaços
+// Skip whitespace and comments
 WS: [ \t\r\n]+ -> skip;
 LINE_COMMENT: '//' ~[\r\n]* -> skip;
 BLOCK_COMMENT: '/*' .*? '*/' -> skip;
