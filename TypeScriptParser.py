@@ -10,7 +10,7 @@ else:
 
 def serializedATN():
     return [
-        4,1,44,323,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,
+        4,1,44,321,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,
         6,2,7,7,7,2,8,7,8,2,9,7,9,2,10,7,10,2,11,7,11,2,12,7,12,2,13,7,13,
         2,14,7,14,2,15,7,15,2,16,7,16,2,17,7,17,2,18,7,18,2,19,7,19,2,20,
         7,20,2,21,7,21,2,22,7,22,2,23,7,23,2,24,7,24,2,25,7,25,2,26,7,26,
@@ -22,31 +22,31 @@ def serializedATN():
         6,1,6,1,7,1,7,3,7,128,8,7,1,7,1,7,1,8,1,8,1,8,1,8,1,8,1,8,1,8,3,
         8,139,8,8,1,9,1,9,1,9,1,9,1,9,1,9,1,10,1,10,1,10,1,10,1,10,3,10,
         152,8,10,1,10,3,10,155,8,10,1,10,1,10,3,10,159,8,10,1,10,1,10,1,
-        10,1,11,1,11,1,11,1,12,1,12,1,13,1,13,1,13,1,13,1,13,1,13,1,13,1,
-        13,1,13,1,13,1,13,1,13,1,13,3,13,182,8,13,1,14,1,14,1,14,5,14,187,
-        8,14,10,14,12,14,190,9,14,1,15,1,15,1,15,5,15,195,8,15,10,15,12,
-        15,198,9,15,1,16,1,16,1,16,5,16,203,8,16,10,16,12,16,206,9,16,1,
-        17,1,17,1,17,5,17,211,8,17,10,17,12,17,214,9,17,1,18,1,18,1,18,5,
-        18,219,8,18,10,18,12,18,222,9,18,1,19,1,19,1,19,5,19,227,8,19,10,
-        19,12,19,230,9,19,1,20,1,20,1,20,3,20,235,8,20,1,21,1,21,1,21,1,
-        21,1,21,1,21,1,21,1,21,1,21,1,21,3,21,247,8,21,1,22,1,22,1,22,1,
-        22,1,22,5,22,254,8,22,10,22,12,22,257,9,22,3,22,259,8,22,1,22,1,
-        22,1,23,1,23,1,23,1,23,1,23,1,24,1,24,1,24,1,24,5,24,272,8,24,10,
-        24,12,24,275,9,24,3,24,277,8,24,1,24,1,24,1,25,1,25,1,25,1,25,5,
-        25,285,8,25,10,25,12,25,288,9,25,3,25,290,8,25,1,25,1,25,1,26,1,
-        26,1,26,1,26,1,27,1,27,1,27,3,27,301,8,27,1,28,1,28,1,29,1,29,1,
-        29,1,29,5,29,309,8,29,10,29,12,29,312,9,29,1,29,1,29,1,30,1,30,1,
-        30,1,30,1,30,1,31,1,31,1,31,0,0,32,0,2,4,6,8,10,12,14,16,18,20,22,
-        24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,54,56,58,60,62,0,8,
-        1,0,1,2,1,0,19,20,1,0,21,24,1,0,14,15,1,0,16,18,2,0,39,39,41,41,
-        2,0,10,12,41,41,1,0,38,40,333,0,67,1,0,0,0,2,81,1,0,0,0,4,83,1,0,
+        10,1,11,1,11,1,11,1,12,1,12,1,13,1,13,1,13,1,13,1,13,3,13,174,8,
+        13,1,14,1,14,1,14,5,14,179,8,14,10,14,12,14,182,9,14,1,15,1,15,1,
+        15,5,15,187,8,15,10,15,12,15,190,9,15,1,16,1,16,1,16,5,16,195,8,
+        16,10,16,12,16,198,9,16,1,17,1,17,1,17,5,17,203,8,17,10,17,12,17,
+        206,9,17,1,18,1,18,1,18,5,18,211,8,18,10,18,12,18,214,9,18,1,19,
+        1,19,1,19,5,19,219,8,19,10,19,12,19,222,9,19,1,20,1,20,1,20,3,20,
+        227,8,20,1,21,1,21,5,21,231,8,21,10,21,12,21,234,9,21,1,22,1,22,
+        1,22,1,22,1,22,1,22,1,22,1,22,1,22,1,22,5,22,246,8,22,10,22,12,22,
+        249,9,22,3,22,251,8,22,1,22,3,22,254,8,22,1,23,1,23,1,23,1,23,1,
+        23,1,23,1,23,1,23,3,23,264,8,23,1,24,1,24,1,24,1,24,5,24,270,8,24,
+        10,24,12,24,273,9,24,3,24,275,8,24,1,24,1,24,1,25,1,25,1,25,1,25,
+        5,25,283,8,25,10,25,12,25,286,9,25,3,25,288,8,25,1,25,1,25,1,26,
+        1,26,1,26,1,26,1,27,1,27,1,27,3,27,299,8,27,1,28,1,28,1,29,1,29,
+        1,29,1,29,5,29,307,8,29,10,29,12,29,310,9,29,1,29,1,29,1,30,1,30,
+        1,30,1,30,1,30,1,31,1,31,1,31,0,0,32,0,2,4,6,8,10,12,14,16,18,20,
+        22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,54,56,58,60,62,0,
+        8,1,0,1,2,1,0,19,20,1,0,21,24,1,0,14,15,1,0,16,18,2,0,39,39,41,41,
+        2,0,10,12,41,41,1,0,38,40,330,0,67,1,0,0,0,2,81,1,0,0,0,4,83,1,0,
         0,0,6,92,1,0,0,0,8,102,1,0,0,0,10,113,1,0,0,0,12,121,1,0,0,0,14,
         125,1,0,0,0,16,131,1,0,0,0,18,140,1,0,0,0,20,146,1,0,0,0,22,163,
-        1,0,0,0,24,166,1,0,0,0,26,181,1,0,0,0,28,183,1,0,0,0,30,191,1,0,
-        0,0,32,199,1,0,0,0,34,207,1,0,0,0,36,215,1,0,0,0,38,223,1,0,0,0,
-        40,234,1,0,0,0,42,246,1,0,0,0,44,248,1,0,0,0,46,262,1,0,0,0,48,267,
-        1,0,0,0,50,280,1,0,0,0,52,293,1,0,0,0,54,297,1,0,0,0,56,302,1,0,
-        0,0,58,304,1,0,0,0,60,315,1,0,0,0,62,320,1,0,0,0,64,66,3,2,1,0,65,
+        1,0,0,0,24,166,1,0,0,0,26,173,1,0,0,0,28,175,1,0,0,0,30,183,1,0,
+        0,0,32,191,1,0,0,0,34,199,1,0,0,0,36,207,1,0,0,0,38,215,1,0,0,0,
+        40,226,1,0,0,0,42,228,1,0,0,0,44,253,1,0,0,0,46,263,1,0,0,0,48,265,
+        1,0,0,0,50,278,1,0,0,0,52,291,1,0,0,0,54,295,1,0,0,0,56,300,1,0,
+        0,0,58,302,1,0,0,0,60,313,1,0,0,0,62,318,1,0,0,0,64,66,3,2,1,0,65,
         64,1,0,0,0,66,69,1,0,0,0,67,65,1,0,0,0,67,68,1,0,0,0,68,70,1,0,0,
         0,69,67,1,0,0,0,70,71,5,0,0,1,71,1,1,0,0,0,72,82,3,6,3,0,73,82,3,
         8,4,0,74,82,3,58,29,0,75,82,3,16,8,0,76,82,3,18,9,0,77,82,3,20,10,
@@ -76,54 +76,53 @@ def serializedATN():
         0,156,158,5,28,0,0,157,159,3,24,12,0,158,157,1,0,0,0,158,159,1,0,
         0,0,159,160,1,0,0,0,160,161,5,32,0,0,161,162,3,2,1,0,162,21,1,0,
         0,0,163,164,3,24,12,0,164,165,5,28,0,0,165,23,1,0,0,0,166,167,3,
-        26,13,0,167,25,1,0,0,0,168,169,5,41,0,0,169,170,5,13,0,0,170,182,
-        3,26,13,0,171,172,3,46,23,0,172,173,5,13,0,0,173,174,3,26,13,0,174,
-        182,1,0,0,0,175,176,5,41,0,0,176,177,5,37,0,0,177,178,5,41,0,0,178,
-        179,5,13,0,0,179,182,3,26,13,0,180,182,3,28,14,0,181,168,1,0,0,0,
-        181,171,1,0,0,0,181,175,1,0,0,0,181,180,1,0,0,0,182,27,1,0,0,0,183,
-        188,3,30,15,0,184,185,5,26,0,0,185,187,3,30,15,0,186,184,1,0,0,0,
-        187,190,1,0,0,0,188,186,1,0,0,0,188,189,1,0,0,0,189,29,1,0,0,0,190,
-        188,1,0,0,0,191,196,3,32,16,0,192,193,5,25,0,0,193,195,3,32,16,0,
-        194,192,1,0,0,0,195,198,1,0,0,0,196,194,1,0,0,0,196,197,1,0,0,0,
-        197,31,1,0,0,0,198,196,1,0,0,0,199,204,3,34,17,0,200,201,7,1,0,0,
-        201,203,3,34,17,0,202,200,1,0,0,0,203,206,1,0,0,0,204,202,1,0,0,
-        0,204,205,1,0,0,0,205,33,1,0,0,0,206,204,1,0,0,0,207,212,3,36,18,
-        0,208,209,7,2,0,0,209,211,3,36,18,0,210,208,1,0,0,0,211,214,1,0,
-        0,0,212,210,1,0,0,0,212,213,1,0,0,0,213,35,1,0,0,0,214,212,1,0,0,
-        0,215,220,3,38,19,0,216,217,7,3,0,0,217,219,3,38,19,0,218,216,1,
-        0,0,0,219,222,1,0,0,0,220,218,1,0,0,0,220,221,1,0,0,0,221,37,1,0,
-        0,0,222,220,1,0,0,0,223,228,3,40,20,0,224,225,7,4,0,0,225,227,3,
-        40,20,0,226,224,1,0,0,0,227,230,1,0,0,0,228,226,1,0,0,0,228,229,
-        1,0,0,0,229,39,1,0,0,0,230,228,1,0,0,0,231,232,5,27,0,0,232,235,
-        3,40,20,0,233,235,3,42,21,0,234,231,1,0,0,0,234,233,1,0,0,0,235,
-        41,1,0,0,0,236,247,3,62,31,0,237,247,5,41,0,0,238,239,5,31,0,0,239,
-        240,3,24,12,0,240,241,5,32,0,0,241,247,1,0,0,0,242,247,3,48,24,0,
-        243,247,3,50,25,0,244,247,3,44,22,0,245,247,3,46,23,0,246,236,1,
-        0,0,0,246,237,1,0,0,0,246,238,1,0,0,0,246,242,1,0,0,0,246,243,1,
-        0,0,0,246,244,1,0,0,0,246,245,1,0,0,0,247,43,1,0,0,0,248,249,5,41,
-        0,0,249,258,5,31,0,0,250,255,3,24,12,0,251,252,5,29,0,0,252,254,
-        3,24,12,0,253,251,1,0,0,0,254,257,1,0,0,0,255,253,1,0,0,0,255,256,
-        1,0,0,0,256,259,1,0,0,0,257,255,1,0,0,0,258,250,1,0,0,0,258,259,
-        1,0,0,0,259,260,1,0,0,0,260,261,5,32,0,0,261,45,1,0,0,0,262,263,
-        5,41,0,0,263,264,5,35,0,0,264,265,3,24,12,0,265,266,5,36,0,0,266,
-        47,1,0,0,0,267,276,5,35,0,0,268,273,3,24,12,0,269,270,5,29,0,0,270,
-        272,3,24,12,0,271,269,1,0,0,0,272,275,1,0,0,0,273,271,1,0,0,0,273,
-        274,1,0,0,0,274,277,1,0,0,0,275,273,1,0,0,0,276,268,1,0,0,0,276,
-        277,1,0,0,0,277,278,1,0,0,0,278,279,5,36,0,0,279,49,1,0,0,0,280,
-        289,5,33,0,0,281,286,3,52,26,0,282,283,5,29,0,0,283,285,3,52,26,
-        0,284,282,1,0,0,0,285,288,1,0,0,0,286,284,1,0,0,0,286,287,1,0,0,
-        0,287,290,1,0,0,0,288,286,1,0,0,0,289,281,1,0,0,0,289,290,1,0,0,
-        0,290,291,1,0,0,0,291,292,5,34,0,0,292,51,1,0,0,0,293,294,7,5,0,
-        0,294,295,5,30,0,0,295,296,3,24,12,0,296,53,1,0,0,0,297,300,3,56,
-        28,0,298,299,5,35,0,0,299,301,5,36,0,0,300,298,1,0,0,0,300,301,1,
-        0,0,0,301,55,1,0,0,0,302,303,7,6,0,0,303,57,1,0,0,0,304,305,5,8,
-        0,0,305,306,5,41,0,0,306,310,5,33,0,0,307,309,3,60,30,0,308,307,
-        1,0,0,0,309,312,1,0,0,0,310,308,1,0,0,0,310,311,1,0,0,0,311,313,
-        1,0,0,0,312,310,1,0,0,0,313,314,5,34,0,0,314,59,1,0,0,0,315,316,
-        5,41,0,0,316,317,5,30,0,0,317,318,3,54,27,0,318,319,5,28,0,0,319,
-        61,1,0,0,0,320,321,7,7,0,0,321,63,1,0,0,0,28,67,81,87,98,106,118,
-        127,138,151,154,158,181,188,196,204,212,220,228,234,246,255,258,
-        273,276,286,289,300,310
+        26,13,0,167,25,1,0,0,0,168,169,3,42,21,0,169,170,5,13,0,0,170,171,
+        3,26,13,0,171,174,1,0,0,0,172,174,3,28,14,0,173,168,1,0,0,0,173,
+        172,1,0,0,0,174,27,1,0,0,0,175,180,3,30,15,0,176,177,5,26,0,0,177,
+        179,3,30,15,0,178,176,1,0,0,0,179,182,1,0,0,0,180,178,1,0,0,0,180,
+        181,1,0,0,0,181,29,1,0,0,0,182,180,1,0,0,0,183,188,3,32,16,0,184,
+        185,5,25,0,0,185,187,3,32,16,0,186,184,1,0,0,0,187,190,1,0,0,0,188,
+        186,1,0,0,0,188,189,1,0,0,0,189,31,1,0,0,0,190,188,1,0,0,0,191,196,
+        3,34,17,0,192,193,7,1,0,0,193,195,3,34,17,0,194,192,1,0,0,0,195,
+        198,1,0,0,0,196,194,1,0,0,0,196,197,1,0,0,0,197,33,1,0,0,0,198,196,
+        1,0,0,0,199,204,3,36,18,0,200,201,7,2,0,0,201,203,3,36,18,0,202,
+        200,1,0,0,0,203,206,1,0,0,0,204,202,1,0,0,0,204,205,1,0,0,0,205,
+        35,1,0,0,0,206,204,1,0,0,0,207,212,3,38,19,0,208,209,7,3,0,0,209,
+        211,3,38,19,0,210,208,1,0,0,0,211,214,1,0,0,0,212,210,1,0,0,0,212,
+        213,1,0,0,0,213,37,1,0,0,0,214,212,1,0,0,0,215,220,3,40,20,0,216,
+        217,7,4,0,0,217,219,3,40,20,0,218,216,1,0,0,0,219,222,1,0,0,0,220,
+        218,1,0,0,0,220,221,1,0,0,0,221,39,1,0,0,0,222,220,1,0,0,0,223,224,
+        5,27,0,0,224,227,3,40,20,0,225,227,3,42,21,0,226,223,1,0,0,0,226,
+        225,1,0,0,0,227,41,1,0,0,0,228,232,3,46,23,0,229,231,3,44,22,0,230,
+        229,1,0,0,0,231,234,1,0,0,0,232,230,1,0,0,0,232,233,1,0,0,0,233,
+        43,1,0,0,0,234,232,1,0,0,0,235,236,5,35,0,0,236,237,3,24,12,0,237,
+        238,5,36,0,0,238,254,1,0,0,0,239,240,5,37,0,0,240,254,5,41,0,0,241,
+        250,5,31,0,0,242,247,3,24,12,0,243,244,5,29,0,0,244,246,3,24,12,
+        0,245,243,1,0,0,0,246,249,1,0,0,0,247,245,1,0,0,0,247,248,1,0,0,
+        0,248,251,1,0,0,0,249,247,1,0,0,0,250,242,1,0,0,0,250,251,1,0,0,
+        0,251,252,1,0,0,0,252,254,5,32,0,0,253,235,1,0,0,0,253,239,1,0,0,
+        0,253,241,1,0,0,0,254,45,1,0,0,0,255,264,3,62,31,0,256,264,5,41,
+        0,0,257,258,5,31,0,0,258,259,3,24,12,0,259,260,5,32,0,0,260,264,
+        1,0,0,0,261,264,3,48,24,0,262,264,3,50,25,0,263,255,1,0,0,0,263,
+        256,1,0,0,0,263,257,1,0,0,0,263,261,1,0,0,0,263,262,1,0,0,0,264,
+        47,1,0,0,0,265,274,5,35,0,0,266,271,3,24,12,0,267,268,5,29,0,0,268,
+        270,3,24,12,0,269,267,1,0,0,0,270,273,1,0,0,0,271,269,1,0,0,0,271,
+        272,1,0,0,0,272,275,1,0,0,0,273,271,1,0,0,0,274,266,1,0,0,0,274,
+        275,1,0,0,0,275,276,1,0,0,0,276,277,5,36,0,0,277,49,1,0,0,0,278,
+        287,5,33,0,0,279,284,3,52,26,0,280,281,5,29,0,0,281,283,3,52,26,
+        0,282,280,1,0,0,0,283,286,1,0,0,0,284,282,1,0,0,0,284,285,1,0,0,
+        0,285,288,1,0,0,0,286,284,1,0,0,0,287,279,1,0,0,0,287,288,1,0,0,
+        0,288,289,1,0,0,0,289,290,5,34,0,0,290,51,1,0,0,0,291,292,7,5,0,
+        0,292,293,5,30,0,0,293,294,3,24,12,0,294,53,1,0,0,0,295,298,3,56,
+        28,0,296,297,5,35,0,0,297,299,5,36,0,0,298,296,1,0,0,0,298,299,1,
+        0,0,0,299,55,1,0,0,0,300,301,7,6,0,0,301,57,1,0,0,0,302,303,5,8,
+        0,0,303,304,5,41,0,0,304,308,5,33,0,0,305,307,3,60,30,0,306,305,
+        1,0,0,0,307,310,1,0,0,0,308,306,1,0,0,0,308,309,1,0,0,0,309,311,
+        1,0,0,0,310,308,1,0,0,0,311,312,5,34,0,0,312,59,1,0,0,0,313,314,
+        5,41,0,0,314,315,5,30,0,0,315,316,3,54,27,0,316,317,5,28,0,0,317,
+        61,1,0,0,0,318,319,7,7,0,0,319,63,1,0,0,0,30,67,81,87,98,106,118,
+        127,138,151,154,158,173,180,188,196,204,212,220,226,232,247,250,
+        253,263,271,274,284,287,298,308
     ]
 
 class TypeScriptParser ( Parser ):
@@ -174,9 +173,9 @@ class TypeScriptParser ( Parser ):
     RULE_additiveExpr = 18
     RULE_multiplicativeExpr = 19
     RULE_unaryExpr = 20
-    RULE_primary = 21
-    RULE_callExpr = 22
-    RULE_arrayAccess = 23
+    RULE_postfixExpr = 21
+    RULE_postfixOp = 22
+    RULE_primary = 23
     RULE_arrayLiteral = 24
     RULE_objectLiteral = 25
     RULE_propAssign = 26
@@ -190,8 +189,8 @@ class TypeScriptParser ( Parser ):
                    "paramList", "param", "returnStmt", "ifStmt", "whileStmt", 
                    "forStmt", "expressionStmt", "expression", "assignmentExpr", 
                    "logicalOrExpr", "logicalAndExpr", "equalityExpr", "relationalExpr", 
-                   "additiveExpr", "multiplicativeExpr", "unaryExpr", "primary", 
-                   "callExpr", "arrayAccess", "arrayLiteral", "objectLiteral", 
+                   "additiveExpr", "multiplicativeExpr", "unaryExpr", "postfixExpr", 
+                   "postfixOp", "primary", "arrayLiteral", "objectLiteral", 
                    "propAssign", "typeExpr", "baseType", "interfaceDecl", 
                    "interfaceProp", "literal" ]
 
@@ -1282,11 +1281,9 @@ class TypeScriptParser ( Parser ):
             super().__init__(parent, invokingState)
             self.parser = parser
 
-        def ID(self, i:int=None):
-            if i is None:
-                return self.getTokens(TypeScriptParser.ID)
-            else:
-                return self.getToken(TypeScriptParser.ID, i)
+        def postfixExpr(self):
+            return self.getTypedRuleContext(TypeScriptParser.PostfixExprContext,0)
+
 
         def ASSIGN(self):
             return self.getToken(TypeScriptParser.ASSIGN, 0)
@@ -1294,13 +1291,6 @@ class TypeScriptParser ( Parser ):
         def assignmentExpr(self):
             return self.getTypedRuleContext(TypeScriptParser.AssignmentExprContext,0)
 
-
-        def arrayAccess(self):
-            return self.getTypedRuleContext(TypeScriptParser.ArrayAccessContext,0)
-
-
-        def DOT(self):
-            return self.getToken(TypeScriptParser.DOT, 0)
 
         def logicalOrExpr(self):
             return self.getTypedRuleContext(TypeScriptParser.LogicalOrExprContext,0)
@@ -1331,13 +1321,13 @@ class TypeScriptParser ( Parser ):
         localctx = TypeScriptParser.AssignmentExprContext(self, self._ctx, self.state)
         self.enterRule(localctx, 26, self.RULE_assignmentExpr)
         try:
-            self.state = 181
+            self.state = 173
             self._errHandler.sync(self)
             la_ = self._interp.adaptivePredict(self._input,11,self._ctx)
             if la_ == 1:
                 self.enterOuterAlt(localctx, 1)
                 self.state = 168
-                self.match(TypeScriptParser.ID)
+                self.postfixExpr()
                 self.state = 169
                 self.match(TypeScriptParser.ASSIGN)
                 self.state = 170
@@ -1346,31 +1336,7 @@ class TypeScriptParser ( Parser ):
 
             elif la_ == 2:
                 self.enterOuterAlt(localctx, 2)
-                self.state = 171
-                self.arrayAccess()
                 self.state = 172
-                self.match(TypeScriptParser.ASSIGN)
-                self.state = 173
-                self.assignmentExpr()
-                pass
-
-            elif la_ == 3:
-                self.enterOuterAlt(localctx, 3)
-                self.state = 175
-                self.match(TypeScriptParser.ID)
-                self.state = 176
-                self.match(TypeScriptParser.DOT)
-                self.state = 177
-                self.match(TypeScriptParser.ID)
-                self.state = 178
-                self.match(TypeScriptParser.ASSIGN)
-                self.state = 179
-                self.assignmentExpr()
-                pass
-
-            elif la_ == 4:
-                self.enterOuterAlt(localctx, 4)
-                self.state = 180
                 self.logicalOrExpr()
                 pass
 
@@ -1431,17 +1397,17 @@ class TypeScriptParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 183
+            self.state = 175
             self.logicalAndExpr()
-            self.state = 188
+            self.state = 180
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while _la==26:
-                self.state = 184
+                self.state = 176
                 self.match(TypeScriptParser.OR)
-                self.state = 185
+                self.state = 177
                 self.logicalAndExpr()
-                self.state = 190
+                self.state = 182
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
 
@@ -1501,17 +1467,17 @@ class TypeScriptParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 191
+            self.state = 183
             self.equalityExpr()
-            self.state = 196
+            self.state = 188
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while _la==25:
-                self.state = 192
+                self.state = 184
                 self.match(TypeScriptParser.AND)
-                self.state = 193
+                self.state = 185
                 self.equalityExpr()
-                self.state = 198
+                self.state = 190
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
 
@@ -1577,22 +1543,22 @@ class TypeScriptParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 199
+            self.state = 191
             self.relationalExpr()
-            self.state = 204
+            self.state = 196
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while _la==19 or _la==20:
-                self.state = 200
+                self.state = 192
                 _la = self._input.LA(1)
                 if not(_la==19 or _la==20):
                     self._errHandler.recoverInline(self)
                 else:
                     self._errHandler.reportMatch(self)
                     self.consume()
-                self.state = 201
+                self.state = 193
                 self.relationalExpr()
-                self.state = 206
+                self.state = 198
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
 
@@ -1670,22 +1636,22 @@ class TypeScriptParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 207
+            self.state = 199
             self.additiveExpr()
-            self.state = 212
+            self.state = 204
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while (((_la) & ~0x3f) == 0 and ((1 << _la) & 31457280) != 0):
-                self.state = 208
+                self.state = 200
                 _la = self._input.LA(1)
                 if not((((_la) & ~0x3f) == 0 and ((1 << _la) & 31457280) != 0)):
                     self._errHandler.recoverInline(self)
                 else:
                     self._errHandler.reportMatch(self)
                     self.consume()
-                self.state = 209
+                self.state = 201
                 self.additiveExpr()
-                self.state = 214
+                self.state = 206
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
 
@@ -1751,22 +1717,22 @@ class TypeScriptParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 215
+            self.state = 207
             self.multiplicativeExpr()
-            self.state = 220
+            self.state = 212
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while _la==14 or _la==15:
-                self.state = 216
+                self.state = 208
                 _la = self._input.LA(1)
                 if not(_la==14 or _la==15):
                     self._errHandler.recoverInline(self)
                 else:
                     self._errHandler.reportMatch(self)
                     self.consume()
-                self.state = 217
+                self.state = 209
                 self.multiplicativeExpr()
-                self.state = 222
+                self.state = 214
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
 
@@ -1838,22 +1804,22 @@ class TypeScriptParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 223
+            self.state = 215
             self.unaryExpr()
-            self.state = 228
+            self.state = 220
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while (((_la) & ~0x3f) == 0 and ((1 << _la) & 458752) != 0):
-                self.state = 224
+                self.state = 216
                 _la = self._input.LA(1)
                 if not((((_la) & ~0x3f) == 0 and ((1 << _la) & 458752) != 0)):
                     self._errHandler.recoverInline(self)
                 else:
                     self._errHandler.reportMatch(self)
                     self.consume()
-                self.state = 225
+                self.state = 217
                 self.unaryExpr()
-                self.state = 230
+                self.state = 222
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
 
@@ -1880,8 +1846,8 @@ class TypeScriptParser ( Parser ):
             return self.getTypedRuleContext(TypeScriptParser.UnaryExprContext,0)
 
 
-        def primary(self):
-            return self.getTypedRuleContext(TypeScriptParser.PrimaryContext,0)
+        def postfixExpr(self):
+            return self.getTypedRuleContext(TypeScriptParser.PostfixExprContext,0)
 
 
         def getRuleIndex(self):
@@ -1909,20 +1875,208 @@ class TypeScriptParser ( Parser ):
         localctx = TypeScriptParser.UnaryExprContext(self, self._ctx, self.state)
         self.enterRule(localctx, 40, self.RULE_unaryExpr)
         try:
-            self.state = 234
+            self.state = 226
             self._errHandler.sync(self)
             token = self._input.LA(1)
             if token in [27]:
                 self.enterOuterAlt(localctx, 1)
-                self.state = 231
+                self.state = 223
                 self.match(TypeScriptParser.NOT)
-                self.state = 232
+                self.state = 224
                 self.unaryExpr()
                 pass
             elif token in [31, 33, 35, 38, 39, 40, 41]:
                 self.enterOuterAlt(localctx, 2)
-                self.state = 233
-                self.primary()
+                self.state = 225
+                self.postfixExpr()
+                pass
+            else:
+                raise NoViableAltException(self)
+
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+
+    class PostfixExprContext(ParserRuleContext):
+        __slots__ = 'parser'
+
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+            super().__init__(parent, invokingState)
+            self.parser = parser
+
+        def primary(self):
+            return self.getTypedRuleContext(TypeScriptParser.PrimaryContext,0)
+
+
+        def postfixOp(self, i:int=None):
+            if i is None:
+                return self.getTypedRuleContexts(TypeScriptParser.PostfixOpContext)
+            else:
+                return self.getTypedRuleContext(TypeScriptParser.PostfixOpContext,i)
+
+
+        def getRuleIndex(self):
+            return TypeScriptParser.RULE_postfixExpr
+
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterPostfixExpr" ):
+                listener.enterPostfixExpr(self)
+
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitPostfixExpr" ):
+                listener.exitPostfixExpr(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitPostfixExpr" ):
+                return visitor.visitPostfixExpr(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+
+
+    def postfixExpr(self):
+
+        localctx = TypeScriptParser.PostfixExprContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 42, self.RULE_postfixExpr)
+        self._la = 0 # Token type
+        try:
+            self.enterOuterAlt(localctx, 1)
+            self.state = 228
+            self.primary()
+            self.state = 232
+            self._errHandler.sync(self)
+            _la = self._input.LA(1)
+            while (((_la) & ~0x3f) == 0 and ((1 << _la) & 173946175488) != 0):
+                self.state = 229
+                self.postfixOp()
+                self.state = 234
+                self._errHandler.sync(self)
+                _la = self._input.LA(1)
+
+        except RecognitionException as re:
+            localctx.exception = re
+            self._errHandler.reportError(self, re)
+            self._errHandler.recover(self, re)
+        finally:
+            self.exitRule()
+        return localctx
+
+
+    class PostfixOpContext(ParserRuleContext):
+        __slots__ = 'parser'
+
+        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
+            super().__init__(parent, invokingState)
+            self.parser = parser
+
+        def LBRACK(self):
+            return self.getToken(TypeScriptParser.LBRACK, 0)
+
+        def expression(self, i:int=None):
+            if i is None:
+                return self.getTypedRuleContexts(TypeScriptParser.ExpressionContext)
+            else:
+                return self.getTypedRuleContext(TypeScriptParser.ExpressionContext,i)
+
+
+        def RBRACK(self):
+            return self.getToken(TypeScriptParser.RBRACK, 0)
+
+        def DOT(self):
+            return self.getToken(TypeScriptParser.DOT, 0)
+
+        def ID(self):
+            return self.getToken(TypeScriptParser.ID, 0)
+
+        def LPAREN(self):
+            return self.getToken(TypeScriptParser.LPAREN, 0)
+
+        def RPAREN(self):
+            return self.getToken(TypeScriptParser.RPAREN, 0)
+
+        def COMMA(self, i:int=None):
+            if i is None:
+                return self.getTokens(TypeScriptParser.COMMA)
+            else:
+                return self.getToken(TypeScriptParser.COMMA, i)
+
+        def getRuleIndex(self):
+            return TypeScriptParser.RULE_postfixOp
+
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterPostfixOp" ):
+                listener.enterPostfixOp(self)
+
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitPostfixOp" ):
+                listener.exitPostfixOp(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitPostfixOp" ):
+                return visitor.visitPostfixOp(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+
+
+    def postfixOp(self):
+
+        localctx = TypeScriptParser.PostfixOpContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 44, self.RULE_postfixOp)
+        self._la = 0 # Token type
+        try:
+            self.state = 253
+            self._errHandler.sync(self)
+            token = self._input.LA(1)
+            if token in [35]:
+                self.enterOuterAlt(localctx, 1)
+                self.state = 235
+                self.match(TypeScriptParser.LBRACK)
+                self.state = 236
+                self.expression()
+                self.state = 237
+                self.match(TypeScriptParser.RBRACK)
+                pass
+            elif token in [37]:
+                self.enterOuterAlt(localctx, 2)
+                self.state = 239
+                self.match(TypeScriptParser.DOT)
+                self.state = 240
+                self.match(TypeScriptParser.ID)
+                pass
+            elif token in [31]:
+                self.enterOuterAlt(localctx, 3)
+                self.state = 241
+                self.match(TypeScriptParser.LPAREN)
+                self.state = 250
+                self._errHandler.sync(self)
+                _la = self._input.LA(1)
+                if (((_la) & ~0x3f) == 0 and ((1 << _la) & 4168399978496) != 0):
+                    self.state = 242
+                    self.expression()
+                    self.state = 247
+                    self._errHandler.sync(self)
+                    _la = self._input.LA(1)
+                    while _la==29:
+                        self.state = 243
+                        self.match(TypeScriptParser.COMMA)
+                        self.state = 244
+                        self.expression()
+                        self.state = 249
+                        self._errHandler.sync(self)
+                        _la = self._input.LA(1)
+
+
+
+                self.state = 252
+                self.match(TypeScriptParser.RPAREN)
                 pass
             else:
                 raise NoViableAltException(self)
@@ -1968,14 +2122,6 @@ class TypeScriptParser ( Parser ):
             return self.getTypedRuleContext(TypeScriptParser.ObjectLiteralContext,0)
 
 
-        def callExpr(self):
-            return self.getTypedRuleContext(TypeScriptParser.CallExprContext,0)
-
-
-        def arrayAccess(self):
-            return self.getTypedRuleContext(TypeScriptParser.ArrayAccessContext,0)
-
-
         def getRuleIndex(self):
             return TypeScriptParser.RULE_primary
 
@@ -1999,212 +2145,43 @@ class TypeScriptParser ( Parser ):
     def primary(self):
 
         localctx = TypeScriptParser.PrimaryContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 42, self.RULE_primary)
+        self.enterRule(localctx, 46, self.RULE_primary)
         try:
-            self.state = 246
+            self.state = 263
             self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input,19,self._ctx)
-            if la_ == 1:
+            token = self._input.LA(1)
+            if token in [38, 39, 40]:
                 self.enterOuterAlt(localctx, 1)
-                self.state = 236
+                self.state = 255
                 self.literal()
                 pass
-
-            elif la_ == 2:
+            elif token in [41]:
                 self.enterOuterAlt(localctx, 2)
-                self.state = 237
+                self.state = 256
                 self.match(TypeScriptParser.ID)
                 pass
-
-            elif la_ == 3:
+            elif token in [31]:
                 self.enterOuterAlt(localctx, 3)
-                self.state = 238
+                self.state = 257
                 self.match(TypeScriptParser.LPAREN)
-                self.state = 239
+                self.state = 258
                 self.expression()
-                self.state = 240
+                self.state = 259
                 self.match(TypeScriptParser.RPAREN)
                 pass
-
-            elif la_ == 4:
+            elif token in [35]:
                 self.enterOuterAlt(localctx, 4)
-                self.state = 242
+                self.state = 261
                 self.arrayLiteral()
                 pass
-
-            elif la_ == 5:
+            elif token in [33]:
                 self.enterOuterAlt(localctx, 5)
-                self.state = 243
+                self.state = 262
                 self.objectLiteral()
                 pass
-
-            elif la_ == 6:
-                self.enterOuterAlt(localctx, 6)
-                self.state = 244
-                self.callExpr()
-                pass
-
-            elif la_ == 7:
-                self.enterOuterAlt(localctx, 7)
-                self.state = 245
-                self.arrayAccess()
-                pass
-
-
-        except RecognitionException as re:
-            localctx.exception = re
-            self._errHandler.reportError(self, re)
-            self._errHandler.recover(self, re)
-        finally:
-            self.exitRule()
-        return localctx
-
-
-    class CallExprContext(ParserRuleContext):
-        __slots__ = 'parser'
-
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
-            super().__init__(parent, invokingState)
-            self.parser = parser
-
-        def ID(self):
-            return self.getToken(TypeScriptParser.ID, 0)
-
-        def LPAREN(self):
-            return self.getToken(TypeScriptParser.LPAREN, 0)
-
-        def RPAREN(self):
-            return self.getToken(TypeScriptParser.RPAREN, 0)
-
-        def expression(self, i:int=None):
-            if i is None:
-                return self.getTypedRuleContexts(TypeScriptParser.ExpressionContext)
             else:
-                return self.getTypedRuleContext(TypeScriptParser.ExpressionContext,i)
+                raise NoViableAltException(self)
 
-
-        def COMMA(self, i:int=None):
-            if i is None:
-                return self.getTokens(TypeScriptParser.COMMA)
-            else:
-                return self.getToken(TypeScriptParser.COMMA, i)
-
-        def getRuleIndex(self):
-            return TypeScriptParser.RULE_callExpr
-
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterCallExpr" ):
-                listener.enterCallExpr(self)
-
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitCallExpr" ):
-                listener.exitCallExpr(self)
-
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitCallExpr" ):
-                return visitor.visitCallExpr(self)
-            else:
-                return visitor.visitChildren(self)
-
-
-
-
-    def callExpr(self):
-
-        localctx = TypeScriptParser.CallExprContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 44, self.RULE_callExpr)
-        self._la = 0 # Token type
-        try:
-            self.enterOuterAlt(localctx, 1)
-            self.state = 248
-            self.match(TypeScriptParser.ID)
-            self.state = 249
-            self.match(TypeScriptParser.LPAREN)
-            self.state = 258
-            self._errHandler.sync(self)
-            _la = self._input.LA(1)
-            if (((_la) & ~0x3f) == 0 and ((1 << _la) & 4168399978496) != 0):
-                self.state = 250
-                self.expression()
-                self.state = 255
-                self._errHandler.sync(self)
-                _la = self._input.LA(1)
-                while _la==29:
-                    self.state = 251
-                    self.match(TypeScriptParser.COMMA)
-                    self.state = 252
-                    self.expression()
-                    self.state = 257
-                    self._errHandler.sync(self)
-                    _la = self._input.LA(1)
-
-
-
-            self.state = 260
-            self.match(TypeScriptParser.RPAREN)
-        except RecognitionException as re:
-            localctx.exception = re
-            self._errHandler.reportError(self, re)
-            self._errHandler.recover(self, re)
-        finally:
-            self.exitRule()
-        return localctx
-
-
-    class ArrayAccessContext(ParserRuleContext):
-        __slots__ = 'parser'
-
-        def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
-            super().__init__(parent, invokingState)
-            self.parser = parser
-
-        def ID(self):
-            return self.getToken(TypeScriptParser.ID, 0)
-
-        def LBRACK(self):
-            return self.getToken(TypeScriptParser.LBRACK, 0)
-
-        def expression(self):
-            return self.getTypedRuleContext(TypeScriptParser.ExpressionContext,0)
-
-
-        def RBRACK(self):
-            return self.getToken(TypeScriptParser.RBRACK, 0)
-
-        def getRuleIndex(self):
-            return TypeScriptParser.RULE_arrayAccess
-
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterArrayAccess" ):
-                listener.enterArrayAccess(self)
-
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitArrayAccess" ):
-                listener.exitArrayAccess(self)
-
-        def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitArrayAccess" ):
-                return visitor.visitArrayAccess(self)
-            else:
-                return visitor.visitChildren(self)
-
-
-
-
-    def arrayAccess(self):
-
-        localctx = TypeScriptParser.ArrayAccessContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 46, self.RULE_arrayAccess)
-        try:
-            self.enterOuterAlt(localctx, 1)
-            self.state = 262
-            self.match(TypeScriptParser.ID)
-            self.state = 263
-            self.match(TypeScriptParser.LBRACK)
-            self.state = 264
-            self.expression()
-            self.state = 265
-            self.match(TypeScriptParser.RBRACK)
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -2267,29 +2244,29 @@ class TypeScriptParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 267
+            self.state = 265
             self.match(TypeScriptParser.LBRACK)
-            self.state = 276
+            self.state = 274
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             if (((_la) & ~0x3f) == 0 and ((1 << _la) & 4168399978496) != 0):
-                self.state = 268
+                self.state = 266
                 self.expression()
-                self.state = 273
+                self.state = 271
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
                 while _la==29:
-                    self.state = 269
+                    self.state = 267
                     self.match(TypeScriptParser.COMMA)
-                    self.state = 270
+                    self.state = 268
                     self.expression()
-                    self.state = 275
+                    self.state = 273
                     self._errHandler.sync(self)
                     _la = self._input.LA(1)
 
 
 
-            self.state = 278
+            self.state = 276
             self.match(TypeScriptParser.RBRACK)
         except RecognitionException as re:
             localctx.exception = re
@@ -2353,29 +2330,29 @@ class TypeScriptParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 280
+            self.state = 278
             self.match(TypeScriptParser.LBRACE)
-            self.state = 289
+            self.state = 287
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             if _la==39 or _la==41:
-                self.state = 281
+                self.state = 279
                 self.propAssign()
-                self.state = 286
+                self.state = 284
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
                 while _la==29:
-                    self.state = 282
+                    self.state = 280
                     self.match(TypeScriptParser.COMMA)
-                    self.state = 283
+                    self.state = 281
                     self.propAssign()
-                    self.state = 288
+                    self.state = 286
                     self._errHandler.sync(self)
                     _la = self._input.LA(1)
 
 
 
-            self.state = 291
+            self.state = 289
             self.match(TypeScriptParser.RBRACE)
         except RecognitionException as re:
             localctx.exception = re
@@ -2433,16 +2410,16 @@ class TypeScriptParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 293
+            self.state = 291
             _la = self._input.LA(1)
             if not(_la==39 or _la==41):
                 self._errHandler.recoverInline(self)
             else:
                 self._errHandler.reportMatch(self)
                 self.consume()
-            self.state = 294
+            self.state = 292
             self.match(TypeScriptParser.COLON)
-            self.state = 295
+            self.state = 293
             self.expression()
         except RecognitionException as re:
             localctx.exception = re
@@ -2497,15 +2474,15 @@ class TypeScriptParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 297
+            self.state = 295
             self.baseType()
-            self.state = 300
+            self.state = 298
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             if _la==35:
-                self.state = 298
+                self.state = 296
                 self.match(TypeScriptParser.LBRACK)
-                self.state = 299
+                self.state = 297
                 self.match(TypeScriptParser.RBRACK)
 
 
@@ -2564,7 +2541,7 @@ class TypeScriptParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 302
+            self.state = 300
             _la = self._input.LA(1)
             if not((((_la) & ~0x3f) == 0 and ((1 << _la) & 2199023262720) != 0)):
                 self._errHandler.recoverInline(self)
@@ -2633,23 +2610,23 @@ class TypeScriptParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 304
+            self.state = 302
             self.match(TypeScriptParser.INTERFACE)
-            self.state = 305
+            self.state = 303
             self.match(TypeScriptParser.ID)
-            self.state = 306
+            self.state = 304
             self.match(TypeScriptParser.LBRACE)
-            self.state = 310
+            self.state = 308
             self._errHandler.sync(self)
             _la = self._input.LA(1)
             while _la==41:
-                self.state = 307
+                self.state = 305
                 self.interfaceProp()
-                self.state = 312
+                self.state = 310
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
 
-            self.state = 313
+            self.state = 311
             self.match(TypeScriptParser.RBRACE)
         except RecognitionException as re:
             localctx.exception = re
@@ -2706,13 +2683,13 @@ class TypeScriptParser ( Parser ):
         self.enterRule(localctx, 60, self.RULE_interfaceProp)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 315
+            self.state = 313
             self.match(TypeScriptParser.ID)
-            self.state = 316
+            self.state = 314
             self.match(TypeScriptParser.COLON)
-            self.state = 317
+            self.state = 315
             self.typeExpr()
-            self.state = 318
+            self.state = 316
             self.match(TypeScriptParser.SEMI)
         except RecognitionException as re:
             localctx.exception = re
@@ -2766,7 +2743,7 @@ class TypeScriptParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 320
+            self.state = 318
             _la = self._input.LA(1)
             if not((((_la) & ~0x3f) == 0 and ((1 << _la) & 1924145348608) != 0)):
                 self._errHandler.recoverInline(self)

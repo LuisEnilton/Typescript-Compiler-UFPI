@@ -114,18 +114,18 @@ class TypeScriptVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by TypeScriptParser#postfixExpr.
+    def visitPostfixExpr(self, ctx:TypeScriptParser.PostfixExprContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by TypeScriptParser#postfixOp.
+    def visitPostfixOp(self, ctx:TypeScriptParser.PostfixOpContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by TypeScriptParser#primary.
     def visitPrimary(self, ctx:TypeScriptParser.PrimaryContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by TypeScriptParser#callExpr.
-    def visitCallExpr(self, ctx:TypeScriptParser.CallExprContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by TypeScriptParser#arrayAccess.
-    def visitArrayAccess(self, ctx:TypeScriptParser.ArrayAccessContext):
         return self.visitChildren(ctx)
 
 

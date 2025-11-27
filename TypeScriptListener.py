@@ -197,30 +197,30 @@ class TypeScriptListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by TypeScriptParser#postfixExpr.
+    def enterPostfixExpr(self, ctx:TypeScriptParser.PostfixExprContext):
+        pass
+
+    # Exit a parse tree produced by TypeScriptParser#postfixExpr.
+    def exitPostfixExpr(self, ctx:TypeScriptParser.PostfixExprContext):
+        pass
+
+
+    # Enter a parse tree produced by TypeScriptParser#postfixOp.
+    def enterPostfixOp(self, ctx:TypeScriptParser.PostfixOpContext):
+        pass
+
+    # Exit a parse tree produced by TypeScriptParser#postfixOp.
+    def exitPostfixOp(self, ctx:TypeScriptParser.PostfixOpContext):
+        pass
+
+
     # Enter a parse tree produced by TypeScriptParser#primary.
     def enterPrimary(self, ctx:TypeScriptParser.PrimaryContext):
         pass
 
     # Exit a parse tree produced by TypeScriptParser#primary.
     def exitPrimary(self, ctx:TypeScriptParser.PrimaryContext):
-        pass
-
-
-    # Enter a parse tree produced by TypeScriptParser#callExpr.
-    def enterCallExpr(self, ctx:TypeScriptParser.CallExprContext):
-        pass
-
-    # Exit a parse tree produced by TypeScriptParser#callExpr.
-    def exitCallExpr(self, ctx:TypeScriptParser.CallExprContext):
-        pass
-
-
-    # Enter a parse tree produced by TypeScriptParser#arrayAccess.
-    def enterArrayAccess(self, ctx:TypeScriptParser.ArrayAccessContext):
-        pass
-
-    # Exit a parse tree produced by TypeScriptParser#arrayAccess.
-    def exitArrayAccess(self, ctx:TypeScriptParser.ArrayAccessContext):
         pass
 
 

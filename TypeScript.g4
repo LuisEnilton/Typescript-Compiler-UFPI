@@ -74,9 +74,7 @@ expressionStmt: expression ';';
 expression: assignmentExpr;
 
 assignmentExpr
-    : ID ASSIGN assignmentExpr              // x = y = z
-    | arrayAccess ASSIGN assignmentExpr     // arr[i] = value
-    | ID '.' ID ASSIGN assignmentExpr       // obj.prop = value
+    : postfixExpr ASSIGN assignmentExpr     // postfix '=' value
     | logicalOrExpr
     ;
 
@@ -91,7 +89,17 @@ multiplicativeExpr:
 
 unaryExpr
     : NOT unaryExpr
-    | primary
+    | postfixExpr
+    ;
+
+postfixExpr
+    : primary (postfixOp)*
+    ;
+
+postfixOp
+    : '[' expression ']'      // array access
+    | '.' ID                   // property access
+    | '(' (expression (',' expression)*)? ')'  // function call
     ;
 
 
@@ -105,15 +113,7 @@ primary
     | '(' expression ')'
     | arrayLiteral
     | objectLiteral
-    | callExpr
-    | arrayAccess
     ;
-
-// f(x, y)
-callExpr: ID '(' (expression (',' expression)*)? ')' ;
-
-// v[10]
-arrayAccess: ID '[' expression ']' ;
 
 // [1,2,3]
 arrayLiteral: '[' (expression (',' expression)*)? ']' ;
