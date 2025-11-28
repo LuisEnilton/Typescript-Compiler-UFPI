@@ -581,3 +581,147 @@ let users: User[] = [
 """
         success, errors = compile_code(code)
         assert success, f"Esperado sucesso, mas obteve erros: {errors}"
+
+
+class TestBlockScoping:
+    """Testes para escopo de bloco em condicionais e loops"""
+    
+    def test_if_block_creates_scope(self):
+        """Variável declarada em if não deve existir fora do bloco"""
+        code = """
+let x: number = 10;
+if (true) {
+    let y: number = 20;
+}
+let z: number = y;
+"""
+        success, errors = compile_code(code)
+        assert not success, "Esperado erro: y não deve existir fora do if"
+        assert any("não" in str(e).lower() or "undefined" in str(e).lower() for e in errors), \
+            f"Erro deve mencionar variável não definida, obteve: {errors}"
+    
+    def test_if_outer_variable_accessible(self):
+        """Variável do escopo exterior deve ser acessível dentro de if"""
+        code = """
+let x: number = 10;
+if (true) {
+    let y: number = x + 5;
+}
+"""
+        success, errors = compile_code(code)
+        assert success, f"Esperado sucesso, mas obteve erros: {errors}"
+    
+    def test_nested_if_scoping(self):
+        """Escopos aninhados de if devem ser mantidos separados"""
+        code = """
+if (true) {
+    let x: number = 10;
+    if (true) {
+        let y: number = x + 5;
+    }
+    let z: number = y;
+}
+"""
+        success, errors = compile_code(code)
+        assert not success, "Esperado erro: y não deve existir no escopo externo de if"
+        assert any("não" in str(e).lower() or "undefined" in str(e).lower() for e in errors), \
+            f"Erro deve mencionar variável não definida, obteve: {errors}"
+    
+    def test_while_block_creates_scope(self):
+        """Variável declarada em while não deve existir fora do bloco"""
+        code = """
+let x: number = 0;
+while (x < 5) {
+    let y: number = x + 1;
+    x = x + 1;
+}
+let z: number = y;
+"""
+        success, errors = compile_code(code)
+        assert not success, "Esperado erro: y não deve existir fora do while"
+        assert any("não" in str(e).lower() or "undefined" in str(e).lower() for e in errors), \
+            f"Erro deve mencionar variável não definida, obteve: {errors}"
+    
+    def test_for_block_creates_scope(self):
+        """Variável declarada em for não deve existir fora do bloco"""
+        code = """
+for (let i: number = 0; i < 5; i = i + 1) {
+    let x: number = i * 2;
+}
+let y: number = x;
+"""
+        success, errors = compile_code(code)
+        assert not success, "Esperado erro: x não deve existir fora do for"
+        assert any("não" in str(e).lower() or "undefined" in str(e).lower() for e in errors), \
+            f"Erro deve mencionar variável não definida, obteve: {errors}"
+    
+    def test_for_loop_var_not_accessible_outside(self):
+        """Variável de iteração do for não deve existir fora do bloco"""
+        code = """
+for (let i: number = 0; i < 5; i = i + 1) {
+}
+let x: number = i;
+"""
+        success, errors = compile_code(code)
+        assert not success, "Esperado erro: i não deve existir fora do for"
+        assert any("não" in str(e).lower() or "undefined" in str(e).lower() for e in errors), \
+            f"Erro deve mencionar variável não definida, obteve: {errors}"
+    
+    def test_if_else_independent_scopes(self):
+        """if e else devem ter escopos independentes"""
+        code = """
+if (true) {
+    let x: number = 10;
+} else {
+    let y: number = 20;
+}
+let z: number = x;
+"""
+        success, errors = compile_code(code)
+        assert not success, "Esperado erro: x não deve existir fora do if"
+        assert any("não" in str(e).lower() or "undefined" in str(e).lower() for e in errors), \
+            f"Erro deve mencionar variável não definida, obteve: {errors}"
+    
+    def test_else_block_creates_scope(self):
+        """Variável declarada em else não deve existir fora do bloco"""
+        code = """
+let cond: boolean = false;
+if (cond) {
+    let x: number = 10;
+} else {
+    let y: number = 20;
+}
+let z: number = y;
+"""
+        success, errors = compile_code(code)
+        assert not success, "Esperado erro: y não deve existir fora do else"
+        assert any("não" in str(e).lower() or "undefined" in str(e).lower() for e in errors), \
+            f"Erro deve mencionar variável não definida, obteve: {errors}"
+    
+    def test_shadowing_outer_variable(self):
+        """Variável local pode sombrear variável do escopo externo"""
+        code = """
+let x: number = 10;
+if (true) {
+    let x: number = 20;
+}
+let y: number = x;
+"""
+        success, errors = compile_code(code)
+        assert success, f"Esperado sucesso (shadowing permitido), mas obteve erros: {errors}"
+    
+    def test_multiple_if_blocks_independent(self):
+        """Múltiplos blocos if sequenciais devem ter escopos independentes"""
+        code = """
+if (true) {
+    let x: number = 10;
+}
+if (true) {
+    let y: number = 20;
+}
+let z: number = x;
+"""
+        success, errors = compile_code(code)
+        assert not success, "Esperado erro: x não deve existir fora do primeiro if"
+        assert any("não" in str(e).lower() or "undefined" in str(e).lower() for e in errors), \
+            f"Erro deve mencionar variável não definida, obteve: {errors}"

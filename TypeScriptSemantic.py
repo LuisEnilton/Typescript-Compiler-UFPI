@@ -58,11 +58,74 @@ class FuncSymbol:
         self.return_type = return_type
 
 class SymbolTable:
-    """Tabela de símbolos global para variáveis, funções e interfaces"""
+    """Tabela de símbolos com suporte a escopos aninhados"""
     def __init__(self):
-        self.vars: Dict[str, VarSymbol] = {}
-        self.funcs: Dict[str, FuncSymbol] = {}
-        self.interfaces: Dict[str, InterfaceType] = {}
+        self.global_vars: Dict[str, VarSymbol] = {}  # Variáveis globais
+        self.global_funcs: Dict[str, FuncSymbol] = {}  # Funções globais
+        self.global_interfaces: Dict[str, InterfaceType] = {}  # Interfaces globais
+        self.scope_stack: List[Dict[str, VarSymbol]] = []  # Pilha de escopos de bloco
+    
+    @property
+    def vars(self) -> Dict[str, VarSymbol]:
+        """Retorna variáveis do escopo atual (bloco + global)"""
+        result = self.global_vars.copy()
+        for scope in self.scope_stack:
+            result.update(scope)
+        return result
+    
+    @property
+    def funcs(self) -> Dict[str, FuncSymbol]:
+        """Retorna funções globais"""
+        return self.global_funcs
+    
+    @funcs.setter
+    def funcs(self, value: Dict[str, FuncSymbol]):
+        """Setter para compatibilidade com código existente"""
+        self.global_funcs = value
+    
+    @property
+    def interfaces(self) -> Dict[str, InterfaceType]:
+        """Retorna interfaces globais"""
+        return self.global_interfaces
+    
+    @interfaces.setter
+    def interfaces(self, value: Dict[str, InterfaceType]):
+        """Setter para compatibilidade com código existente"""
+        self.global_interfaces = value
+    
+    def push_scope(self):
+        """Cria um novo escopo de bloco"""
+        self.scope_stack.append({})
+    
+    def pop_scope(self):
+        """Remove o escopo de bloco atual"""
+        if self.scope_stack:
+            self.scope_stack.pop()
+    
+    def define_var(self, name: str, symbol: VarSymbol, is_block_local: bool = False):
+        """Define uma variável no escopo apropriado"""
+        if is_block_local and self.scope_stack:
+            self.scope_stack[-1][name] = symbol
+        else:
+            self.global_vars[name] = symbol
+    
+    def get_var(self, name: str) -> Optional[VarSymbol]:
+        """Obtém uma variável do escopo mais próximo"""
+        # Procura da pilha de escopos do mais próximo para o mais distante
+        for scope in reversed(self.scope_stack):
+            if name in scope:
+                return scope[name]
+        # Procura no escopo global
+        return self.global_vars.get(name)
+    
+    def var_exists_in_current_scope(self, name: str) -> bool:
+        """Verifica se uma variável já existe no escopo atual (sem considerar escopos exteriores)"""
+        if self.scope_stack:
+            # Se estamos em um bloco, apenas verifica o escopo atual do bloco
+            return name in self.scope_stack[-1]
+        else:
+            # Se não estamos em um bloco, apenas verifica o escopo global
+            return name in self.global_vars
 
 # ============================================================================
 # ANALISADOR SEMÂNTICO
@@ -85,6 +148,7 @@ class SemanticAnalyzer(ParseTreeVisitor):
         self.call_graph: Dict[str, Set[str]] = {}
         self.current_function: Optional[str] = None
         self.expected_return_type: Optional[Type] = None
+        self.in_block_scope: bool = False  # Rastreia se estamos em um bloco de escopo
         # Registra funções nativas
         self._register_builtins()
 
@@ -259,10 +323,11 @@ class SemanticAnalyzer(ParseTreeVisitor):
         name = ctx.ID().getText()
         declared_type = self.type_from_ctx(ctx.typeExpr())
         
-        if name in self.sym.vars:
+        if self.sym.var_exists_in_current_scope(name):
             self._err(ctx, f"Variável '{name}' já declarada")
         
-        self.sym.vars[name] = VarSymbol(name, declared_type, is_const=False)
+        symbol = VarSymbol(name, declared_type, is_const=False)
+        self.sym.define_var(name, symbol, is_block_local=self.in_block_scope)
         
         # Check initializer if present
         if ctx.ASSIGN():
@@ -277,10 +342,11 @@ class SemanticAnalyzer(ParseTreeVisitor):
         name = ctx.ID().getText()
         declared_type = self.type_from_ctx(ctx.typeExpr())
         
-        if name in self.sym.vars:
+        if self.sym.var_exists_in_current_scope(name):
             self._err(ctx, f"Variável '{name}' já declarada")
         
-        self.sym.vars[name] = VarSymbol(name, declared_type, is_const=True)
+        symbol = VarSymbol(name, declared_type, is_const=True)
+        self.sym.define_var(name, symbol, is_block_local=self.in_block_scope)
         
         # const obriga ASSIGN (gramática já exige, mas validamos por segurança)
         if ctx.ASSIGN():
@@ -316,24 +382,30 @@ class SemanticAnalyzer(ParseTreeVisitor):
         # Enter function scope
         prev_func = self.current_function
         prev_return = self.expected_return_type
-        prev_vars = self.sym.vars.copy()
         prev_return_seen = getattr(self, "_return_seen", False)
         
         self.current_function = name
         self.expected_return_type = return_type
         self._return_seen = False
         
+        # Cria escopo para parâmetros da função
+        self.sym.push_scope()
+        old_in_block = self.in_block_scope
+        self.in_block_scope = True
+        
         # Register parameters
         for param_name, param_type in params:
-            self.sym.vars[param_name] = VarSymbol(param_name, param_type)
+            self.sym.define_var(param_name, VarSymbol(param_name, param_type), is_block_local=True)
         
-        # Analyze body
+        # Analyze body (visitBlock criará um novo escopo)
         self.visit(ctx.block())
         
-        # Restore scope
-        self.sym.vars = prev_vars
+        # Restore function scope
+        self.sym.pop_scope()
+        self.in_block_scope = old_in_block
         self.current_function = prev_func
         self.expected_return_type = prev_return
+        
         # Check missing return for non-void functions
         if isinstance(return_type, PrimitiveType) and return_type.name() != "void":
             if not getattr(self, "_return_seen", False):
@@ -365,6 +437,85 @@ class SemanticAnalyzer(ParseTreeVisitor):
                 self._err(ctx, f"Tipo de retorno incompatível. Esperado {self.expected_return_type.name()} mas foi {expr_type.name() if expr_type else 'null'}")
         return expr_type
         return PrimitiveType("void")
+
+    def visitBlock(self, ctx):
+        """Processa um bloco de código, criando escopo de bloco"""
+        self.sym.push_scope()
+        old_in_block = self.in_block_scope
+        self.in_block_scope = True
+        
+        # Visita todos os statements dentro do bloco
+        for stmt in ctx.statement():
+            self.visit(stmt)
+        
+        self.in_block_scope = old_in_block
+        self.sym.pop_scope()
+
+    def visitIfStmt(self, ctx):
+        """Processa statement if com escopo de bloco"""
+        # Avalia a condição
+        cond_type = self.visit(ctx.expression())
+        if not (isinstance(cond_type, PrimitiveType) and cond_type.name() == "boolean"):
+            self._err(ctx, "Condição de if deve ser do tipo boolean")
+        
+        # Visita o statement do if (pode ser um bloco ou um statement simples)
+        self.sym.push_scope()
+        old_in_block = self.in_block_scope
+        self.in_block_scope = True
+        self.visit(ctx.statement(0))
+        self.in_block_scope = old_in_block
+        self.sym.pop_scope()
+        
+        # Visita o statement do else se existir
+        if ctx.statement(1):  # else clause
+            self.sym.push_scope()
+            self.in_block_scope = True
+            self.visit(ctx.statement(1))
+            self.in_block_scope = old_in_block
+            self.sym.pop_scope()
+
+    def visitWhileStmt(self, ctx):
+        """Processa statement while com escopo de bloco"""
+        # Avalia a condição
+        cond_type = self.visit(ctx.expression())
+        if not (isinstance(cond_type, PrimitiveType) and cond_type.name() == "boolean"):
+            self._err(ctx, "Condição de while deve ser do tipo boolean")
+        
+        # Visita o statement dentro do while (pode ser um bloco ou um statement simples)
+        self.sym.push_scope()
+        old_in_block = self.in_block_scope
+        self.in_block_scope = True
+        self.visit(ctx.statement())
+        self.in_block_scope = old_in_block
+        self.sym.pop_scope()
+
+    def visitForStmt(self, ctx):
+        """Processa statement for com escopo de bloco"""
+        # Cria escopo para o for (variável de iteração fica no escopo do for)
+        self.sym.push_scope()
+        old_in_block = self.in_block_scope
+        self.in_block_scope = True
+        
+        # Processa inicialização (declaração ou expressão)
+        first_part = ctx.getChild(2)  # Skip 'for' e '('
+        if first_part.getText() != ";":
+            self.visit(first_part)
+        
+        # Verifica condição (se houver)
+        if ctx.expression(0):
+            cond_type = self.visit(ctx.expression(0))
+            if not (isinstance(cond_type, PrimitiveType) and cond_type.name() == "boolean"):
+                self._err(ctx, "Condição de for deve ser do tipo boolean")
+        
+        # Verifica incremento (se houver)
+        if ctx.expression(1):
+            self.visit(ctx.expression(1))
+        
+        # Visita o statement dentro do for
+        self.visit(ctx.statement())
+        
+        self.in_block_scope = old_in_block
+        self.sym.pop_scope()
 
     # ========================================================================
     # EXPRESSION VISITORS
