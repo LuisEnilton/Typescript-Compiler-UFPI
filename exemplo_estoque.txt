@@ -1,0 +1,39 @@
+// Em TypeScript padrão, inicializamos com []
+let precos: number[] = [];
+let quantidades: number[] = [];
+
+// MUDANÇA: Sintaxe de método (objeto.metodo)
+precos.push(3000);
+quantidades.push(5);
+
+precos.push(50);
+quantidades.push(20);
+
+precos.push(150);
+quantidades.push(10);
+
+precos.push(200);
+quantidades.push(15);
+
+print("=== SISTEMA DE ESTOQUE ===");
+print("");
+
+let total: number = 0;
+
+for(let i: number = 0; i < precos.size(); i = i + 1) {
+    let preco: number = precos[i];
+    let qtd: number = quantidades[i];
+    let valor: number = preco * qtd;
+    
+    // MUDANÇA: print vira print
+    print("Produto", i + 1, "- Preco:", preco, "Qtd:", qtd, "Valor:", valor);
+    total = total + valor;
+}
+
+print("");
+print("=== RESUMO ===");
+print("Total de Produtos:", precos.size());
+print("Valor Total do Estoque:", total);
+
+let media: number = total / precos.size();
+print("Valor Medio por Produto:", media);

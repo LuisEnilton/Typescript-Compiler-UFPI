@@ -1,1 +1,10 @@
-const x: number;
+
+
+let arr: number[] = [];
+
+arr.push(2);
+arr.push(40);
+
+print(arr[0]);
+
+print(arr[1]);

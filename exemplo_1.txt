@@ -1,4 +1,9 @@
-function soma(a: number, b: number): number {
-  return a + b;
-}
-let r: number = soma(2, 3);
+let a: number = 10;
+let b: number = 20;
+let c: number = 30;
+
+print(a);
+print(a, b);
+print(a, b, c);
+print("Valores:", a, b, c);
+print("A =", a, "B =", b, "C =", c);

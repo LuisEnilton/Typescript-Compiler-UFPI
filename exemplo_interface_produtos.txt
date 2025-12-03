@@ -1,0 +1,46 @@
+interface Produto {
+    nome: string;
+    preco: number;
+    quantidade: number;
+}
+
+
+let produtos: Produto[] = [];
+
+let p1: Produto;
+p1.nome = "Notebook";
+p1.preco = 3000;
+p1.quantidade = 5;
+
+produtos.push(p1);
+
+let p2: Produto;
+p2.nome = "Mouse";
+p2.preco = 50;
+p2.quantidade = 20;
+produtos.push(p2);
+
+let p3: Produto;
+p3.nome = "Teclado";
+p3.preco = 150;
+p3.quantidade = 10;
+produtos.push(p3);
+
+print("=== LISTA DE PRODUTOS ===");
+// Nova sintaxe: usar .size() como método
+for(let i: number = 0; i < produtos.size(); i = i + 1) {
+    let prod: Produto = produtos[i];
+    print("Produto:", prod.nome);
+    print("Preco:", prod.preco);
+    print("Quantidade:", prod.quantidade);
+    print("---");
+}
+
+let total: number = 0;
+for(let i: number = 0; i < produtos.size(); i = i + 1) {
+    let prod: Produto = produtos[i];
+    let valor: number = prod.preco * prod.quantidade;
+    total = total + valor;
+}
+
+print("Valor Total do Estoque:", total);

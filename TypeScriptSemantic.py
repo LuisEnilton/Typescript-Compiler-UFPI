@@ -10,32 +10,44 @@ from typing import Dict, List, Set, Optional
 # SISTEMA DE TIPOS
 # ============================================================================
 
+
 class Type:
     """Classe base para todos os tipos"""
+
     def name(self) -> str:
         raise NotImplementedError()
+
     def __str__(self):
         return self.name()
 
+
 class PrimitiveType(Type):
     """Tipos primitivos: number, string, boolean"""
+
     def __init__(self, n: str):
         self.n = n
+
     def name(self) -> str:
         return self.n
 
+
 class ArrayType(Type):
     """Array de elementos: T[]"""
+
     def __init__(self, elem: Type):
         self.elem = elem
+
     def name(self) -> str:
         return f"{self.elem.name()}[]"
 
+
 class InterfaceType(Type):
     """Interface definida pelo usuário"""
+
     def __init__(self, id_: str):
         self.id = id_
         self.props: Dict[str, Type] = {}
+
     def name(self) -> str:
         return self.id
 
@@ -43,28 +55,36 @@ class InterfaceType(Type):
 # SÍMBOLOS
 # ============================================================================
 
+
 class VarSymbol:
     """Símbolo de variável ou parâmetro"""
+
     def __init__(self, name: str, type_: Type, is_const: bool = False):
         self.name = name
         self.type = type_
         self.is_const = is_const
 
+
 class FuncSymbol:
     """Símbolo de função com tipos de parâmetros e retorno"""
+
     def __init__(self, name: str, param_types: List[Type], return_type: Type):
         self.name = name
         self.param_types = param_types
         self.return_type = return_type
 
+
 class SymbolTable:
     """Tabela de símbolos com suporte a escopos aninhados"""
+
     def __init__(self):
         self.global_vars: Dict[str, VarSymbol] = {}  # Variáveis globais
         self.global_funcs: Dict[str, FuncSymbol] = {}  # Funções globais
-        self.global_interfaces: Dict[str, InterfaceType] = {}  # Interfaces globais
-        self.scope_stack: List[Dict[str, VarSymbol]] = []  # Pilha de escopos de bloco
-    
+        self.global_interfaces: Dict[str,
+                                     InterfaceType] = {}  # Interfaces globais
+        # Pilha de escopos de bloco
+        self.scope_stack: List[Dict[str, VarSymbol]] = []
+
     @property
     def vars(self) -> Dict[str, VarSymbol]:
         """Retorna variáveis do escopo atual (bloco + global)"""
@@ -72,43 +92,43 @@ class SymbolTable:
         for scope in self.scope_stack:
             result.update(scope)
         return result
-    
+
     @property
     def funcs(self) -> Dict[str, FuncSymbol]:
         """Retorna funções globais"""
         return self.global_funcs
-    
+
     @funcs.setter
     def funcs(self, value: Dict[str, FuncSymbol]):
         """Setter para compatibilidade com código existente"""
         self.global_funcs = value
-    
+
     @property
     def interfaces(self) -> Dict[str, InterfaceType]:
         """Retorna interfaces globais"""
         return self.global_interfaces
-    
+
     @interfaces.setter
     def interfaces(self, value: Dict[str, InterfaceType]):
         """Setter para compatibilidade com código existente"""
         self.global_interfaces = value
-    
+
     def push_scope(self):
         """Cria um novo escopo de bloco"""
         self.scope_stack.append({})
-    
+
     def pop_scope(self):
         """Remove o escopo de bloco atual"""
         if self.scope_stack:
             self.scope_stack.pop()
-    
+
     def define_var(self, name: str, symbol: VarSymbol, is_block_local: bool = False):
         """Define uma variável no escopo apropriado"""
         if is_block_local and self.scope_stack:
             self.scope_stack[-1][name] = symbol
         else:
             self.global_vars[name] = symbol
-    
+
     def get_var(self, name: str) -> Optional[VarSymbol]:
         """Obtém uma variável do escopo mais próximo"""
         # Procura da pilha de escopos do mais próximo para o mais distante
@@ -117,7 +137,7 @@ class SymbolTable:
                 return scope[name]
         # Procura no escopo global
         return self.global_vars.get(name)
-    
+
     def var_exists_in_current_scope(self, name: str) -> bool:
         """Verifica se uma variável já existe no escopo atual (sem considerar escopos exteriores)"""
         if self.scope_stack:
@@ -130,6 +150,7 @@ class SymbolTable:
 # ============================================================================
 # ANALISADOR SEMÂNTICO
 # ============================================================================
+
 
 class SemanticAnalyzer(ParseTreeVisitor):
     """
@@ -153,7 +174,7 @@ class SemanticAnalyzer(ParseTreeVisitor):
         self._register_builtins()
 
     def _register_builtins(self):
-        """Registra funções nativas: print e read"""
+        """Registra funções nativas: print, read, array, push, pop, size"""
         # print(x: number|string|boolean): void
         self.sym.funcs["print"] = FuncSymbol(
             "print",
@@ -165,6 +186,30 @@ class SemanticAnalyzer(ParseTreeVisitor):
             "read",
             [],
             PrimitiveType("unknown")
+        )
+        # array(): unknown[]
+        self.sym.funcs["array"] = FuncSymbol(
+            "array",
+            [],
+            ArrayType(PrimitiveType("unknown"))
+        )
+        # push(arr: unknown[], x: unknown): void
+        self.sym.funcs["push"] = FuncSymbol(
+            "push",
+            [ArrayType(PrimitiveType("unknown")), PrimitiveType("unknown")],
+            PrimitiveType("void")
+        )
+        # pop(arr: unknown[]): unknown
+        self.sym.funcs["pop"] = FuncSymbol(
+            "pop",
+            [ArrayType(PrimitiveType("unknown"))],
+            PrimitiveType("unknown")
+        )
+        # size(arr: unknown[]): number
+        self.sym.funcs["size"] = FuncSymbol(
+            "size",
+            [ArrayType(PrimitiveType("unknown"))],
+            PrimitiveType("number")
         )
 
     def _err(self, ctx: Optional[ParserRuleContext], msg: str):
@@ -193,13 +238,13 @@ class SemanticAnalyzer(ParseTreeVisitor):
             inner = text[:-2]
             inner_type = self._parse_type(inner)
             return ArrayType(inner_type)
-        
+
         if text in ("number", "string", "boolean", "void"):
             return PrimitiveType(text)
-        
+
         if text in self.sym.interfaces:
             return self.sym.interfaces[text]
-        
+
         self._err(None, f"Tipo '{text}' não encontrado")
         return InterfaceType(f"<unknown:{text}>")
 
@@ -207,15 +252,15 @@ class SemanticAnalyzer(ParseTreeVisitor):
         """Extrai tipo a partir do contexto da gramática"""
         if not ctx:
             return None
-        
+
         try:
             # Try to get baseType
             bt = ctx.baseType() if hasattr(ctx, 'baseType') else None
-            
+
             if not bt:
                 # Fallback to text parsing
                 return self._parse_type(ctx.getText())
-            
+
             # Parse base type
             if hasattr(bt, 'NUMBER_TYPE') and bt.NUMBER_TYPE():
                 base = PrimitiveType("number")
@@ -234,12 +279,12 @@ class SemanticAnalyzer(ParseTreeVisitor):
                     base = InterfaceType(f"<unknown:{name}>")
             else:
                 return self._parse_type(ctx.getText())
-            
+
             # Check if array
             if ctx.getText().endswith("[]"):
                 return ArrayType(base)
             return base
-            
+
         except Exception:
             return self._parse_type(ctx.getText())
 
@@ -247,14 +292,14 @@ class SemanticAnalyzer(ParseTreeVisitor):
         """Verifica se o tipo origem pode ser atribuído ao tipo destino"""
         if not (target and source):
             return False
-        
+
         # Primitives: must match exactly
         if isinstance(target, PrimitiveType) and isinstance(source, PrimitiveType):
             # unknown pode ser atribuído a string ou number (não boolean)
             if source.name() == "unknown" and target.name() in ("string", "number"):
                 return True
             return self.types_equal(target, source)
-        
+
         # Arrays
         if isinstance(target, ArrayType) and isinstance(source, ArrayType):
             # Empty array (unknown[]) can assign to any array
@@ -265,28 +310,31 @@ class SemanticAnalyzer(ParseTreeVisitor):
                 if source.elem.name() == "<obj-literal>":
                     return self.is_assignable(target.elem, source.elem, ctx)
             return self.types_equal(target, source)
-        
+
         # Interfaces: check field compatibility
         if isinstance(target, InterfaceType) and isinstance(source, InterfaceType):
             tgt, src = target, source
-            
+
             # Verifica todos os campos do alvo presentes na origem
             for fname, ftype in tgt.props.items():
                 if fname not in src.props:
-                    self._err(ctx, f"Campo '{fname}' ausente no objeto literal para a interface {tgt.name()}")
+                    self._err(
+                        ctx, f"Campo '{fname}' ausente no objeto literal para a interface {tgt.name()}")
                     return False
                 if not self.is_assignable(ftype, src.props[fname], ctx):
-                    self._err(ctx, f"Tipo do campo '{fname}' incompatível: esperado {ftype.name()} mas foi {src.props[fname].name()}")
+                    self._err(
+                        ctx, f"Tipo do campo '{fname}' incompatível: esperado {ftype.name()} mas foi {src.props[fname].name()}")
                     return False
-            
+
             # Verifica se não há campos extras na origem
             for k in src.props:
                 if k not in tgt.props:
-                    self._err(ctx, f"Campo extra '{k}' no objeto literal não declarado na interface {tgt.name()}")
+                    self._err(
+                        ctx, f"Campo extra '{k}' no objeto literal não declarado na interface {tgt.name()}")
                     return False
-            
+
             return True
-        
+
         return False
 
     # ========================================================================
@@ -299,13 +347,13 @@ class SemanticAnalyzer(ParseTreeVisitor):
         if name in self.sym.interfaces:
             self._err(ctx, f"Interface '{name}' já declarada")
             return None
-        
+
         iface = InterfaceType(name)
         for prop in ctx.interfaceProp():
             prop_name = prop.ID().getText()
             prop_type = self.type_from_ctx(prop.typeExpr())
             iface.props[prop_name] = prop_type
-        
+
         self.sym.interfaces[name] = iface
         return None
 
@@ -322,40 +370,43 @@ class SemanticAnalyzer(ParseTreeVisitor):
         """Processa declaração de variável let"""
         name = ctx.ID().getText()
         declared_type = self.type_from_ctx(ctx.typeExpr())
-        
+
         if self.sym.var_exists_in_current_scope(name):
             self._err(ctx, f"Variável '{name}' já declarada")
-        
+
         symbol = VarSymbol(name, declared_type, is_const=False)
         self.sym.define_var(name, symbol, is_block_local=self.in_block_scope)
-        
+
         # Check initializer if present
         if ctx.ASSIGN():
             init_type = self.visit(ctx.expression())
             if not self.is_assignable(declared_type, init_type, ctx):
-                self._err(ctx, f"Tipo do inicializador incompatível: esperado {declared_type.name()} mas foi {init_type.name() if init_type else 'null'}")
-        
+                self._err(
+                    ctx, f"Tipo do inicializador incompatível: esperado {declared_type.name()} mas foi {init_type.name() if init_type else 'null'}")
+
         return declared_type
 
     def visitConstDecl(self, ctx):
         """Processa declaração de variável const (obrigatoriamente inicializada)"""
         name = ctx.ID().getText()
         declared_type = self.type_from_ctx(ctx.typeExpr())
-        
+
         if self.sym.var_exists_in_current_scope(name):
             self._err(ctx, f"Variável '{name}' já declarada")
-        
+
         symbol = VarSymbol(name, declared_type, is_const=True)
         self.sym.define_var(name, symbol, is_block_local=self.in_block_scope)
-        
+
         # const obriga ASSIGN (gramática já exige, mas validamos por segurança)
         if ctx.ASSIGN():
             init_type = self.visit(ctx.expression())
             if not self.is_assignable(declared_type, init_type, ctx):
-                self._err(ctx, f"Tipo do inicializador incompatível: esperado {declared_type.name()} mas foi {init_type.name() if init_type else 'null'}")
+                self._err(
+                    ctx, f"Tipo do inicializador incompatível: esperado {declared_type.name()} mas foi {init_type.name() if init_type else 'null'}")
         else:
-            self._err(ctx, f"Variável const '{name}' deve ser inicializada na declaração")
-        
+            self._err(
+                ctx, f"Variável const '{name}' deve ser inicializada na declaração")
+
         return declared_type
 
     def visitFunctionDecl(self, ctx):
@@ -363,55 +414,57 @@ class SemanticAnalyzer(ParseTreeVisitor):
         name = ctx.ID().getText()
         params = []
         param_types = []
-        
+
         if ctx.paramList():
             for param in ctx.paramList().param():
                 param_name = param.ID().getText()
                 param_type = self.type_from_ctx(param.typeExpr())
                 params.append((param_name, param_type))
                 param_types.append(param_type)
-        
+
         return_type = self.type_from_ctx(ctx.typeExpr())
-        
+
         if name in self.sym.funcs:
             self._err(ctx, f"Função '{name}' já declarada")
-        
+
         self.sym.funcs[name] = FuncSymbol(name, param_types, return_type)
         self.call_graph.setdefault(name, set())
-        
+
         # Enter function scope
         prev_func = self.current_function
         prev_return = self.expected_return_type
         prev_return_seen = getattr(self, "_return_seen", False)
-        
+
         self.current_function = name
         self.expected_return_type = return_type
         self._return_seen = False
-        
+
         # Cria escopo para parâmetros da função
         self.sym.push_scope()
         old_in_block = self.in_block_scope
         self.in_block_scope = True
-        
+
         # Register parameters
         for param_name, param_type in params:
-            self.sym.define_var(param_name, VarSymbol(param_name, param_type), is_block_local=True)
-        
+            self.sym.define_var(param_name, VarSymbol(
+                param_name, param_type), is_block_local=True)
+
         # Analyze body (visitBlock criará um novo escopo)
         self.visit(ctx.block())
-        
+
         # Restore function scope
         self.sym.pop_scope()
         self.in_block_scope = old_in_block
         self.current_function = prev_func
         self.expected_return_type = prev_return
-        
+
         # Check missing return for non-void functions
         if isinstance(return_type, PrimitiveType) and return_type.name() != "void":
             if not getattr(self, "_return_seen", False):
-                self._err(ctx, f"Função '{name}' deve retornar um valor do tipo {return_type.name()}")
+                self._err(
+                    ctx, f"Função '{name}' deve retornar um valor do tipo {return_type.name()}")
         self._return_seen = prev_return_seen
-        
+
         return return_type
 
     def visitReturnStmt(self, ctx):
@@ -427,14 +480,17 @@ class SemanticAnalyzer(ParseTreeVisitor):
         # Função não-void: exige retorno com expressão compatível
         if ctx.expression() is None:
             func_name = self.current_function or "<função>"
-            expected = self.expected_return_type.name() if self.expected_return_type else 'desconhecido'
-            self._err(ctx, f"Função '{func_name}' deve retornar um valor do tipo {expected}")
+            expected = self.expected_return_type.name(
+            ) if self.expected_return_type else 'desconhecido'
+            self._err(
+                ctx, f"Função '{func_name}' deve retornar um valor do tipo {expected}")
             return PrimitiveType("void")
 
         expr_type = self.visit(ctx.expression())
         if self.expected_return_type:
             if not self.is_assignable(self.expected_return_type, expr_type, ctx):
-                self._err(ctx, f"Tipo de retorno incompatível. Esperado {self.expected_return_type.name()} mas foi {expr_type.name() if expr_type else 'null'}")
+                self._err(
+                    ctx, f"Tipo de retorno incompatível. Esperado {self.expected_return_type.name()} mas foi {expr_type.name() if expr_type else 'null'}")
         return expr_type
         return PrimitiveType("void")
 
@@ -443,11 +499,11 @@ class SemanticAnalyzer(ParseTreeVisitor):
         self.sym.push_scope()
         old_in_block = self.in_block_scope
         self.in_block_scope = True
-        
+
         # Visita todos os statements dentro do bloco
         for stmt in ctx.statement():
             self.visit(stmt)
-        
+
         self.in_block_scope = old_in_block
         self.sym.pop_scope()
 
@@ -457,7 +513,7 @@ class SemanticAnalyzer(ParseTreeVisitor):
         cond_type = self.visit(ctx.expression())
         if not (isinstance(cond_type, PrimitiveType) and cond_type.name() == "boolean"):
             self._err(ctx, "Condição de if deve ser do tipo boolean")
-        
+
         # Visita o statement do if (pode ser um bloco ou um statement simples)
         self.sym.push_scope()
         old_in_block = self.in_block_scope
@@ -465,7 +521,7 @@ class SemanticAnalyzer(ParseTreeVisitor):
         self.visit(ctx.statement(0))
         self.in_block_scope = old_in_block
         self.sym.pop_scope()
-        
+
         # Visita o statement do else se existir
         if ctx.statement(1):  # else clause
             self.sym.push_scope()
@@ -480,7 +536,7 @@ class SemanticAnalyzer(ParseTreeVisitor):
         cond_type = self.visit(ctx.expression())
         if not (isinstance(cond_type, PrimitiveType) and cond_type.name() == "boolean"):
             self._err(ctx, "Condição de while deve ser do tipo boolean")
-        
+
         # Visita o statement dentro do while (pode ser um bloco ou um statement simples)
         self.sym.push_scope()
         old_in_block = self.in_block_scope
@@ -495,25 +551,25 @@ class SemanticAnalyzer(ParseTreeVisitor):
         self.sym.push_scope()
         old_in_block = self.in_block_scope
         self.in_block_scope = True
-        
+
         # Processa inicialização (declaração ou expressão)
         first_part = ctx.getChild(2)  # Skip 'for' e '('
         if first_part.getText() != ";":
             self.visit(first_part)
-        
+
         # Verifica condição (se houver)
         if ctx.expression(0):
             cond_type = self.visit(ctx.expression(0))
             if not (isinstance(cond_type, PrimitiveType) and cond_type.name() == "boolean"):
                 self._err(ctx, "Condição de for deve ser do tipo boolean")
-        
+
         # Verifica incremento (se houver)
         if ctx.expression(1):
             self.visit(ctx.expression(1))
-        
+
         # Visita o statement dentro do for
         self.visit(ctx.statement())
-        
+
         self.in_block_scope = old_in_block
         self.sym.pop_scope()
 
@@ -536,7 +592,7 @@ class SemanticAnalyzer(ParseTreeVisitor):
         # Literal
         if ctx.literal():
             return self.visit(ctx.literal())
-        
+
         # Identifier (variable or function reference)
         if ctx.ID():
             name = ctx.ID().getText()
@@ -546,34 +602,35 @@ class SemanticAnalyzer(ParseTreeVisitor):
                 return self.sym.funcs[name].return_type
             self._err(ctx, f"Variável '{name}' não declarada")
             return None
-        
+
         # Parenthesized expression
         if ctx.expression():
             return self.visit(ctx.expression())
-        
+
         # Array literal
         if ctx.arrayLiteral():
             return self.visit(ctx.arrayLiteral())
-        
+
         # Object literal
         if ctx.objectLiteral():
             return self.visit(ctx.objectLiteral())
-        
+
         return None
 
     def visitArrayLiteral(self, ctx):
         """Processa array literal com verificação de homogeneidade"""
         exprs = list(ctx.expression()) if ctx.expression() else []
-        
+
         if not exprs:
             return ArrayType(PrimitiveType("unknown"))
-        
+
         first = self.visit(exprs[0])
         for expr in exprs[1:]:
             elem_type = self.visit(expr)
             if not self.types_equal(first, elem_type):
-                self._err(ctx, f"Array heterogêneo: elementos têm tipos diferentes ({first.name()} vs {elem_type.name() if elem_type else 'null'})")
-        
+                self._err(
+                    ctx, f"Array heterogêneo: elementos têm tipos diferentes ({first.name()} vs {elem_type.name() if elem_type else 'null'})")
+
         return ArrayType(first)
 
     def visitObjectLiteral(self, ctx):
@@ -585,10 +642,10 @@ class SemanticAnalyzer(ParseTreeVisitor):
                 key = prop.ID().getText()
             else:
                 key = prop.STRING().getText()[1:-1]  # Remove quotes
-            
+
             value_type = self.visit(prop.expression())
             obj.props[key] = value_type
-        
+
         return obj
 
     def visitPostfixExpr(self, ctx):
@@ -597,17 +654,18 @@ class SemanticAnalyzer(ParseTreeVisitor):
         primary_id = None
         if ctx.primary().ID():
             primary_id = ctx.primary().ID().getText()
-        
+
         result_type = self.visit(ctx.primary())
-        
+
         # Process postfix operators
-        postfix_ops = ctx.postfixOp() if hasattr(ctx, 'postfixOp') and ctx.postfixOp() else []
+        postfix_ops = ctx.postfixOp() if hasattr(
+            ctx, 'postfixOp') and ctx.postfixOp() else []
         if not isinstance(postfix_ops, list):
             postfix_ops = [postfix_ops] if postfix_ops else []
-        
+
         for op_idx, op in enumerate(postfix_ops):
             op_text = op.getText()
-            
+
             if op_text.startswith('['):
                 # Array access
                 if isinstance(result_type, ArrayType):
@@ -615,7 +673,7 @@ class SemanticAnalyzer(ParseTreeVisitor):
                 else:
                     self._err(ctx, "Acesso de array em tipo não-array")
                     return None
-            
+
             elif op_text.startswith('.'):
                 # Property access or array method call
                 # Extract the identifier after the dot
@@ -624,58 +682,67 @@ class SemanticAnalyzer(ParseTreeVisitor):
                 is_method_call = False
                 method_name = method_or_prop
                 arg_exprs = []
-                
+
                 # Try to detect if next op is a function call (parentheses)
                 if op_idx + 1 < len(postfix_ops) and postfix_ops[op_idx + 1].getText().startswith('('):
                     is_method_call = True
                     method_op = postfix_ops[op_idx + 1]
                     try:
-                        arg_exprs = list(method_op.expression()) if hasattr(method_op, 'expression') and method_op.expression() else []
+                        arg_exprs = list(method_op.expression()) if hasattr(
+                            method_op, 'expression') and method_op.expression() else []
                     except Exception:
                         arg_exprs = []
-                
+
                 # Handle array methods
                 if isinstance(result_type, ArrayType):
                     if is_method_call:
                         if method_name == "push":
                             # push(x): x deve ter o tipo do elemento do array
                             if len(arg_exprs) != 1:
-                                self._err(ctx, "Método 'push' do array requer exatamente 1 argumento")
+                                self._err(
+                                    ctx, "Método 'push' do array requer exatamente 1 argumento")
                             else:
                                 arg_type = self.visit(arg_exprs[0])
                                 if not self.types_equal(result_type.elem, arg_type):
-                                    self._err(ctx, f"Argumento de 'push' deve ter tipo {result_type.elem.name()}, mas tem {arg_type.name() if arg_type else 'null'}")
+                                    self._err(
+                                        ctx, f"Argumento de 'push' deve ter tipo {result_type.elem.name()}, mas tem {arg_type.name() if arg_type else 'null'}")
                             result_type = PrimitiveType("void")
                         elif method_name == "pop":
                             # pop(): retorna o elemento do array
                             if len(arg_exprs) != 0:
-                                self._err(ctx, "Método 'pop' do array não aceita argumentos")
+                                self._err(
+                                    ctx, "Método 'pop' do array não aceita argumentos")
                             result_type = result_type.elem
                         elif method_name == "size":
                             # size(): retorna number
                             if len(arg_exprs) != 0:
-                                self._err(ctx, "Método 'size' do array não aceita argumentos")
+                                self._err(
+                                    ctx, "Método 'size' do array não aceita argumentos")
                             result_type = PrimitiveType("number")
                         else:
-                            self._err(ctx, f"Array não possui método '{method_name}'")
+                            self._err(
+                                ctx, f"Array não possui método '{method_name}'")
                             return None
                         # Skip the next postfix op (the function call) since we processed it
                         # Mark for skipping by incrementing op_idx in a way the loop handles
                     else:
                         # Not a method call on array; would be property access
-                        self._err(ctx, "Array não possui propriedades acessíveis")
+                        self._err(
+                            ctx, "Array não possui propriedades acessíveis")
                         return None
                 elif isinstance(result_type, InterfaceType):
                     # Regular property access for interfaces
                     if method_or_prop in result_type.props:
                         result_type = result_type.props[method_or_prop]
                     else:
-                        self._err(ctx, f"Campo '{method_or_prop}' não existe na interface '{result_type.name()}'")
+                        self._err(
+                            ctx, f"Campo '{method_or_prop}' não existe na interface '{result_type.name()}'")
                         return None
                 else:
-                    self._err(ctx, "Acesso de propriedade em tipo não-interface")
+                    self._err(
+                        ctx, "Acesso de propriedade em tipo não-interface")
                     return None
-            
+
             elif op_text.startswith('(') and op_idx == 0 and primary_id:
                 # Function call (first postfix op on identifier)
                 if primary_id in self.sym.funcs:
@@ -685,7 +752,8 @@ class SemanticAnalyzer(ParseTreeVisitor):
                     arg_exprs = []
                     # Extract expressions inside parentheses via parse tree
                     try:
-                        arg_exprs = list(args_ctx.expression()) if hasattr(args_ctx, 'expression') and args_ctx.expression() else []
+                        arg_exprs = list(args_ctx.expression()) if hasattr(
+                            args_ctx, 'expression') and args_ctx.expression() else []
                     except Exception:
                         arg_exprs = []
                     # Simple arity check
@@ -695,32 +763,35 @@ class SemanticAnalyzer(ParseTreeVisitor):
                     # Type validation for print
                     if primary_id == "print" and len(arg_exprs) == 1:
                         arg_t = self.visit(arg_exprs[0])
-                        if not isinstance(arg_t, PrimitiveType) or arg_t.name() not in ("string", "number", "boolean"):
-                            self._err(ctx, "Função nativa 'print' aceita apenas string, number ou boolean")
+                        if not isinstance(arg_t, PrimitiveType) or arg_t.name() not in ("string", "number", "boolean", "unknown"):
+                            self._err(
+                                ctx, "Função nativa 'print' aceita apenas string, number ou boolean")
                     if primary_id == "read" and len(arg_exprs) != 0:
-                        self._err(ctx, "Função nativa 'read' não aceita argumentos")
+                        self._err(
+                            ctx, "Função nativa 'read' não aceita argumentos")
                     result_type = func.return_type
                     if self.current_function:
-                        self.call_graph.setdefault(self.current_function, set()).add(primary_id)
-        
+                        self.call_graph.setdefault(
+                            self.current_function, set()).add(primary_id)
+
         return result_type
 
     def _binary_expr(self, ctx, op_validator, result_type_fn):
         """Tratador genérico para expressões binárias"""
         if ctx.getChildCount() == 1:
             return self.visit(ctx.getChild(0))
-        
+
         left = self.visit(ctx.getChild(0))
-        
+
         for i in range(1, ctx.getChildCount(), 2):
             op = ctx.getChild(i).getText()
             right = self.visit(ctx.getChild(i + 1))
-            
+
             if left and right:
                 op_validator(left, right, op, ctx)
-            
+
             left = result_type_fn(left, right)
-        
+
         return left
 
     def visitAdditiveExpr(self, ctx):
@@ -728,11 +799,12 @@ class SemanticAnalyzer(ParseTreeVisitor):
         def validate(l, r, op, c):
             if not (isinstance(l, PrimitiveType) and l.name() == "number" and
                     isinstance(r, PrimitiveType) and r.name() == "number"):
-                self._err(c, f"Operador '{op}' requer operandos do tipo number")
-        
+                self._err(
+                    c, f"Operador '{op}' requer operandos do tipo number")
+
         def result_type(l, r):
             return PrimitiveType("number")
-        
+
         return self._binary_expr(ctx, validate, result_type)
 
     def visitMultiplicativeExpr(self, ctx):
@@ -740,11 +812,12 @@ class SemanticAnalyzer(ParseTreeVisitor):
         def validate(l, r, op, c):
             if not (isinstance(l, PrimitiveType) and l.name() == "number" and
                     isinstance(r, PrimitiveType) and r.name() == "number"):
-                self._err(c, f"Operador '{op}' requer operandos do tipo number")
-        
+                self._err(
+                    c, f"Operador '{op}' requer operandos do tipo number")
+
         def result_type(l, r):
             return PrimitiveType("number")
-        
+
         return self._binary_expr(ctx, validate, result_type)
 
     def visitRelationalExpr(self, ctx):
@@ -752,11 +825,12 @@ class SemanticAnalyzer(ParseTreeVisitor):
         def validate(l, r, op, c):
             if not (isinstance(l, PrimitiveType) and l.name() == "number" and
                     isinstance(r, PrimitiveType) and r.name() == "number"):
-                self._err(c, f"Operador '{op}' requer operandos do tipo number")
-        
+                self._err(
+                    c, f"Operador '{op}' requer operandos do tipo number")
+
         def result_type(l, r):
             return PrimitiveType("boolean")
-        
+
         return self._binary_expr(ctx, validate, result_type)
 
     def visitEqualityExpr(self, ctx):
@@ -764,10 +838,10 @@ class SemanticAnalyzer(ParseTreeVisitor):
         def validate(l, r, op, c):
             if not self.types_equal(l, r):
                 self._err(c, f"Operador '{op}' requer operandos do mesmo tipo")
-        
+
         def result_type(l, r):
             return PrimitiveType("boolean")
-        
+
         return self._binary_expr(ctx, validate, result_type)
 
     def visitLogicalAndExpr(self, ctx):
@@ -776,10 +850,10 @@ class SemanticAnalyzer(ParseTreeVisitor):
             if not (isinstance(l, PrimitiveType) and l.name() == "boolean" and
                     isinstance(r, PrimitiveType) and r.name() == "boolean"):
                 self._err(c, f"Operador '&&' requer operandos do tipo boolean")
-        
+
         def result_type(l, r):
             return PrimitiveType("boolean")
-        
+
         return self._binary_expr(ctx, validate, result_type)
 
     def visitLogicalOrExpr(self, ctx):
@@ -788,10 +862,10 @@ class SemanticAnalyzer(ParseTreeVisitor):
             if not (isinstance(l, PrimitiveType) and l.name() == "boolean" and
                     isinstance(r, PrimitiveType) and r.name() == "boolean"):
                 self._err(c, f"Operador '||' requer operandos do tipo boolean")
-        
+
         def result_type(l, r):
             return PrimitiveType("boolean")
-        
+
         return self._binary_expr(ctx, validate, result_type)
 
     def visitAssignmentExpr(self, ctx):
@@ -803,24 +877,26 @@ class SemanticAnalyzer(ParseTreeVisitor):
             if text == '=' and '==' not in text:
                 assign_idx = i
                 break
-        
+
         if assign_idx > 0:
             # Assignment found
             left = ctx.getChild(0)
             left_type = self.visit(left)
-            
+
             # Check const reassignment
             if hasattr(left, 'getText') and assign_idx == 1:
                 left_text = left.getText()
                 if left_text in self.sym.vars and self.sym.vars[left_text].is_const:
-                    self._err(ctx, f"Não é possível reatribuir variável const '{left_text}'")
-            
+                    self._err(
+                        ctx, f"Não é possível reatribuir variável const '{left_text}'")
+
             # Check type compatibility
             right_type = self.visit(ctx.assignmentExpr())
             if left_type and right_type:
                 if not self.is_assignable(left_type, right_type, ctx):
-                    self._err(ctx, f"Tipos incompatíveis na atribuição: não é possível atribuir {right_type.name()} a {left_type.name()}")
-            
+                    self._err(
+                        ctx, f"Tipos incompatíveis na atribuição: não é possível atribuir {right_type.name()} a {left_type.name()}")
+
             return left_type
         else:
             # No assignment, just expression

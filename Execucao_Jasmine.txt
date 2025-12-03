@@ -1,0 +1,26 @@
+
+* python main.py exemplo.txt
+
+* java -jar jasmin.jar Exemplo.j
+
+// Por padrão o nome do arquivo é "capitalizado"
+
+O Jasmin lê o arquivo.
+Ele vê a linha .class public Exemplo.
+Ele cria o arquivo binário Exemplo.class.
+
+use apenas o nome da classe, sem .class e sem .j.
+
+* java Exemplo
+
+A JVM procura pelo arquivo Exemplo.class na pasta.
+
+Ela executa o método main dentro dele.
+
+
+
+erros
+
+Então é apenas pop(arr) como expression statement que está falhando
+
+Agora o problema é que em teste_simples_12, arr é realmente global mas está sendo tratado como local.
