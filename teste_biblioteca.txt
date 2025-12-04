@@ -1,0 +1,53 @@
+interface Livro {
+    titulo: string;
+    autor: string;
+    ano: number;
+    preco: number;
+}
+
+let biblioteca: Livro[] = [];
+
+let l1: Livro;
+l1.titulo = "Dom Casmurro";
+l1.autor = "Machado de Assis";
+l1.ano = 1899;
+l1.preco = 45;
+biblioteca.push(l1);
+
+let l2: Livro;
+l2.titulo = "Memórias Póstumas de Brás Cubas";
+l2.autor = "Machado de Assis";
+l2.ano = 1881;
+l2.preco = 55;
+biblioteca.push(l2);
+
+let l3: Livro;
+l3.titulo = "O Cortiço";
+l3.autor = "Aluísio Azevedo";
+l3.ano = 1890;
+l3.preco = 40;
+biblioteca.push(l3);
+
+print("=== BIBLIOTECA VIRTUAL ===");
+print("");
+
+for(let i: number = 0; i < biblioteca.size(); i = i + 1) {
+    let livro: Livro = biblioteca[i];
+    print("Livro:", livro.titulo);
+    print("Autor:", livro.autor);
+    print("Ano:", livro.ano);
+    print("Preco: R$", livro.preco);
+    print("");
+}
+
+let totalPreco: number = 0;
+for(let i: number = 0; i < biblioteca.size(); i = i + 1) {
+    let livro: Livro = biblioteca[i];
+    totalPreco = totalPreco + livro.preco;
+}
+
+let mediaPreco: number = totalPreco / biblioteca.size();
+print("=== RESUMO ===");
+print("Total de Livros:", biblioteca.size());
+print("Valor Total:", totalPreco);
+print("Preço Médio:", mediaPreco);

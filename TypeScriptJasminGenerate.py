@@ -16,6 +16,8 @@ class JasminGenerator(ParseTreeVisitor):
         self.local_var_index = 0
         self.local_vars = {}  # Mapa {nome: indice_jvm} para o escopo atual
         self.local_var_types = {}  # Mapa {nome: tipo} para rastrear tipos de variáveis locais
+        self.in_main_method = False  # Flag para rastrear se estamos no main
+        self.in_expression_stmt = False  # Flag para rastrear se estamos em um expression statement
 
         # Controle de Stack (simplificado: assumimos um limite seguro)
         self.stack_limit = 200
@@ -89,6 +91,21 @@ class JasminGenerator(ParseTreeVisitor):
         
         # Default: assume number
         return "number"
+
+    def _get_array_element_type(self, array_var_name):
+        """Retorna o tipo do elemento de um array"""
+        var_symbol = self._find_var_symbol(array_var_name)
+        
+        if var_symbol and hasattr(var_symbol, 'type'):
+            var_type = var_symbol.type
+            if isinstance(var_type, ArrayType):
+                elem_type = var_type.elem
+                if isinstance(elem_type, PrimitiveType):
+                    return elem_type.name()
+                elif isinstance(elem_type, InterfaceType):
+                    return f"interface:{elem_type.name()}"
+        
+        return "unknown"
 
     def get_jvm_type(self, ts_type):
         """Converte tipos do TypeScript para descritores JVM"""
@@ -203,6 +220,7 @@ class JasminGenerator(ParseTreeVisitor):
         # Executa statements globais (que não são funções nem declarações de tipo)
         self.local_vars = {}  # Reinicia locais para o main
         self.local_var_index = 1  # 0 é args, começamos do 1
+        self.in_main_method = True  # Set flag para main
 
         for child in ctx.children:
             if isinstance(child, TypeScriptParser.StatementContext):
@@ -211,6 +229,7 @@ class JasminGenerator(ParseTreeVisitor):
                 if not child.functionDecl() and not child.interfaceDecl():
                     self.visit(child)
 
+        self.in_main_method = False  # Reset flag
         self.emit("return")
         self.code.append(".end method")
 
@@ -307,10 +326,11 @@ class JasminGenerator(ParseTreeVisitor):
                         self.emit(f"astore {idx}")
                     else:
                         self.emit(f"istore {idx}")
-            elif name in self.sem.sym.global_vars:
-                # É uma variável global (declarada no nível superior do programa)
+            elif name in self.sem.sym.global_vars and not self.in_main_method:
+                # É uma variável global (declarada no nível superior do programa, fora do main)
                 var_sym = self.sem.sym.global_vars[name]
                 desc = self.get_jvm_type(var_sym.type)
+                self.emit("dup")
                 self.emit(f"putstatic {self.class_name}/{name} {desc}")
             else:
                 # Nova variável local dentro de um método
@@ -372,7 +392,7 @@ class JasminGenerator(ParseTreeVisitor):
         # print() e push() retornam void
         # pop() e size() retornam valor
         # Também detecta .push() como método
-        # Atribuições a campo também não deixam valor na pilha
+        # Atribuições a campo (obj.campo = ...) também não deixam valor na pilha (putfield consome)
         is_void_func = (expr_text.startswith("print(") or
                         expr_text.startswith("push(") or
                         ".push(" in expr_text or
@@ -623,9 +643,9 @@ class JasminGenerator(ParseTreeVisitor):
             name = ctx.ID().getText()
             if name in self.local_vars:
                 idx = self.local_vars[name]
-                # Verifica se é interface
+                # Verifica se é interface ou array (referências)
                 var_type = self.local_var_types.get(name)
-                if var_type and isinstance(var_type, InterfaceType):
+                if var_type and isinstance(var_type, (InterfaceType, ArrayType)):
                     self.emit(f"aload {idx}")
                 else:
                     self.emit(f"iload {idx}")
@@ -670,13 +690,30 @@ class JasminGenerator(ParseTreeVisitor):
 
             # Acesso por índice: arr[i]
             if op_text.startswith('['):
+                # Obtém o nome do array (primary)
+                primary_text = primary.getText()
+                array_elem_type = self._get_array_element_type(primary_text)
+                
                 if hasattr(op, 'expression') and op.expression():
                     self.visit(op.expression()[0])
+                
                 self.emit(
                     "invokevirtual java/util/ArrayList/get(I)Ljava/lang/Object;")
-                # Deixa como Object; será feito cast apropriado durante atribuição
-                # Para primitivos, isso causará erro, mas para interfaces funciona bem
-                # TODO: melhorar com detecção de tipo de array
+                
+                # Converte Object para o tipo correto
+                if array_elem_type == "number":
+                    # Array de numbers: unbox Integer
+                    self.emit("checkcast java/lang/Integer")
+                    self.emit("invokevirtual java/lang/Integer/intValue()I")
+                elif array_elem_type.startswith("interface:"):
+                    # Array de interfaces: faz checkcast
+                    iface_name = array_elem_type.split(':')[1]
+                    self.emit(f"checkcast {iface_name}")
+                elif array_elem_type == "string":
+                    # Array de strings: faz checkcast
+                    self.emit("checkcast java/lang/String")
+                # else: deixa como Object
+                
                 i += 1
                 continue
 
