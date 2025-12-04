@@ -61,6 +61,24 @@ def compile_file(filepath: str) -> bool:
         class_name = _derive_class_name(filepath)
         generator = JasminGenerator(analyzer, class_name=class_name)
         generator.visit(tree)
+        
+        # Salva classes de interface
+        for iface_code in generator.interface_classes:
+            # Extrai nome da classe
+            iface_class_name = None
+            for line in iface_code.split('\n'):
+                if line.startswith('.class public '):
+                    iface_class_name = line.split('.class public ')[1].strip()
+                    break
+            
+            if iface_class_name:
+                iface_path = os.path.join(
+                    os.path.dirname(filepath), f"{iface_class_name}.j")
+                with open(iface_path, "w", encoding="utf-8") as f:
+                    f.write(iface_code)
+                print(f"✔ Classe interface gerada: {iface_path}")
+        
+        # Salva classe principal
         jasmin_code = generator.get_result()
         jasmin_path = os.path.join(
             os.path.dirname(filepath), f"{class_name}.j")

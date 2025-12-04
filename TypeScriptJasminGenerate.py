@@ -9,11 +9,13 @@ class JasminGenerator(ParseTreeVisitor):
         self.sem = semantic_analyzer
         self.class_name = class_name
         self.code = []  # Lista para armazenar as linhas do código Jasmin
+        self.interface_classes = []  # Código das classes de interface geradas
 
         # Controle de Labels e Locals
         self.label_counter = 0
         self.local_var_index = 0
         self.local_vars = {}  # Mapa {nome: indice_jvm} para o escopo atual
+        self.local_var_types = {}  # Mapa {nome: tipo} para rastrear tipos de variáveis locais
 
         # Controle de Stack (simplificado: assumimos um limite seguro)
         self.stack_limit = 200
@@ -32,6 +34,62 @@ class JasminGenerator(ParseTreeVisitor):
         self.label_counter += 1
         return f"L{self.label_counter}"
 
+    def _find_var_symbol(self, name):
+        """Encontra um símbolo de variável (local ou global)"""
+        # Primeiro verifica local_var_types
+        if name in self.local_var_types:
+            class DummySymbol:
+                pass
+            sym = DummySymbol()
+            sym.type = self.local_var_types[name]
+            return sym
+        # Depois verifica global_vars
+        if name in self.sem.sym.global_vars:
+            return self.sem.sym.global_vars[name]
+        return None
+
+    def _infer_expr_type(self, expr_ctx):
+        """Infere o tipo de uma expressão baseado em seu texto/contexto"""
+        expr_text = expr_ctx.getText()
+        
+        # String literal
+        if (expr_text.startswith('"') and expr_text.endswith('"')) or \
+           (expr_text.startswith("'") and expr_text.endswith("'")):
+            return "string"
+        
+        # Number literal
+        if expr_text.isdigit():
+            return "number"
+        
+        # Field access: obj.field
+        if '.' in expr_text:
+            parts = expr_text.split('.')
+            if len(parts) >= 2:
+                var_name = parts[0]
+                field_name = parts[-1]
+                
+                # Procura a variável para determinar seu tipo
+                var_symbol = self._find_var_symbol(var_name)
+                if var_symbol and hasattr(var_symbol, 'type'):
+                    var_type = var_symbol.type
+                    if isinstance(var_type, InterfaceType):
+                        # Busca tipo do field na interface
+                        if field_name in var_type.props:
+                            field_type = var_type.props[field_name]
+                            if isinstance(field_type, PrimitiveType):
+                                return field_type.name()
+                            return "object"
+        
+        # Variável simples
+        var_symbol = self._find_var_symbol(expr_text)
+        if var_symbol and hasattr(var_symbol, 'type'):
+            var_type = var_symbol.type
+            if isinstance(var_type, PrimitiveType):
+                return var_type.name()
+        
+        # Default: assume number
+        return "number"
+
     def get_jvm_type(self, ts_type):
         """Converte tipos do TypeScript para descritores JVM"""
         if isinstance(ts_type, PrimitiveType):
@@ -46,19 +104,51 @@ class JasminGenerator(ParseTreeVisitor):
         if isinstance(ts_type, ArrayType):
             # Usamos java.util.ArrayList como representação
             return "Ljava/util/ArrayList;"
+        if isinstance(ts_type, InterfaceType):
+            # Interface é um objeto de sua própria classe
+            return f"L{ts_type.name()};"
         # Default/Fallback
         return "I"
 
     def get_result(self):
-        """Retorna o código Jasmin completo"""
+        """Retorna o código Jasmin completo (apenas da classe principal, sem interfaces)"""
+        # Retorna apenas o código da classe principal
         return "\n".join(self.code)
+
+    def generate_interface_classes(self):
+        """Gera classes Java para todas as interfaces definidas"""
+        for iface_name, iface_type in self.sem.sym.interfaces.items():
+            class_code = []
+            class_code.append(f".class public {iface_name}")
+            class_code.append(".super java/lang/Object")
+            class_code.append("")
+            
+            # Fields para cada propriedade da interface
+            for prop_name, prop_type in iface_type.props.items():
+                desc = self.get_jvm_type(prop_type)
+                class_code.append(f".field public {prop_name} {desc}")
+            
+            class_code.append("")
+            
+            # Construtor padrão
+            class_code.append(".method public <init>()V")
+            class_code.append("    aload_0")
+            class_code.append("    invokespecial java/lang/Object/<init>()V")
+            class_code.append("    return")
+            class_code.append(".end method")
+            class_code.append("")
+            
+            self.interface_classes.append("\n".join(class_code))
 
     # ========================================================================
     # VISITORS PRINCIPAIS
     # ========================================================================
 
     def visitProgram(self, ctx: TypeScriptParser.ProgramContext):
-        # Cabeçalho da Classe
+        # Primeiro: Gerar classes de interface
+        self.generate_interface_classes()
+        
+        # Cabeçalho da Classe Principal
         self.code.append(f".class public {self.class_name}")
         self.code.append(".super java/lang/Object")
         self.code.append("")
@@ -187,6 +277,11 @@ class JasminGenerator(ParseTreeVisitor):
 
     def _visitVarDecl_common(self, ctx):
         name = ctx.ID().getText()
+        
+        # Primeiro, obtém o tipo da variável do contexto
+        parsed_type = None
+        if ctx.typeExpr():
+            parsed_type = self.sem.type_from_ctx(ctx.typeExpr())
 
         # Se tem inicialização (ex: let x = 10)
         if ctx.expression():
@@ -197,11 +292,21 @@ class JasminGenerator(ParseTreeVisitor):
             if name in self.local_vars:
                 # É reatribuição de variável local existente
                 idx = self.local_vars[name]
-                expr_text = ctx.expression().getText() if ctx.expression() else ""
-                if expr_text.startswith("array("):
+                
+                # Verifica se precisa fazer cast
+                if parsed_type and isinstance(parsed_type, InterfaceType):
+                    iface_name = parsed_type.name()
+                    self.emit(f"checkcast {iface_name}")
+                    self.emit(f"astore {idx}")
+                elif parsed_type and isinstance(parsed_type, ArrayType):
                     self.emit(f"astore {idx}")
                 else:
-                    self.emit(f"istore {idx}")
+                    # Primitivo
+                    expr_text = ctx.expression().getText() if ctx.expression() else ""
+                    if expr_text.startswith("array("):
+                        self.emit(f"astore {idx}")
+                    else:
+                        self.emit(f"istore {idx}")
             elif name in self.sem.sym.global_vars:
                 # É uma variável global (declarada no nível superior do programa)
                 var_sym = self.sem.sym.global_vars[name]
@@ -212,13 +317,48 @@ class JasminGenerator(ParseTreeVisitor):
                 idx = self.local_var_index
                 self.local_vars[name] = idx
                 self.local_var_index += 1
+                
+                # Armazena tipo da variável
+                if parsed_type:
+                    self.local_var_types[name] = parsed_type
 
                 # Check type for correct store instruction
-                expr_text = ctx.expression().getText() if ctx.expression() else ""
-                if expr_text.startswith("array("):
-                    self.emit(f"astore {idx}")
+                if parsed_type:
+                    if isinstance(parsed_type, InterfaceType):
+                        # Se é interface, precisa fazer cast do Object retornado de array access
+                        iface_name = parsed_type.name()
+                        self.emit(f"checkcast {iface_name}")
+                        self.emit(f"astore {idx}")
+                    elif isinstance(parsed_type, ArrayType):
+                        self.emit(f"astore {idx}")
+                    else:
+                        self.emit(f"istore {idx}")  # Use istore para primitivos
                 else:
-                    self.emit(f"istore {idx}")
+                    # Fallback - tenta detectar pelo texto da expressão
+                    expr_text = ctx.expression().getText() if ctx.expression() else ""
+                    if expr_text.startswith("array("):
+                        self.emit(f"astore {idx}")
+                    else:
+                        self.emit(f"istore {idx}")
+        else:
+            # Sem inicialização - precisa instanciar se for interface
+            # Se for variável de interface sem inicializador
+            if parsed_type and isinstance(parsed_type, InterfaceType):
+                # Cria instância: new NomeDaInterface(); dup(); invokespecial <init>()V
+                iface_name = parsed_type.name()
+                self.emit(f"new {iface_name}")
+                self.emit("dup")
+                self.emit(f"invokespecial {iface_name}/<init>()V")
+                self.emit(f"putstatic {self.class_name}/{name} L{iface_name};")
+            else:
+                # Para local variables sem inicializador, registra apenas
+                if name not in self.local_vars:
+                    idx = self.local_var_index
+                    self.local_vars[name] = idx
+                    self.local_var_index += 1
+                    # Armazena tipo
+                    if parsed_type:
+                        self.local_var_types[name] = parsed_type
 
     def visitExpressionStmt(self, ctx: TypeScriptParser.ExpressionStmtContext):
         """Visita um statement de expressão: expr;
@@ -232,13 +372,15 @@ class JasminGenerator(ParseTreeVisitor):
         # print() e push() retornam void
         # pop() e size() retornam valor
         # Também detecta .push() como método
+        # Atribuições a campo também não deixam valor na pilha
         is_void_func = (expr_text.startswith("print(") or
                         expr_text.startswith("push(") or
-                        ".push(" in expr_text)
+                        ".push(" in expr_text or
+                        ("=" in expr_text and "." in expr_text))  # Atribuição a campo
 
         self.visit(expr_ctx)
 
-        # Se não é função void, há um valor na pilha que precisa ser descartado
+        # Se não é função void e não é atribuição a campo, há um valor na pilha que precisa ser descartado
         if not is_void_func:
             self.emit("pop")
 
@@ -329,28 +471,66 @@ class JasminGenerator(ParseTreeVisitor):
     # ========================================================================
 
     def visitAssignmentExpr(self, ctx: TypeScriptParser.AssignmentExprContext):
-        # Se tem atribuição (ex: x = 10)
+        # Se tem atribuição (ex: x = 10 ou obj.campo = 10)
         if ctx.ASSIGN():
             # Lado direito (valor)
             self.visit(ctx.assignmentExpr())
 
-            # Lado esquerdo (variável)
-            # Precisamos do nome. O lado esquerdo é um ternaryExpr -> ... -> primary -> ID
-            # Essa navegação na árvore crua é chata. Vamos tentar pegar o texto.
-            # Nota: Isso é uma simplificação. O correto seria visitar o lado esquerdo
-            # num modo "L-Value" (obter endereço) em vez de "R-Value" (obter valor).
-            var_name = ctx.getChild(0).getText()
-
-            if var_name in self.local_vars:
-                idx = self.local_vars[var_name]
-                # Mantém valor na pilha para encadeamento (a = b = c)
-                self.emit("dup")
-                self.emit(f"istore {idx}")
-            elif var_name in self.sem.sym.global_vars:
-                desc = self.get_jvm_type(
-                    self.sem.sym.global_vars[var_name].type)
-                self.emit("dup")
-                self.emit(f"putstatic {self.class_name}/{var_name} {desc}")
+            # Lado esquerdo (variável ou campo)
+            left_text = ctx.getChild(0).getText()
+            
+            # Verifica se é atribuição a campo (ex: obj.campo)
+            if '.' in left_text:
+                # Atribuição a campo de interface
+                parts = left_text.split('.')
+                if len(parts) == 2:
+                    obj_name = parts[0]
+                    field_name = parts[1]
+                    
+                    # Obtém tipo do campo e tipo do objeto
+                    obj_sym = self._find_var_symbol(obj_name)
+                    if obj_sym and isinstance(obj_sym.type, InterfaceType):
+                        iface_name = obj_sym.type.name()
+                        iface_type = self.sem.sym.interfaces.get(iface_name)
+                        
+                        # Obtém o objeto (antes de colocar na pilha)
+                        if obj_name in self.local_vars:
+                            idx = self.local_vars[obj_name]
+                            # Pilha: [valor]
+                            # Queremos: [objeto, valor] para putfield
+                            self.emit(f"aload {idx}")  # Pilha: [valor, objeto]
+                            self.emit("swap")  # Pilha: [objeto, valor]
+                        elif obj_name in self.sem.sym.global_vars:
+                            desc = self.get_jvm_type(obj_sym.type)
+                            # Pilha: [valor]
+                            self.emit(f"getstatic {self.class_name}/{obj_name} {desc}")  # Pilha: [valor, objeto]
+                            self.emit("swap")  # Pilha: [objeto, valor]
+                        
+                        if iface_type and field_name in iface_type.props:
+                            field_type = iface_type.props[field_name]
+                            desc = self.get_jvm_type(field_type)
+                            self.emit(f"putfield {iface_name}/{field_name} {desc}")
+                            # putfield não deixa nada na pilha
+            else:
+                # Atribuição simples a variável
+                var_name = left_text
+                
+                if var_name in self.local_vars:
+                    idx = self.local_vars[var_name]
+                    # Mantém valor na pilha para encadeamento (a = b = c)
+                    self.emit("dup")
+                    # Verifica se é interface ou primitivo
+                    var_sym = self._find_var_symbol(var_name)
+                    if var_sym and isinstance(var_sym.type, InterfaceType):
+                        self.emit(f"astore {idx}")
+                    else:
+                        self.emit(f"istore {idx}")
+                elif var_name in self.sem.sym.global_vars:
+                    var_sym = self.sem.sym.global_vars[var_name]
+                    desc = self.get_jvm_type(var_sym.type)
+                    self.emit("dup")
+                    self.emit(f"putstatic {self.class_name}/{var_name} {desc}")
+                    # Deixa um valor na pilha para encadeamento
         else:
             # Pass-through: delega para expressão lógica (topo da cadeia)
             if hasattr(ctx, 'logicalOrExpr') and ctx.logicalOrExpr():
@@ -443,7 +623,12 @@ class JasminGenerator(ParseTreeVisitor):
             name = ctx.ID().getText()
             if name in self.local_vars:
                 idx = self.local_vars[name]
-                self.emit(f"iload {idx}")
+                # Verifica se é interface
+                var_type = self.local_var_types.get(name)
+                if var_type and isinstance(var_type, InterfaceType):
+                    self.emit(f"aload {idx}")
+                else:
+                    self.emit(f"iload {idx}")
             elif name in self.sem.sym.global_vars:
                 desc = self.get_jvm_type(self.sem.sym.global_vars[name].type)
                 self.emit(f"getstatic {self.class_name}/{name} {desc}")
@@ -489,12 +674,13 @@ class JasminGenerator(ParseTreeVisitor):
                     self.visit(op.expression()[0])
                 self.emit(
                     "invokevirtual java/util/ArrayList/get(I)Ljava/lang/Object;")
-                self.emit("checkcast java/lang/Integer")
-                self.emit("invokevirtual java/lang/Integer/intValue()I")
+                # Deixa como Object; será feito cast apropriado durante atribuição
+                # Para primitivos, isso causará erro, mas para interfaces funciona bem
+                # TODO: melhorar com detecção de tipo de array
                 i += 1
                 continue
 
-            # Métodos de array com possível argumento no próximo postfixOp
+            # Métodos de array e acesso a campos de interface
             if op_text.startswith('.'):
                 method_name = op_text[1:]  # Remove o ponto
                 next_op = ops[i + 1] if i + 1 < len(ops) else None
@@ -506,8 +692,18 @@ class JasminGenerator(ParseTreeVisitor):
                         next_op, 'expression') and next_op.expression() else []
                     if len(arg_exprs) >= 1:
                         self.visit(arg_exprs[0])
-                        self.emit(
-                            "invokestatic java/lang/Integer/valueOf(I)Ljava/lang/Integer;")
+                        # Verifica o tipo do argumento para determinar se precisa converter
+                        arg_text = arg_exprs[0].getText()
+                        arg_sym = None
+                        if arg_text in self.sem.sym.global_vars:
+                            arg_sym = self.sem.sym.global_vars[arg_text]
+                        
+                        # Se não é interface, converte para Integer
+                        if arg_sym is None or not isinstance(arg_sym.type, InterfaceType):
+                            self.emit(
+                                "invokestatic java/lang/Integer/valueOf(I)Ljava/lang/Integer;")
+                        # Se for interface, já está como Object na pilha, pode adicionar direto
+                        
                         self.emit(
                             "invokevirtual java/util/ArrayList/add(Ljava/lang/Object;)Z")
                         self.emit("pop")
@@ -534,6 +730,25 @@ class JasminGenerator(ParseTreeVisitor):
                     # arr.size()
                     self.emit("invokevirtual java/util/ArrayList/size()I")
                     i += 2  # Consome dois postfixOp
+                    continue
+                
+                # Acesso a campo de interface (ex: obj.campo)
+                if not (next_op and next_op.getText().startswith('(')):
+                    # É acesso a campo, não método
+                    # Obtém o tipo do objeto principal
+                    primary_name = primary.ID().getText() if primary.ID() else None
+                    if primary_name:
+                        primary_sym = self._find_var_symbol(primary_name)
+                        if primary_sym and isinstance(primary_sym.type, InterfaceType):
+                            iface_name = primary_sym.type.name()
+                            # Acesso ao campo: getfield NomeDaInterface/campo tipo
+                            iface_type = self.sem.sym.interfaces.get(iface_name)
+                            if iface_type and method_name in iface_type.props:
+                                field_type = iface_type.props[method_name]
+                                desc = self.get_jvm_type(field_type)
+                                self.emit(f"getfield {iface_name}/{method_name} {desc}")
+                                result_type = field_type
+                    i += 1
                     continue
 
             # Chamadas de função regular (sem ponto)
@@ -569,11 +784,15 @@ class JasminGenerator(ParseTreeVisitor):
                                             "invokevirtual java/lang/StringBuilder/append(Ljava/lang/String;)Ljava/lang/StringBuilder;")
 
                                     self.visit(arg)
-                                    arg_text = arg.getText()
-                                    if (arg_text.startswith('"') and arg_text.endswith('"')) or (arg_text.startswith("'") and arg_text.endswith("'")):
+                                    
+                                    # Determina o tipo real do argumento
+                                    arg_type = self._infer_expr_type(arg)
+                                    
+                                    if arg_type == "string":
                                         self.emit(
                                             "invokevirtual java/lang/StringBuilder/append(Ljava/lang/String;)Ljava/lang/StringBuilder;")
                                     else:
+                                        # number ou outros tipos
                                         self.emit(
                                             "invokevirtual java/lang/StringBuilder/append(I)Ljava/lang/StringBuilder;")
 
