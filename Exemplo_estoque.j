@@ -24,47 +24,47 @@
     new java/util/ArrayList
     dup
     invokespecial java/util/ArrayList/<init>()V
-    putstatic Exemplo_estoque/precos Ljava/util/ArrayList;
+    astore 1
     new java/util/ArrayList
     dup
     invokespecial java/util/ArrayList/<init>()V
-    putstatic Exemplo_estoque/quantidades Ljava/util/ArrayList;
-    getstatic Exemplo_estoque/precos Ljava/util/ArrayList;
+    astore 2
+    aload 1
     ldc 3000
     invokestatic java/lang/Integer/valueOf(I)Ljava/lang/Integer;
     invokevirtual java/util/ArrayList/add(Ljava/lang/Object;)Z
     pop
-    getstatic Exemplo_estoque/quantidades Ljava/util/ArrayList;
+    aload 2
     ldc 5
     invokestatic java/lang/Integer/valueOf(I)Ljava/lang/Integer;
     invokevirtual java/util/ArrayList/add(Ljava/lang/Object;)Z
     pop
-    getstatic Exemplo_estoque/precos Ljava/util/ArrayList;
+    aload 1
     ldc 50
     invokestatic java/lang/Integer/valueOf(I)Ljava/lang/Integer;
     invokevirtual java/util/ArrayList/add(Ljava/lang/Object;)Z
     pop
-    getstatic Exemplo_estoque/quantidades Ljava/util/ArrayList;
+    aload 2
     ldc 20
     invokestatic java/lang/Integer/valueOf(I)Ljava/lang/Integer;
     invokevirtual java/util/ArrayList/add(Ljava/lang/Object;)Z
     pop
-    getstatic Exemplo_estoque/precos Ljava/util/ArrayList;
+    aload 1
     ldc 150
     invokestatic java/lang/Integer/valueOf(I)Ljava/lang/Integer;
     invokevirtual java/util/ArrayList/add(Ljava/lang/Object;)Z
     pop
-    getstatic Exemplo_estoque/quantidades Ljava/util/ArrayList;
+    aload 2
     ldc 10
     invokestatic java/lang/Integer/valueOf(I)Ljava/lang/Integer;
     invokevirtual java/util/ArrayList/add(Ljava/lang/Object;)Z
     pop
-    getstatic Exemplo_estoque/precos Ljava/util/ArrayList;
+    aload 1
     ldc 200
     invokestatic java/lang/Integer/valueOf(I)Ljava/lang/Integer;
     invokevirtual java/util/ArrayList/add(Ljava/lang/Object;)Z
     pop
-    getstatic Exemplo_estoque/quantidades Ljava/util/ArrayList;
+    aload 2
     ldc 15
     invokestatic java/lang/Integer/valueOf(I)Ljava/lang/Integer;
     invokevirtual java/util/ArrayList/add(Ljava/lang/Object;)Z
@@ -76,12 +76,12 @@
     ldc ""
     invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
     ldc 0
-    putstatic Exemplo_estoque/total I
+    istore 3
     ldc 0
-    istore 1
+    istore 4
 L1:
-    iload 1
-    getstatic Exemplo_estoque/precos Ljava/util/ArrayList;
+    iload 4
+    aload 1
     invokevirtual java/util/ArrayList/size()I
     if_icmplt L3
     iconst_0
@@ -90,22 +90,22 @@ L3:
     iconst_1
 L4:
     ifeq L2
-    getstatic Exemplo_estoque/precos Ljava/util/ArrayList;
-    iload 1
+    aload 1
+    iload 4
     invokevirtual java/util/ArrayList/get(I)Ljava/lang/Object;
     checkcast java/lang/Integer
     invokevirtual java/lang/Integer/intValue()I
-    istore 2
-    getstatic Exemplo_estoque/quantidades Ljava/util/ArrayList;
-    iload 1
+    istore 5
+    aload 2
+    iload 4
     invokevirtual java/util/ArrayList/get(I)Ljava/lang/Object;
     checkcast java/lang/Integer
     invokevirtual java/lang/Integer/intValue()I
-    istore 3
-    iload 2
-    iload 3
+    istore 6
+    iload 5
+    iload 6
     imul
-    istore 4
+    istore 7
     getstatic java/lang/System/out Ljava/io/PrintStream;
     new java/lang/StringBuilder
     dup
@@ -114,7 +114,7 @@ L4:
     invokevirtual java/lang/StringBuilder/append(Ljava/lang/String;)Ljava/lang/StringBuilder;
     ldc " "
     invokevirtual java/lang/StringBuilder/append(Ljava/lang/String;)Ljava/lang/StringBuilder;
-    iload 1
+    iload 4
     ldc 1
     iadd
     invokevirtual java/lang/StringBuilder/append(I)Ljava/lang/StringBuilder;
@@ -124,7 +124,7 @@ L4:
     invokevirtual java/lang/StringBuilder/append(Ljava/lang/String;)Ljava/lang/StringBuilder;
     ldc " "
     invokevirtual java/lang/StringBuilder/append(Ljava/lang/String;)Ljava/lang/StringBuilder;
-    iload 2
+    iload 5
     invokevirtual java/lang/StringBuilder/append(I)Ljava/lang/StringBuilder;
     ldc " "
     invokevirtual java/lang/StringBuilder/append(Ljava/lang/String;)Ljava/lang/StringBuilder;
@@ -132,7 +132,7 @@ L4:
     invokevirtual java/lang/StringBuilder/append(Ljava/lang/String;)Ljava/lang/StringBuilder;
     ldc " "
     invokevirtual java/lang/StringBuilder/append(Ljava/lang/String;)Ljava/lang/StringBuilder;
-    iload 3
+    iload 6
     invokevirtual java/lang/StringBuilder/append(I)Ljava/lang/StringBuilder;
     ldc " "
     invokevirtual java/lang/StringBuilder/append(Ljava/lang/String;)Ljava/lang/StringBuilder;
@@ -140,21 +140,21 @@ L4:
     invokevirtual java/lang/StringBuilder/append(Ljava/lang/String;)Ljava/lang/StringBuilder;
     ldc " "
     invokevirtual java/lang/StringBuilder/append(Ljava/lang/String;)Ljava/lang/StringBuilder;
-    iload 4
+    iload 7
     invokevirtual java/lang/StringBuilder/append(I)Ljava/lang/StringBuilder;
     invokevirtual java/lang/StringBuilder/toString()Ljava/lang/String;
     invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
-    getstatic Exemplo_estoque/total I
-    iload 4
+    iload 3
+    iload 7
     iadd
     dup
-    putstatic Exemplo_estoque/total I
+    istore 3
     pop
-    iload 1
+    iload 4
     ldc 1
     iadd
     dup
-    istore 1
+    istore 4
     pop
     goto L1
 L2:
@@ -172,7 +172,7 @@ L2:
     invokevirtual java/lang/StringBuilder/append(Ljava/lang/String;)Ljava/lang/StringBuilder;
     ldc " "
     invokevirtual java/lang/StringBuilder/append(Ljava/lang/String;)Ljava/lang/StringBuilder;
-    getstatic Exemplo_estoque/precos Ljava/util/ArrayList;
+    aload 1
     invokevirtual java/util/ArrayList/size()I
     invokevirtual java/lang/StringBuilder/append(I)Ljava/lang/StringBuilder;
     invokevirtual java/lang/StringBuilder/toString()Ljava/lang/String;
@@ -185,15 +185,15 @@ L2:
     invokevirtual java/lang/StringBuilder/append(Ljava/lang/String;)Ljava/lang/StringBuilder;
     ldc " "
     invokevirtual java/lang/StringBuilder/append(Ljava/lang/String;)Ljava/lang/StringBuilder;
-    getstatic Exemplo_estoque/total I
+    iload 3
     invokevirtual java/lang/StringBuilder/append(I)Ljava/lang/StringBuilder;
     invokevirtual java/lang/StringBuilder/toString()Ljava/lang/String;
     invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
-    getstatic Exemplo_estoque/total I
-    getstatic Exemplo_estoque/precos Ljava/util/ArrayList;
+    iload 3
+    aload 1
     invokevirtual java/util/ArrayList/size()I
     idiv
-    putstatic Exemplo_estoque/media I
+    istore 8
     getstatic java/lang/System/out Ljava/io/PrintStream;
     new java/lang/StringBuilder
     dup
@@ -202,7 +202,7 @@ L2:
     invokevirtual java/lang/StringBuilder/append(Ljava/lang/String;)Ljava/lang/StringBuilder;
     ldc " "
     invokevirtual java/lang/StringBuilder/append(Ljava/lang/String;)Ljava/lang/StringBuilder;
-    getstatic Exemplo_estoque/media I
+    iload 8
     invokevirtual java/lang/StringBuilder/append(I)Ljava/lang/StringBuilder;
     invokevirtual java/lang/StringBuilder/toString()Ljava/lang/String;
     invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V

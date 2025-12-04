@@ -1,6 +1,11 @@
-interface User {
-    name: string;
-    age: number;
+let x: number = 5;
+
+print("Inicio da contagem...");
+
+// Enquanto x for maior que 0, repete o bloco
+while (x > 0) {
+    print(x);
+    x = x - 1; // Diminui 1 a cada volta
 }
-let u: User = { name: "Ana", age: 30 };
-let n: string = u.name;
+
+print("FIM!");

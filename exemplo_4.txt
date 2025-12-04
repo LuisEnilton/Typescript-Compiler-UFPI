@@ -1,1 +1,14 @@
-let x: number = "abc";
+let numero: number;
+
+print("Digite um numero para ver a tabuada:");
+numero = read(); // Se o read() não estiver disponível, troque por: numero = 7;
+
+print("--- Tabuada do", numero, "---");
+
+// Loop simples de 1 até 10
+for (let i: number = 1; i <= 10; i = i + 1) {
+    let resultado: number = numero * i;
+    print(numero, "x", i, "=", resultado);
+}
+
+print("--- Fim ---");

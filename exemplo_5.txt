@@ -1,2 +1,16 @@
-const y:number = 2;
-let x: number = y;
+function fatorialRecursivo(n: number): number {
+    // Caso base: se n for 0 ou 1, retorna 1
+    if (n <= 1) {
+        return 1;
+    }
+    
+    // Passo recursivo: n * fatorial(n-1)
+    return n * fatorialRecursivo(n - 1);
+}
+
+print("Digite um numero: ");
+let numero: number;
+numero = read();
+let resultado: number = fatorialRecursivo(numero);
+
+print("Recursivo: O fatorial de", numero, "é", resultado);

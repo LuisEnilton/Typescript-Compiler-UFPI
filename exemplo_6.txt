@@ -1,3 +1,33 @@
-function soma(a: number, b: number): number {
-    return a + b;
+print("=== Sistema de Avaliacao ===");
+
+let nota: number;
+
+
+nota = -2; 
+
+print("Nota Informada:", nota);
+
+// 1. Primeiro verificamos se a nota é válida (entre 0 e 10)
+if (nota < 0) {
+    print("ERRO: A nota nao pode ser negativa.");
+} else {
+    if (nota > 10) {
+        print("ERRO: A nota maxima e 10.");
+    } else {
+        // 2. Se chegou aqui, a nota é válida (0 a 10).
+        // Agora aplicamos a regra da aprovação.
+        
+        if (nota < 6) {
+            print("Situacao: PROVA FINAL");
+            
+            let falta: number = 6 - nota;
+            print("Faltam", falta, "pontos para alcancar a media 6.");
+        } else {
+        
+            print("Situacao: APROVADO");
+            print("Parabens pelo desempenho!");
+        }
+    }
 }
+
+print("=== Fim do Processo ===");

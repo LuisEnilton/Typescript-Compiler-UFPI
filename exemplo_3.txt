@@ -1,2 +1,17 @@
-const x: number = 10;
-x = 20;
+let nota1: number;
+let nota2: number;
+let media: number;
+
+print("Digite a primeira nota:");
+nota1 = read();
+
+print("Digite a segunda nota:");
+nota2 = read();
+
+media = (nota1 + nota2) / 2;
+
+print("----------------");
+print("Nota 1:", nota1);
+print("Nota 2:", nota2);
+print("Média Final:", media);
+print("----------------");
