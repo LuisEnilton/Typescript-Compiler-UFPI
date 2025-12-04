@@ -47,19 +47,58 @@ poetry shell
 
 ## Uso Básico
 
-Compilar um arquivo fonte:
+### Compilar um arquivo fonte (análise semântica)
 ```bash
 poetry run python main.py exemplo_1.txt
 ```
 
-Verificar outro arquivo:
+### Gerar Bytecode Java
+
+O compilador agora suporta geração de **código Jasmin** (intermediário Java) que pode ser compilado em bytecode executável.
+
+#### 1. Compilar e Gerar Jasmin
 ```bash
-poetry run python main.py exemplo_2.txt
+poetry run python main.py exemplo_interface_produtos.txt
 ```
 
-Executar todos os testes:
+Isso gera:
+- `Produto.j` - Classe Java para interface Produto
+- `Exemplo_interface_produtos.j` - Classe principal com código compilado
+
+#### 2. Montar Jasmin para Bytecode
+```bash
+java -jar jasmin.jar Produto.j Exemplo_interface_produtos.j
+```
+
+Gera:
+- `Produto.class` - Bytecode da interface
+- `Exemplo_interface_produtos.class` - Bytecode principal
+
+#### 3. Executar o Código
+```bash
+java Exemplo_interface_produtos
+```
+
+#### Exemplo Completo
+```bash
+# Compilar TypeScript para Jasmin
+poetry run python main.py exemplo_interface_produtos.txt
+
+# Montar Jasmin para bytecode
+java -jar jasmin.jar Produto.j Exemplo_interface_produtos.j
+
+# Executar
+java Exemplo_interface_produtos
+```
+
+### Executar todos os testes
 ```bash
 poetry run pytest -q
+```
+
+### Executar testes de compilação e execução
+```bash
+poetry run pytest tests/test_examples_execution.py -v
 ```
 
 ## Exemplos de Código
@@ -80,14 +119,12 @@ function soma(a: number, b: number): number {
 let r: number = soma(2, 3);
 ```
 
-### 3. Interface e Objeto
+### 3. Interface e Objeto (Com Geração de Bytecode)
 ```typescript
 interface User {
   id: number;
   nome: string;
 }
-let u: User = { id: 1, nome: "Ana" };
-```
 
 ### 4. Arrays Homogêneos
 ```typescript
@@ -136,19 +173,3 @@ Exemplo:
 3. Tabela de símbolos é populada (variáveis, funções, interfaces).
 4. Expressões são validadas recursivamente.
 5. Erros acumulados são emitidos ao final.
-
-## Convenções
-- Mensagens ao usuário em português.
-- Identificadores seguem padrão simples (`camelCase` para variáveis e funções, `PascalCase` para interfaces se desejado).
-- Arrays homogêneos exigem todos os elementos do mesmo tipo ou objetos compatíveis com a mesma interface.
-
-## Contribuição
-1. Crie uma branch: `git checkout -b feat/nova-funcionalidade`.
-2. Rode testes antes de commitar: `poetry run pytest`.
-3. Abra um Pull Request descrevendo mudanças.
-
-## Licença
-Projeto acadêmico para fins educacionais (UFPI).
-
----
-Dúvidas ou melhorias? Abra uma issue ou envie sugestão.
