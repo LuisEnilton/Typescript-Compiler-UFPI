@@ -52,7 +52,7 @@ equalityExpr: relationalExpr ((EQ | NEQ) relationalExpr)*;
 relationalExpr: additiveExpr ((LT | LTE | GT | GTE) additiveExpr)*;
 additiveExpr: multiplicativeExpr ((PLUS | MINUS) multiplicativeExpr)*;
 multiplicativeExpr: unaryExpr ((MULT | DIV | MOD) unaryExpr)*;
-unaryExpr: NOT unaryExpr | postfixExpr;
+unaryExpr: (NOT | MINUS)* postfixExpr;
 postfixExpr: primary (postfixOp)*;
 postfixOp: '[' expression ']' | '.' ID | '(' (expression (',' expression)*)? ')';
 

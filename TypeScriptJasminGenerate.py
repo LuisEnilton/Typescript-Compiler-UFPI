@@ -580,6 +580,57 @@ class JasminGenerator(ParseTreeVisitor):
             elif op == '%':
                 self.emit("irem")
 
+    def visitUnaryExpr(self, ctx: TypeScriptParser.UnaryExprContext):
+        # unaryExpr: (NOT | MINUS)* postfixExpr;
+        # Conta quantos operadores unários temos
+        operator_count = 0
+        minus_count = 0
+        not_count = 0
+        
+        for i in range(ctx.getChildCount()):
+            child_text = ctx.getChild(i).getText()
+            if child_text == '-':
+                minus_count += 1
+                operator_count += 1
+            elif child_text == '!':
+                not_count += 1
+                operator_count += 1
+        
+        # Se não há operadores unários, apenas visita postfixExpr
+        if operator_count == 0:
+            self.visit(ctx.postfixExpr())
+            return
+        
+        # Visita o operand (postfixExpr)
+        self.visit(ctx.postfixExpr())
+        
+        # Aplica os operadores unários de trás para frente (negação múltipla)
+        # Por exemplo: --x é o mesmo que x (duas negações)
+        # -x é negação simples
+        
+        # Aplica negações (MINUS)
+        if minus_count > 0:
+            # Número ímpar de negações resulta em uma negação
+            if minus_count % 2 == 1:
+                self.emit("ineg")
+        
+        # Aplica NOT lógico (!x)
+        if not_count > 0:
+            # Número ímpar de NOT resulta em NOT
+            if not_count % 2 == 1:
+                # NOT lógico: !x
+                # Se x != 0, resultado = 0
+                # Se x == 0, resultado = 1
+                true_label = self.get_new_label()
+                end_label = self.get_new_label()
+                
+                self.emit(f"ifeq {true_label}")
+                self.emit("iconst_0")  # x != 0 -> !x = 0
+                self.emit(f"goto {end_label}")
+                self.emit_label(true_label)
+                self.emit("iconst_1")  # x == 0 -> !x = 1
+                self.emit_label(end_label)
+
     def visitRelationalExpr(self, ctx: TypeScriptParser.RelationalExprContext):
         if len(ctx.additiveExpr()) == 1:
             self.visit(ctx.additiveExpr(0))

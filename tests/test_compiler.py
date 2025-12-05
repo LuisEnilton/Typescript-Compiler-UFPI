@@ -479,6 +479,62 @@ let c: boolean = a || b;
         assert success, f"Esperado sucesso, mas obteve erros: {errors}"
 
 
+class TestUnaryOperators:
+    """Testes para operadores unários (negação, NOT)"""
+    
+    def test_negative_integer_literal(self):
+        """Número inteiro negativo deve compilar"""
+        code = "let x: number = -5;"
+        success, errors = compile_code(code)
+        assert success, f"Esperado sucesso, mas obteve erros: {errors}"
+    
+    def test_negative_variable(self):
+        """Negação de variável deve compilar"""
+        code = """
+let x: number = 10;
+let y: number = -x;
+"""
+        success, errors = compile_code(code)
+        assert success, f"Esperado sucesso, mas obteve erros: {errors}"
+    
+    def test_double_negation(self):
+        """Dupla negação deve compilar"""
+        code = "let x: number = --5;"
+        success, errors = compile_code(code)
+        assert success, f"Esperado sucesso, mas obteve erros: {errors}"
+    
+    def test_negative_expression(self):
+        """Negação de expressão deve compilar"""
+        code = """
+let a: number = 10;
+let b: number = 5;
+let c: number = -(a + b);
+"""
+        success, errors = compile_code(code)
+        assert success, f"Esperado sucesso, mas obteve erros: {errors}"
+    
+    def test_logical_not_true(self):
+        """NOT de verdadeiro deve compilar"""
+        code = "let x: boolean = !true;"
+        success, errors = compile_code(code)
+        assert success, f"Esperado sucesso, mas obteve erros: {errors}"
+    
+    def test_logical_not_false(self):
+        """NOT de falso deve compilar"""
+        code = "let x: boolean = !false;"
+        success, errors = compile_code(code)
+        assert success, f"Esperado sucesso, mas obteve erros: {errors}"
+    
+    def test_logical_not_number(self):
+        """NOT de número deve compilar (não-zero = false, zero = true)"""
+        code = """
+let x: number = 10;
+let y: boolean = !x;
+"""
+        success, errors = compile_code(code)
+        assert success, f"Esperado sucesso, mas obteve erros: {errors}"
+
+
 class TestControlFlow:
     """Testes para controle de fluxo"""
     

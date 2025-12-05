@@ -820,6 +820,34 @@ class SemanticAnalyzer(ParseTreeVisitor):
 
         return self._binary_expr(ctx, validate, result_type)
 
+    def visitUnaryExpr(self, ctx):
+        """Processa operadores unários (-, !)
+        
+        unaryExpr: (NOT | MINUS)* postfixExpr;
+        - MINUS (-): negação aritmética (number -> number)
+        - NOT (!): negação lógica (qualquer tipo -> boolean)
+        """
+        # Conta quantos operadores unários temos
+        not_count = 0
+        minus_count = 0
+        
+        for i in range(ctx.getChildCount()):
+            child_text = ctx.getChild(i).getText()
+            if child_text == '!':
+                not_count += 1
+            elif child_text == '-':
+                minus_count += 1
+        
+        # Obtém o tipo do operand
+        operand_type = self.visit(ctx.postfixExpr())
+        
+        # Se há número ímpar de NOT, o resultado é boolean
+        if not_count > 0 and not_count % 2 == 1:
+            return PrimitiveType("boolean")
+        
+        # Caso contrário, o resultado mantém o tipo do operand
+        return operand_type
+
     def visitRelationalExpr(self, ctx):
         """Processa operadores <, <=, >, >= (operandos number; resultado boolean)"""
         def validate(l, r, op, c):
